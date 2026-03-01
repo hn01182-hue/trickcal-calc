@@ -1,25 +1,3 @@
-async function loadReleasedPackages() {
-        const listDiv = document.getElementById('released-list');
-        listDiv.innerHTML = "<p style='text-align:center; padding: 20px; color: #888;'>데이터 로드 중...</p>";
-        try {
-            const snapshot = await db.collection("packages").get();
-            dbPackages = [];
-            const apostleSet = new Set();
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                const contents = typeof data.contents === 'string' ? JSON.parse(data.contents) : data.contents;
-                dbPackages.push({ id: doc.id, ...data, contents, releasedApostle: data.releasedApostle || "기타" });
-                apostleSet.add(data.releasedApostle || "기타");
-            });
-            const select = document.getElementById('apostle-select');
-            select.innerHTML = '<option value="all">전체 사도</option>';
-            Array.from(apostleSet).sort().forEach(name => {
-                const opt = document.createElement('option'); opt.value = name; opt.innerText = name; select.appendChild(opt);
-            });
-            filterReleased();
-        } catch (e) { console.error(e); listDiv.innerHTML = "<p>로드 실패</p>"; }
-    }
-
       function filterReleased() {
         const query = document.getElementById('pkg-search').value.toLowerCase();
         const apostle = document.getElementById('apostle-select').value;
@@ -36,7 +14,6 @@ async function loadReleasedPackages() {
             let vB = (type === 'price') ? b.price : calculateScore(b.contents, b.price);
             return (order === 'asc') ? vA - vB : vB - vA;
         });
-        renderPackageList('released-list', filtered);
 
         renderPackageList('released-list', filtered); // 리스트 먼저 그리고
         drawReleasedChart(filtered);
@@ -52,14 +29,21 @@ async function loadReleasedPackages() {
         return (total / price) * 1000;
     }
 
-function renderPackageList(containerId, list) {
+function renderPackageList(containerId, list = []) { // 👈 list가 없으면 빈 배열([])을 기본값으로 사용
     const div = document.getElementById(containerId);
-    div.innerHTML = list.map(pkg => {
+    if (!div) return; // 컨테이너가 없으면 종료
+
+    // list가 undefined나 null이더라도 에러가 나지 않도록 한 번 더 안전장치
+    const safeList = Array.isArray(list) ? list : [];
+
+    div.innerHTML = safeList.map(pkg => {
         const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
         const summary = Object.entries(pkg.contents).map(([id, count]) => {
-            const item = config.items.find(i => i.id === id);
+            // config.items가 로드되지 않았을 경우를 대비한 안전장치
+            const item = (config && config.items) ? config.items.find(i => i.id === id) : null;
             return `${item ? item.name : id} x${count}`;
         }).join(', ');
+        
         return `
             <div class="pkg-card">
                 <span class="pkg-name">[${pkg.releasedApostle}] ${pkg.name}</span>
@@ -80,14 +64,29 @@ function renderPackageList(containerId, list) {
         openTab('calc'); calculate();
     }
 
-    function openTab(id) {
-        document.querySelectorAll('.tab, .card').forEach(el => el.classList.remove('active'));
-        document.querySelector(`.tab[onclick="openTab('${id}')"]`).classList.add('active');
-        document.getElementById(id).classList.add('active');
-        if(id === 'calc') renderCalc();
-        if(id === 'settings') renderSettings();
-        if(id === 'constant') renderConstantPackages();
+function openTab(id) {
+    // 모든 탭과 카드에서 active 클래스 제거
+    document.querySelectorAll('.tab, .card').forEach(el => el.classList.remove('active'));
+    
+    // 클릭한 탭과 해당 카드에 active 클래스 추가
+    const targetTab = document.querySelector(`.tab[onclick="openTab('${id}')"]`);
+    if (targetTab) targetTab.classList.add('active');
+    
+    const targetCard = document.getElementById(id);
+    if (targetCard) targetCard.classList.add('active');
+
+    // ✅ 각 탭에 맞는 초기화/렌더링 함수 실행
+    if (id === 'calc') renderCalc();
+    if (id === 'settings') renderSettings();
+    if (id === 'constant') renderConstantPackages();
+    
+    // ⭐ [추가] 사도 도감 탭을 누르면 전체 리스트를 즉시 렌더링
+    if (id === 'apostle-list') {
+        if (typeof renderApostleList === 'function') {
+            renderApostleList(); // 인자 없이 호출하면 apostleDB 전체를 그립니다.
+        }
     }
+}
 
     function renderCalc() {
     document.getElementById('pkg-price').value = config.price;
@@ -283,4 +282,35 @@ function drawReleasedChart(filteredData) {
             }
         }]
     });
+}
+
+function setupLocalPackages() {
+    console.log("로컬 데이터 세팅 시작...");
+    
+    // 1. 사도 목록(Select 박스) 필터용 데이터 모으기
+    const apostleSet = new Set();
+    
+    // dbPackages는 packages.js에서 이미 가져온 상태입니다.
+    if (typeof dbPackages !== 'undefined' && dbPackages.length > 0) {
+        dbPackages.forEach(data => {
+            apostleSet.add(data.releasedApostle || "기타");
+        });
+
+        // 2. Select 박스(드롭다운)에 사도 이름들 채워넣기
+        const select = document.getElementById('apostle-select');
+        if (select) {
+            select.innerHTML = '<option value="all">전체 사도</option>';
+            Array.from(apostleSet).sort().forEach(name => {
+                const opt = document.createElement('option'); 
+                opt.value = name; 
+                opt.innerText = name; 
+                select.appendChild(opt);
+            });
+        }
+
+        // 3. ⭐️ 핵심: 리스트와 그래프를 처음으로 그리기
+        filterReleased(); 
+    } else {
+        console.error("dbPackages 데이터를 찾을 수 없습니다. packages.js 파일 연결을 확인하세요.");
+    }
 }
