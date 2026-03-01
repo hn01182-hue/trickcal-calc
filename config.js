@@ -1,13 +1,4 @@
 // config.js
-const firebaseConfig = {
-        apiKey: "AIzaSyDSu0rmCC6S5Wa82X1ITHAFFfzwChQjLO8",
-        authDomain: "trickcal-calc.firebaseapp.com",
-        projectId: "trickcal-calc",
-        storageBucket: "trickcal-calc.firebasestorage.app",
-        messagingSenderId: "138255593289",
-        appId: "1:138255593289:web:110381aad65cf8b3b53498",
-        measurementId: "G-X4MLP8ZXLV"
-    }; // 파이어베이스 설정
 const STORAGE_KEY = 'trickcal_calc_v10_final';
 const constantPackages = [
         { name: "데일리 엘리프", price: 9900, contents: { p_elif: 1500, f_elif: 2000, manual: 2139, r_low: 124 } },
@@ -33,10 +24,11 @@ const defaultConfig = {
             { id: 'crayon_highest', name: '최상급 크레파스', val: 668, icon: 'images/황금크레파스.png', count: "" },
             { id: 'gold', name: '골드 (1만 단위)', val: 4, icon: 'images/골드.png', count: "" },
             { id: 'cert', name: '교단 증명서', val: 8.5, icon: 'images/교단증명서.png', count: "" },
-            { id: 'spec_ticket', name: '특별 모집권', val: 130, icon: 'images/사도랜덤(10).png', count: "" },
-            { id: 'adv_ticket', name: '초고급 모집권', val: 260, icon: 'images/초고급모집권(20).png', count: "" },
+            { id: 'spec_ticket', name: '초고급 모집권', val: 130, icon: 'images/사도랜덤(10).png', count: "" },
+            { id: 'adv_ticket', name: '초특별 모집권', val: 260, icon: 'images/초고급모집권(20).png', count: "" },
             { id: 'select_ticket', name: '일반 사도 선택권', val: 2550, icon: 'images/일반선택권.png', count: "" },
-            { id: 'attr_ticket', name: '속성 모집권', val: 260, icon: 'images/속성뽑기권.png', count: "" },
+            { id: 'attr_ticket', name: '속성 모집권', val: 260, icon: 'images/속성뽑기권.png', count: "" },            
+	    { id: 'pos_ticket', name: '포지션 모집권', val: 260, icon: 'images/포지션모집권.png', count: "" },
             { id: 'elch_ticket', name: '엘다인 선택권', val: 6800, icon: 'images/선택엘다인.png', count: "" },
             { id: 'elch_yeon', name: '엘다인 연성권', val: 680, icon: 'images/엘다인 연성권.png', count: "" },
             { id: 'light_box', name: '무작위 빛 상자', val: 0, icon: 'images/빛상자.png', count: "" },
@@ -57,5 +49,6 @@ const defaultConfig = {
         ]    
     };
 let config = JSON.parse(JSON.stringify(defaultConfig));
-let dbPackages = []; 
 let releasedChartObj = null;
+window.config = config;
+window.STORAGE_KEY = STORAGE_KEY;
