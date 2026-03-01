@@ -100,7 +100,7 @@ window.runCalculation = function() {
         const prob = 1 / allEldain.length;
         elchEV += prob * (wantedApostles.has(e.id) ? VAL_ELDAIN : 0);
     });
-    results.elch_yeon = elchEV;
+    results.elch_yeon = elchEV * 0.5;
 
     // 전역 변수에 결과 저장
     window.lastCalcResults = results;
@@ -256,4 +256,5 @@ window.resetApostles = function() {
         if (typeof renderApostleList === 'function') renderApostleList(); 
         alert("사도 목록이 초기화되었습니다.");
     }
+
 }
