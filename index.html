@@ -6,10 +6,69 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>트릭컬 효율 계산기</title>
 
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
     <style>
+/* 사도 아이콘 컨테이너 */
+.apostle-container {
+    position: relative;
+    width: 80px;  /* 이미지 크기에 맞춰 조절 */
+    height: 80px;
+    cursor: pointer;
+    border-radius: 12px;
+    overflow: hidden; /* 체크 표시가 이미지 밖으로 안 나가게 */
+    transition: transform 0.1s ease;
+}
+
+.apostle-container:active {
+    transform: scale(0.95); /* 누를 때 쫄깃한 느낌 */
+}
+
+/* 기본 이미지 */
+.apostle-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: filter 0.2s ease;
+}
+
+/* ✅ 핵심: 이미지를 가릴 어두운 덮개와 큰 체크 */
+.check-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* 어둡게 만들기 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* 처음엔 안 보임 */
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    
+    color: white;
+    font-size: 40px; /* 커다란 체크 표시 */
+    font-weight: bold;
+    z-index: 2;
+}
+
+/* ✅ 체크되었을 때의 상태 */
+.apostle-container.checked .check-overlay {
+    opacity: 1; /* 어두운 배경과 체크 표시 등장 */
+}
+
+.apostle-container.checked .apostle-img {
+    filter: grayscale(40%) blur(1px); /* 이미지 살짝 흐리게 */
+}
+
+/* 엘다인 전용 황금 테두리 */
+.apostle-container.eldain {
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+}
+
+#apostle-grid {
+    margin-top: 15px; /* 필터 버튼과 사도 목록 사이를 띄웁니다 */
+}
+
 input[readonly] {
     background-color: #f0f0f0 !important; /* 회색 배경 */
     color: #999 !important; /* 글자색 흐리게 */
@@ -26,8 +85,28 @@ input[readonly] {
             transition: background-image 0.5s ease-in-out;
         }
         .container { max-width: 500px; margin: auto; }
-        .tabs { display: flex; gap: 4px; margin-bottom: 15px; }
-        .tab { flex: 1; padding: 12px 4px; text-align: center; background: #ddd; cursor: pointer; border-radius: 10px 10px 0 0; font-weight: bold; font-size: 0.8em; }
+       .tabs { 
+    display: flex; 
+    gap: 2px;               /* 간격을 약간 줄임 */
+    margin-bottom: 15px; 
+    overflow-x: auto;      /* 너비가 부족하면 가로 스크롤 생성 */
+    white-space: nowrap;    /* 글자가 아래로 튕겨 나가는 것 방지 */
+    -ms-overflow-style: none; /* IE 스크롤바 숨기기 */
+    scrollbar-width: none;  /* 파이어폭스 스크롤바 숨기기 */
+}
+.tabs::-webkit-scrollbar { display: none; } /* 크롬/사파리 스크롤바 숨기기 */
+
+.tab { 
+    flex: 1; 
+    min-width: fit-content; /* 글자 길이에 맞춰 최소 너비 확보 */
+    padding: 10px 6px;      /* 좌우 패딩을 줄여 공간 확보 */
+    text-align: center; 
+    background: #ddd; 
+    cursor: pointer; 
+    border-radius: 8px 8px 0 0; 
+    font-weight: bold; 
+    font-size: 0.75em;      /* 글자 크기를 아주 살짝 더 줄임 */
+}
         .tab.active { background: var(--card); color: var(--primary); border-bottom: 3px solid var(--primary); }
         .card {
             background: rgba(255, 255, 255, 0.9);
@@ -83,7 +162,9 @@ input[readonly] {
         <div class="tab active" onclick="openTab('preset')">🎁 주간 패키지</div>
         <div class="tab" onclick="openTab('constant')">🏛️ 데일리/패스/은총</div>
         <div class="tab" onclick="openTab('calc')">📊 분석</div>
+	<div class="tab" onclick="openTab('apostle-list')">👤 뽑기권 계산용</div>
         <div class="tab" onclick="openTab('settings')">⚙️ 설정</div>
+	
     </div>
 
     <div id="preset" class="card active">
@@ -136,21 +217,65 @@ input[readonly] {
         <button class="btn btn-sub" onclick="copyShareLink()">🔗 설정 공유 링크 복사</button>
         <div style="text-align: right; margin-top: 20px;"><button style="color: #e91e63; border: none; background: none; cursor: pointer; font-weight: bold;" onclick="resetConfig()">⚠️ 초기화</button></div>
     </div>
+
+<div id="apostle-list" class="card">
+    <div style="background:#fff3e0; padding:10px; border-radius:8px; margin-bottom:15px; font-size:0.85em; color:#e65100;">
+        💡 원하는 사도를 클릭하여 체크하세요. 브라우저를 닫아도 유지됩니다.
+    </div>
+    
+    <div class="filter-container">
+    <input type="text" id="apostle-search" class="search-input" placeholder="사도 이름 검색..." oninput="filterApostles()">
+    
+    <div style="display: flex; gap: 4px; margin-top: 8px;">
+        <select id="filter-rarity" class="apostle-select" onchange="filterApostles()" style="flex: 1;">
+            <option value="all">모든 등급</option>
+            <option value="eldain">엘다인</option>
+            <option value="normal">일반사도</option>
+        </select>
+
+        <select id="filter-type" class="apostle-select" onchange="filterApostles()" style="flex: 1;">
+            <option value="all">모든 속성</option>
+            <option value="순수">순수</option>
+            <option value="광기">광기</option>
+            <option value="냉정">냉정</option>
+            <option value="우울">우울</option>
+            <option value="활발">활발</option>
+        </select>
+        
+        <select id="filter-role" class="apostle-select" onchange="filterApostles()" style="flex: 1;">
+            <option value="all">모든 포지션</option>
+            <option value="탱커">탱커</option>
+            <option value="딜러">딜러</option>
+            <option value="서포터">서포터</option>
+        </select>
+    </div>
+
+    <div style="display: flex; gap: 6px; margin-top: 10px;">
+            <button class="btn-main" onclick="runCalculation()" style="flex: 1; margin-top: 0; background: #4caf50; font-weight: bold;">
+                📊 가치 계산하기
+            </button>
+            <button class="btn-sub" onclick="resetApostles()" style="flex: 0.4; margin-top: 0; color: #e91e63; font-size: 0.8em;">
+                선택 초기화
+            </button>
+        </div>
+    </div>
+
+<div id="quick-calc-result" style="display:none; margin: 15px 0; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px;">
+        <div style="font-size: 0.9em; color: #666; margin-bottom: 5px;">선택한 사도 등장 확률</div>
+        <div style="font-size: 1.5em; font-weight: bold; color: #2e7d32;">
+            <span id="result-percent">0</span>%
+        </div>
+        <div id="result-text" style="font-size: 0.8em; color: #888; margin-top: 5px;"></div>
+    </div>
+
+    <div id="apostle-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px;">
+        </div>
 </div>
     
 <script src="config.js?v=1.1"></script>
-
-<script>
-    // 2. DB 연결 도구 준비 (app.js보다 먼저 실행되어야 함)
-    // config.js에 있는 firebaseConfig를 사용하여 초기화합니다.
-    if (typeof firebaseConfig !== 'undefined') {
-        firebase.initializeApp(firebaseConfig);
-        window.db = firebase.firestore(); // 전역 변수로 선언하여 app.js에서 쓸 수 있게 함
-    } else {
-        console.error("config.js에서 firebaseConfig를 찾을 수 없습니다!");
-    }
-</script>
-
+<script src="package.js?v=1.1"></script>
+<script src="apostle_db.js?v=1.1"></script>
+<script src="apostle.js?v=1.1"></script>
 <script src="app.js?v=1.1"></script>
 
 <script>
@@ -159,7 +284,7 @@ input[readonly] {
         if (typeof loadAll === 'function') {
             loadAll(); 
             applyRandomBackground();
-            loadReleasedPackages(); 
+	    setupLocalPackages();
             renderConstantPackages();
         } else {
             console.error("app.js가 제대로 로드되지 않았습니다. 파일명을 확인해주세요.");
