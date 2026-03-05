@@ -52,8 +52,8 @@ const defaultConfig = {
             { id: 'm_high', name: '상급 마시멜로', val: 0, icon: 'images/상급마시맬로.png', count: "" },
             { id: 'deco_box', name: '방 꾸미기 상자', val: 0, icon: 'images/꾸미기상자.png', count: "" },
             { id: 'growth_box', name: '교단 성장 상자', val: 0, icon: 'images/교단성장재료상자.png', count: "" },
-            { id: 'l_spell_box', name: '전설 스펠 선택 상자', val: 6000, icon: 'images/전설스펠상자.png', count: "" },
-	    { id: 'l_arti_box', name: '전설 아티팩트 선택 상자', val: 6000, icon: 'images/전설아티팩트상자.png', count: "" }
+            { id: 'l_spell_box', name: '전설 스펠 선택 상자', val: 6000, icon: 'images/전설스펠상자.webp', count: "" },
+	    { id: 'l_arti_box', name: '전설 아티팩트 선택 상자', val: 6000, icon: 'images/전설아티팩트상자.webp', count: "" }
         ]    
     };
 let config = JSON.parse(JSON.stringify(defaultConfig));
