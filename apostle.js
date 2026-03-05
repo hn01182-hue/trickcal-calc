@@ -80,19 +80,21 @@ window.runCalculation = function() {
     const allEldain = apostleDB.filter(a => a.isEldain);
 
     const advEV = calculateBaseEV(allNormal, allEldain);
+    //초특별
     results.adv_ticket = advEV;
+    //초고급
     results.spec_ticket = advEV * 0.5;
-
+    //속성,포지션뽑 증명서 10장 제공하므로 밸류 절반
     ["순수", "광기", "냉정", "우울", "활발"].forEach(t => {
         const typeNormal = allNormal.filter(a => a.type === t || a.type === "공명");
         const typeEldain = allEldain.filter(a => a.type === t || a.type === "공명");
-        results.all_attrs[t] = calculateAttrEV(typeNormal, typeEldain);
+        results.all_attrs[t] = calculateAttrEV(typeNormal, typeEldain)*0.5;
     });
 
     ["탱커", "딜러", "서포터"].forEach(r => {
         const posNormal = allNormal.filter(a => a.role === r);
         const posEldain = allEldain.filter(a => a.role === r);
-        results.all_roles[r] = calculateBaseEV(posNormal, posEldain);
+        results.all_roles[r] = calculateBaseEV(posNormal, posEldain)*0.5;
     });
 
     let elchEV = 0;
@@ -234,4 +236,5 @@ window.resetApostles = function() {
         if (typeof renderApostleList === 'function') renderApostleList(); 
         alert("사도 목록이 초기화되었습니다.");
     }
+
 }
