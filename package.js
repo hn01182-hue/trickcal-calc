@@ -39,47 +39,6 @@ const dbPackages = [
         name: "다야 강림 패키지",
         price: 99000,
         releasedApostle: "다야(퓨어샤인)",
-        contents: {"t_apostle":100,"attr_활발onst dbPackages = [
-    {
-        id: "[잉클] 스텝업 패키지 12",
-        name: "[잉클] 스텝업 패키지 12",
-        price: 99000,
-        releasedApostle: "잉클",
-        contents: {"p_elif":1000,"f_elif":2000,"t_apostle":150,"elch_yeon":1,"crayon_highest":10,"scandy":1000}
-    },
-    {
-        id: "[잉클] 스텝업 패키지 3",
-        name: "[잉클] 스텝업 패키지 3",
-        price: 9900,
-        releasedApostle: "잉클",
-        contents: {"p_elif":100,"f_elif":200,"t_apostle":15,"adv_ticket":1,"crayon_highest":1,"scandy":100}
-    },
-    {
-        id: "[잉클] 스텝업 패키지 6",
-        name: "[잉클] 스텝업 패키지 6",
-        price: 29500,
-        releasedApostle: "잉클",
-        contents: {"p_elif":300,"f_elif":600,"t_apostle":45,"spec_ticket":1,"crayon_highest":3,"scandy":300}
-    },
-    {
-        id: "[잉클] 스텝업 패키지 9",
-        name: "[잉클] 스텝업 패키지 9",
-        price: 49500,
-        releasedApostle: "잉클",
-        contents: {"p_elif":500,"f_elif":1000,"t_apostle":75,"select_ticket":1,"crayon_highest":5,"scandy":500}
-    },
-    {
-        id: "그대의 포옹 로비 패키지",
-        name: "그대의 포옹 로비 패키지",
-        price: 29500,
-        releasedApostle: "다야(퓨어샤인)",
-        contents: {"p_elif":900,"t_apostle":10,"t_card":10,"nuru":10,"scandy":300}
-    },
-    {
-        id: "다야 강림 패키지",
-        name: "다야 강림 패키지",
-        price: 99000,
-        releasedApostle: "다야(퓨어샤인)",
         contents: {"t_apostle":100,"attr_광기":3}
     },
     {
@@ -364,4 +323,5 @@ const dbPackages = [
 }
 
 ];
+
 
