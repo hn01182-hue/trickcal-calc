@@ -244,4 +244,81 @@ const dbPackages = [
         releasedApostle: "잉클",
         contents: {"p_elif":200,"f_elif":200,"t_apostle":5,"nuru":5}
     },
+{
+    id: "언제나 든든한 내 편 로비 패키지",
+    name: "언제나 든든한 내 편 로비 패키지",
+    price: 29500,
+    releasedApostle: "아멜리아(R41)",
+    contents: {"p_elif": 900, "f_elif": 900, "t_apostle": 10, "nuru": 10, "scandy": 300}
+},
+{
+    id: "아멜리아(R41)의 마음가짐 패키지",
+    name: "아멜리아(R41)의 마음가짐 패키지",
+    price: 3300,
+    releasedApostle: "아멜리아(R41)",
+    contents: {"p_elif": 100, "f_elif": 100, "kcandy": 100, "scandy": 100, "food_blue": 20}
+},
+{
+    id: "아멜리아(R41)의 깨달음 패키지",
+    name: "아멜리아(R41)의 깨달음 패키지",
+    price: 6600,
+    releasedApostle: "아멜리아(R41)",
+    contents: {"p_elif": 200, "f_elif": 200, "t_apostle": 5, "nuru": 5}
+},
+{
+    id: "아멜리아(R41)의 성찰 패키지",
+    name: "아멜리아(R41)의 성찰 패키지",
+    price: 9900,
+    releasedApostle: "아멜리아(R41)",
+    contents: {"p_elif": 300, "f_elif": 300, "kcandy": 300, "thumbs": 20, "manual": 2000}
+},
+{
+        id: "정령산의 수문장 나이아 패키지",
+        name: "정령산의 수문장 나이아 패키지",
+        price: 29500,
+        releasedApostle: "아멜리아(R41)",
+        contents: {"p_elif": 900, "f_elif": 900, "cert": 300, "kcandy": 500, "attr_순수": 1}
+    },
+    {
+        id: "힘의 마녀 벨벳 패키지",
+        name: "힘의 마녀 벨벳 패키지",
+        price: 29500,
+        releasedApostle: "아멜리아(R41)",
+        contents: {"p_elif": 900, "f_elif": 900, "cert": 300, "kcandy": 500, "attr_냉정": 1}
+    },
+    {
+        id: "자수정의 용족 시스트 패키지",
+        name: "자수정의 용족 시스트 패키지",
+        price: 29500,
+        releasedApostle: "아멜리아(R41)",
+        contents: {"p_elif": 900, "f_elif": 900, "cert": 300, "kcandy": 500, "attr_광기": 1}
+    },
+    {
+        id: "사료스탕스 책략관 루포 패키지",
+        name: "사료스탕스 책략관 루포 패키지",
+        price: 29500,
+        releasedApostle: "아멜리아(R41)",
+        contents: {"p_elif": 900, "f_elif": 900, "cert": 300, "kcandy": 500, "attr_활발": 1}
+    },
+    {
+        id: "푸른 장미의 기적 블랑셰 패키지",
+        name: "푸른 장미의 기적 블랑셰 패키지",
+        price: 29500,
+        releasedApostle: "아멜리아(R41)",
+        contents: {"p_elif": 900, "f_elif": 900, "cert": 300, "kcandy": 500, "attr_우울": 1}
+    },
+{
+    id: "아멜리아(R41)의 기억 패키지",
+    name: "아멜리아(R41)의 기억 패키지",
+    price: 49500,
+    releasedApostle: "아멜리아(R41)",
+    contents: {"p_elif": 1500, "f_elif": 1500, "select_ticket": 1, "thumbs": 100}
+},
+{
+    id: "아멜리아(R41)의 전설 카드 선택권 패키지",
+    name: "아멜리아(R41)의 전설 카드 선택권 패키지",
+    price: 49500,
+    releasedApostle: "아멜리아(R41)",
+    contents: {"p_elif": 1500, "t_card": 50, "l_spell_box": 1, "l_arti_box": 1}
+}
 ];

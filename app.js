@@ -88,9 +88,21 @@ function openTab(id) {
     }
 }
 
-    function renderCalc() {
-    document.getElementById('pkg-price').value = config.price;
-    document.getElementById('item-inputs').innerHTML = config.items.map(item => `
+   function renderCalc() {
+    const priceInput = document.getElementById('pkg-price');
+    const inputContainer = document.getElementById('item-inputs');
+    if (!priceInput || !inputContainer) return;
+
+    priceInput.value = config.price;
+    const items = config.items;
+
+    // 1. 그룹별 데이터 분류
+    const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_'));
+    const attrItems = items.filter(i => i.id.startsWith('attr_'));
+    const posItems = items.filter(i => i.id.startsWith('pos_'));
+
+    // 개별 행을 만드는 보조 함수 (기존 디자인 유지)
+    const renderRow = (item) => `
         <div class="row">
             <div class="item-info">
                 <img src="${item.icon}" class="item-icon">
@@ -99,7 +111,40 @@ function openTab(id) {
             <div class="input-wrapper">
                 <input type="number" id="cnt-${item.id}" value="${item.count}" oninput="saveInputs()">
             </div>
-        </div>`).join('');
+        </div>`;
+
+    let html = "";
+
+    // 2. 일반 아이템 출력 (엘리프, 티켓 등)
+    html += normalItems.map(item => renderRow(item)).join('');
+
+    // 3. 속성별 모집권 그룹 (접기/펴기)
+    if (attrItems.length > 0) {
+        html += `
+            <details style="margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; background: #fff;">
+                <summary style="padding: 12px; cursor: pointer; background: #f1f1f1; font-weight: bold; font-size: 0.9em; border-radius: 4px;">
+                    📂 속성별 모집권 (클릭)
+                </summary>
+                <div style="padding: 5px 0;">
+                    ${attrItems.map(item => renderRow(item)).join('')}
+                </div>
+            </details>`;
+    }
+
+    // 4. 포지션별 모집권 그룹 (접기/펴기)
+    if (posItems.length > 0) {
+        html += `
+            <details style="margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; background: #fff;">
+                <summary style="padding: 12px; cursor: pointer; background: #f1f1f1; font-weight: bold; font-size: 0.9em; border-radius: 4px;">
+                    📂 포지션별 모집권 (클릭)
+                </summary>
+                <div style="padding: 5px 0;">
+                    ${posItems.map(item => renderRow(item)).join('')}
+                </div>
+            </details>`;
+    }
+
+    inputContainer.innerHTML = html;
 }
 
     function calculate() {
@@ -120,12 +165,59 @@ function openTab(id) {
     function saveCurrentPrice() { config.price = document.getElementById('pkg-price').value; }
 
     function renderSettings() {
-        document.getElementById('settings-list').innerHTML = config.items.map(item => `
-            <div class="row">
-                <div class="item-info"><img src="${item.icon}" class="item-icon"><span class="item-name">${item.name}</span></div>
-                <div class="input-wrapper"><input type="number" id="val-${item.id}" value="${item.val}" step="0.1" ${item.fixed?'readonly':''} oninput="saveSettings()"></div>
-            </div>`).join('');
+    const items = config.items;
+    
+    // 1. 그룹별로 데이터 분류
+    const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_'));
+    const attrItems = items.filter(i => i.id.startsWith('attr_'));
+    const posItems = items.filter(i => i.id.startsWith('pos_'));
+
+    // 개별 행을 만드는 보조 함수 (원본 HTML 구조 유지)
+    const renderRow = (item) => `
+        <div class="row">
+            <div class="item-info">
+                <img src="${item.icon}" class="item-icon">
+                <span class="item-name">${item.name}</span>
+            </div>
+            <div class="input-wrapper">
+                <input type="number" id="val-${item.id}" value="${item.val}" step="0.1" 
+                       ${item.fixed ? 'readonly' : ''} oninput="saveSettings()">
+            </div>
+        </div>`;
+
+    let html = "";
+
+    // 2. 일반 아이템 출력
+    html += normalItems.map(item => renderRow(item)).join('');
+
+    // 3. 속성별 모집권 그룹 (확장 화살표)
+    if (attrItems.length > 0) {
+        html += `
+            <details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
+                <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">
+                    📂 속성별 모집권 (클릭하여 열기)
+                </summary>
+                <div style="background: #fff; padding-top: 5px;">
+                    ${attrItems.map(item => renderRow(item)).join('')}
+                </div>
+            </details>`;
     }
+
+    // 4. 포지션별 모집권 그룹 (확장 화살표)
+    if (posItems.length > 0) {
+        html += `
+            <details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
+                <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">
+                    📂 포지션별 모집권 (클릭하여 열기)
+                </summary>
+                <div style="background: #fff; padding-top: 5px;">
+                    ${posItems.map(item => renderRow(item)).join('')}
+                </div>
+            </details>`;
+    }
+
+    document.getElementById('settings-list').innerHTML = html;
+}
 
     function saveSettings() {
         config.items.forEach(item => { 

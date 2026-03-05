@@ -27,8 +27,14 @@ const defaultConfig = {
             { id: 'spec_ticket', name: '초고급 모집권', val: 130, icon: 'images/사도랜덤(10).png', count: "" },
             { id: 'adv_ticket', name: '초특별 모집권', val: 260, icon: 'images/초고급모집권(20).png', count: "" },
             { id: 'select_ticket', name: '일반 사도 선택권', val: 2550, icon: 'images/일반선택권.png', count: "" },
-            { id: 'attr_ticket', name: '속성 모집권', val: 260, icon: 'images/속성뽑기권.png', count: "" },            
-	    { id: 'pos_ticket', name: '포지션 모집권', val: 260, icon: 'images/포지션모집권.png', count: "" },
+            { id: 'attr_순수', name: '순수 모집권', val: 260, icon: 'images/순수모집권.webp', count: "" },
+            { id: 'attr_광기', name: '광기 모집권', val: 260, icon: 'images/광기모집권.webp', count: "" },
+            { id: 'attr_냉정', name: '냉정 모집권', val: 260, icon: 'images/냉정모집권.webp', count: "" },
+            { id: 'attr_우울', name: '우울 모집권', val: 260, icon: 'images/우울모집권.webp', count: "" },
+            { id: 'attr_활발', name: '활발 모집권', val: 260, icon: 'images/활발모집권.webp', count: "" },
+            { id: 'pos_탱커', name: '탱커 모집권', val: 260, icon: 'images/탱커모집권.webp', count: "" },
+            { id: 'pos_딜러', name: '딜러 모집권', val: 260, icon: 'images/딜러모집권.webp', count: "" },
+            { id: 'pos_서포터', name: '서포터 모집권', val: 260, icon: 'images/서포터모집권.webp', count: "" },
             { id: 'elch_ticket', name: '엘다인 선택권', val: 6800, icon: 'images/선택엘다인.png', count: "" },
             { id: 'elch_yeon', name: '엘다인 연성권', val: 680, icon: 'images/엘다인 연성권.png', count: "" },
             { id: 'light_box', name: '무작위 빛 상자', val: 0, icon: 'images/빛상자.png', count: "" },
@@ -45,7 +51,9 @@ const defaultConfig = {
             { id: 'm_mid', name: '중급 마시멜로', val: 0, icon: 'images/중급마시맬로.png', count: "" },
             { id: 'm_high', name: '상급 마시멜로', val: 0, icon: 'images/상급마시맬로.png', count: "" },
             { id: 'deco_box', name: '방 꾸미기 상자', val: 0, icon: 'images/꾸미기상자.png', count: "" },
-            { id: 'growth_box', name: '교단 성장 상자', val: 0, icon: 'images/교단성장재료상자.png', count: "" }
+            { id: 'growth_box', name: '교단 성장 상자', val: 0, icon: 'images/교단성장재료상자.png', count: "" },
+            { id: 'l_spell_box', name: '전설 스펠 선택 상자', val: 6000, icon: 'images/전설스펠상자.png', count: "" },
+	    { id: 'l_arti_box', name: '전설 아티팩트 선택 상자', val: 6000, icon: 'images/전설아티팩트상자.png', count: "" }
         ]    
     };
 let config = JSON.parse(JSON.stringify(defaultConfig));

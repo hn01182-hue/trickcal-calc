@@ -100,7 +100,7 @@ window.runCalculation = function() {
         const prob = 1 / allEldain.length;
         elchEV += prob * (wantedApostles.has(e.id) ? VAL_ELDAIN : 0);
     });
-    results.elch_yeon = elchEV * 0.5;
+    results.elch_yeon = elchEV*0.5;
 
     // 전역 변수에 결과 저장
     window.lastCalcResults = results;
@@ -129,125 +129,103 @@ function calculateAttrEV(normals, eldains) {
     return ev;
 }
 
-// 4. 결과 출력
+// 4. 결과 출력 (개별 가치 목록만 깔끔하게 표시)
 window.displayResults = function(res) {
     const resultDiv = document.getElementById('quick-calc-result');
     if (!resultDiv) return;
     resultDiv.style.display = 'block';
 
-    const bestType = Object.keys(res.all_attrs).reduce((a, b) => res.all_attrs[a] > res.all_attrs[b] ? a : b);
-    const bestRole = Object.keys(res.all_roles).reduce((a, b) => res.all_roles[a] > res.all_roles[b] ? a : b);
-
-    resultDiv.innerHTML = `
-        <h4 style="margin:0 0 12px 0; color:#333; border-bottom:2px solid #4caf50; padding-bottom:5px;">📊 기대 가치 결과</h4>
-        <div style="display:grid; gap:8px; font-size:0.95em;">
-            <div style="display:flex; justify-content:space-between;">
-                <span>🎟️ <strong>초특별</strong> 모집권 (20장)</span> 
-                <strong>${Math.round(res.adv_ticket)}</strong>
-            </div>
-            <div style="display:flex; justify-content:space-between;">
-                <span>🎫 <strong>초고급</strong> 모집권 (10장)</span> 
-                <strong>${Math.round(res.spec_ticket)}</strong>
-            </div>
-            <div style="display:flex; justify-content:space-between; background:#e8f5e9; padding:4px; border-radius:4px;">
-                <span> 최대효율 <strong>속성</strong> [${bestType}]</span> 
-                <strong>${Math.round(res.all_attrs[bestType])}</strong>
-            </div>
-            <div style="display:flex; justify-content:space-between; background:#e3f2fd; padding:4px; border-radius:4px;">
-                <span> 최대효율 <strong>포지션</strong> [${bestRole}]</span> 
-                <strong>${Math.round(res.all_roles[bestRole])}</strong>
-            </div>
-            <div style="display:flex; justify-content:space-between; border-top:1px dashed #ccc; padding-top:5px;">
-                <span>✨ <strong>엘다인</strong> 연성권</span> 
-                <strong>${Math.round(res.elch_yeon)}</strong>
-            </div>
+    // 한 줄 디자인을 위한 헬퍼 함수
+    const renderRow = (label, value) => `
+        <div style="display:flex; justify-content:space-between; padding:8px 4px; border-bottom:1px solid #f0f0f0;">
+            <span>${label}</span>
+            <strong style="color:#333;">${Math.round(value)}</strong>
         </div>
-
-        <button onclick="applyToSettings()" style="width:100%; margin-top:15px; padding:12px; background:#4caf50; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size:0.9em; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            ⚙️ 이 값을 설정에 적용하기
-        </button>
-
-        <details style="margin-top:15px; border-top:1px solid #eee; padding-top:10px;">
-            <summary style="font-size:0.82em; color:#4caf50; cursor:pointer; font-weight:bold;">🔎 모든 속성/포지션 비교 보기</summary>
-            <div style="margin-top:10px; font-size:0.82em; background:#f9f9f9; padding:10px; border-radius:8px; border:1px solid #eee;">
-                <p style="margin:0 0 8px 0; color:#2e7d32; font-weight:bold; border-bottom:1px solid #ddd;">[속성별 가치]</p>
-                ${Object.entries(res.all_attrs).map(([type, val]) => `<div style="display:flex; justify-content:space-between; margin-bottom:3px;"><span>${type}</span><span>${Math.round(val)} 엘리프</span></div>`).join('')}
-                <p style="margin:15px 0 8px 0; color:#1976d2; font-weight:bold; border-bottom:1px solid #ddd;">[포지션별 가치]</p>
-                ${Object.entries(res.all_roles).map(([role, val]) => `<div style="display:flex; justify-content:space-between; margin-bottom:3px;"><span>${role}</span><span>${Math.round(val)} 엘리프</span></div>`).join('')}
-            </div>
-        </details>
-        <p style="font-size:0.7em; color:#999; margin-top:12px;">* 체크한 사도만 가치로 인정(나머지 0)</p>
     `;
+
+    let html = `
+        <h4 style="margin:0 0 12px 0; color:#333; border-bottom:2px solid #4caf50; padding-bottom:5px;">📊 기대 가치 상세 결과</h4>
+        <div style="display:flex; flex-direction:column; gap:2px; font-size:0.92em;">
+    `;
+
+    // 1. 기본 모집권 (분리하여 출력)
+    html += renderRow("🎟️ 초특별 모집권 (20장)", res.adv_ticket);
+    html += renderRow("🎫 초고급 모집권 (10장)", res.spec_ticket);
+    html += renderRow("✨ 엘다인 연성권", res.elch_yeon);
+
+    // 2. 속성별 모집권 (순서대로 나열)
+    Object.entries(res.all_attrs).forEach(([type, val]) => {
+        html += renderRow(`${type} 모집권`, val);
+    });
+
+    // 3. 포지션별 모집권 (순서대로 나열)
+    Object.entries(res.all_roles).forEach(([role, val]) => {
+        html += renderRow(`${role} 모집권`, val);
+    });
+
+    html += `
+        </div>
+        <button onclick="applyToSettings()" style="width:100%; margin-top:18px; padding:14px; background:#4caf50; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:1em; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background 0.2s;">
+            ⚙️ 이 모든 값을 설정에 적용하기
+        </button>
+        <p style="font-size:0.75em; color:#999; margin-top:12px; text-align:center;">* 체크한 사도 비율에 기반한 개별 기대 가치입니다.</p>
+    `;
+
+    resultDiv.innerHTML = html;
     resultDiv.scrollIntoView({ behavior: 'smooth' });
 }
-
-// 5. ✅ 설정 반영 핵심 함수 (전역 등록)
-// apostle.js
-
+// 5. 설정 반영 함수 (개별 ID에 값만 매칭)
 window.applyToSettings = function() {
-    // 1. 계산 결과 확인
     const res = window.lastCalcResults;
     if (!res) {
         alert("먼저 [가치 계산하기] 버튼을 눌러주세요.");
         return;
     }
 
-    // 2. 최대 효율 속성/포지션 찾기
-    const bestType = Object.keys(res.all_attrs).reduce((a, b) => res.all_attrs[a] > res.all_attrs[b] ? a : b);
-    const bestRole = Object.keys(res.all_roles).reduce((a, b) => res.all_roles[a] > res.all_roles[b] ? a : b);
-
+    // 1. 업데이트할 데이터 매핑
     const newValuesMap = {
         'spec_ticket': Math.round(res.spec_ticket),
         'adv_ticket': Math.round(res.adv_ticket),
-        'attr_ticket': Math.round(res.all_attrs[bestType]),
-        'pos_ticket': Math.round(res.all_roles[bestRole]),
         'elch_yeon': Math.round(res.elch_yeon)
     };
 
-    // 3. 변수 찾기
+    // 속성별 가치 (attr_순수 등)
+    Object.entries(res.all_attrs).forEach(([type, val]) => {
+        newValuesMap[`attr_${type}`] = Math.round(val);
+    });
+
+    // 포지션별 가치 (pos_탱커 등)
+    Object.entries(res.all_roles).forEach(([role, val]) => {
+        newValuesMap[`pos_${role}`] = Math.round(val);
+    });
+
+    // 2. 실제 데이터 반영
     let target = null;
     try {
         if (typeof config !== 'undefined') target = config;
         else if (window.config) target = window.config;
     } catch(e) { target = window.config; }
 
-    // 4. 실제 적용 및 화면 갱신
     if (target && target.items) {
-        // [데이터 업데이트]
         target.items.forEach(item => {
             if (newValuesMap[item.id] !== undefined) {
                 item.val = newValuesMap[item.id];
             }
         });
 
-        // [로컬 저장]
         const sKey = (typeof STORAGE_KEY !== 'undefined') ? STORAGE_KEY : 'trickcal_calc_v10_final';
         localStorage.setItem(sKey, JSON.stringify(target));
 
-        // ✅ [실시간 화면 갱신] 
-        // ---------------------------------------------------------
-        // 1. 설정 탭의 숫자들을 바뀐 값으로 다시 그립니다.
+        alert(`✅ 모든 개별 가치가 설정에 반영되었습니다!`);
+
         if (typeof renderSettings === 'function') renderSettings();
-
-        // 2. ⭐ 핵심: filterReleased()를 불러야 패키지들의 '효율 점수'가 
-        // 바뀐 가치에 맞춰 재계산되고 화면에 나타납니다.
-        if (typeof filterReleased === 'function') {
-            filterReleased(); 
-        }
-
-        // 3. 상시 패키지 탭도 다시 계산해서 그립니다.
-        if (typeof renderConstantPackages === 'function') {
-            renderConstantPackages();
-        }
-        // ---------------------------------------------------------
-
-        alert(`✅ 설정에 성공적으로 반영되었습니다!\n(기준: 속성[${bestType}], 포지션[${bestRole}])`);
+        if (typeof filterReleased === 'function') filterReleased();
+        if (typeof renderConstantPackages === 'function') renderConstantPackages();
         
     } else {
         console.error("적용 실패: config 객체를 찾을 수 없습니다.");
     }
 }
-
 // ⚠️ 아까 사라졌던 리셋 버튼용 함수도 여기에 같이 넣어두세요!
 window.resetApostles = function() {
     if(confirm("체크한 사도 목록을 모두 비우시겠습니까?")) {
@@ -256,5 +234,4 @@ window.resetApostles = function() {
         if (typeof renderApostleList === 'function') renderApostleList(); 
         alert("사도 목록이 초기화되었습니다.");
     }
-
 }
