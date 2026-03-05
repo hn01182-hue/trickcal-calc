@@ -151,7 +151,7 @@ const dbPackages = [
         name: "아멜리아(R41)의 완벽 패키지",
         price: 99000,
         releasedApostle: "아멜리아(R41)",
-        contents: {"attr_ticket":3,"t_apostle":100}
+        contents: {"attr_우울":3,"t_apostle":100}
     },
     {
         id: "아멜리아(R41)의 카리스마 패키지",
@@ -321,4 +321,5 @@ const dbPackages = [
     releasedApostle: "아멜리아(R41)",
     contents: {"p_elif": 1500, "t_card": 50, "l_spell_box": 1, "l_arti_box": 1}
 }
+
 ];
