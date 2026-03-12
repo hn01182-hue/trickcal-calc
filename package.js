@@ -617,7 +617,7 @@ const dbPackages = [
     contents: {
       "p_elif": 1500,
       "t_apostle": 50,
-      "scandy": 50,
+      "scandy": 500,
       "gold": 300,
       "food_blue": 50
     }
@@ -669,3 +669,4 @@ const dbPackages = [
     }
   }
 ];
+
