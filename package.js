@@ -667,6 +667,98 @@ const dbPackages = [
       "kcandy": 200,
       "scandy": 300
     }
+  },
+{
+  id: "2.5주년 전야제 사탕 패키지",
+  name: "2.5주년 전야제 사탕 패키지",
+  price: 2500,
+  releasedApostle: "델리아",
+  contents: {
+    "f_elif": 250,
+    "kcandy": 2250
   }
+},
+{
+  id: "2.5주년 전야제 특별 패키지",
+  name: "2.5주년 전야제 특별 패키지",
+  price: 25000,
+  releasedApostle: "델리아",
+  contents: {
+    "f_elif": 2500,
+    "t_apostle": 25,
+    "t_card": 25,
+    "nuru": 25,
+    "gold": 250
+  }
+},
+{
+  id: "폴랑의 축제 준비 패키지",
+  name: "폴랑의 축제 준비 패키지",
+  price: 3300,
+  releasedApostle: "델리아",
+  contents: {
+    "p_elif": 100,
+    "f_elif": 100,
+    "scandy": 100,
+    "thumbs": 10,
+    "food_purple": 20,
+    "food_blue": 10,
+    "r_low": 5,
+    "r_mid": 3,
+    "r_high": 1
+  }
+},
+{
+  id: "네르의 축제 연회 패키지",
+  name: "네르의 축제 연회 패키지",
+  price: 6600,
+  releasedApostle: "델리아",
+  contents: {
+    "p_elif": 200,
+    "f_elif": 200,
+    "scandy": 200,
+    "thumbs": 20,
+    "food_purple": 40,
+    "manual": 2000,
+    "light_box": 2000
+  }
+},
+{
+  id: "에르핀의 축제 설렘 패키지",
+  name: "에르핀의 축제 설렘 패키지",
+  price: 19800,
+  releasedApostle: "델리아",
+  contents: {
+    "p_elif": 600,
+    "f_elif": 600,
+    "kcandy": 600,
+    "scandy": 600,
+    "thumbs": 60,
+    "spec_ticket": 1
+  }
+},
+{
+  id: "에피카의 음악회 패키지",
+  name: "에피카의 음악회 패키지",
+  price: 49500,
+  releasedApostle: "델리아",
+  contents: {
+    "p_elif": 1500,
+    "cert": 400,
+    "gold": 300,
+    "thumbs": 100,
+    "food_purple": 30
+  }
+},
+{
+  id: "지휘자 에피카 패키지",
+  name: "지휘자 에피카 패키지",
+  price: 99000,
+  releasedApostle: "델리아",
+  contents: {
+    "p_elif": 3000,
+    "attr_활발": 3,
+    "cert": 800
+  }
+}
 ];
-
