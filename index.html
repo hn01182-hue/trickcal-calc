@@ -1,309 +1,489 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>트릭컬 효율 계산기</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>트릭컬 효율 계산기</title>
 
-    <style>
-/* 사도 아이콘 컨테이너 */
-.apostle-container {
-    position: relative;
-    width: 80px;  /* 이미지 크기에 맞춰 조절 */
-    height: 80px;
-    cursor: pointer;
-    border-radius: 12px;
-    overflow: hidden; /* 체크 표시가 이미지 밖으로 안 나가게 */
-    transition: transform 0.1s ease;
-}
+  <style>
+    /* 전역 설정 */
+    * {
+      box-sizing: border-box;
+    }
 
-.apostle-container:active {
-    transform: scale(0.95); /* 누를 때 쫄깃한 느낌 */
-}
+    body {
+      margin: 0;
+      padding: 10px;
+      overflow-x: hidden;
+      width: 100%;
+      font-family: 'Pretendard', sans-serif;
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+      transition: background-image 0.5s ease-in-out;
+    }
 
-/* 기본 이미지 */
-.apostle-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: filter 0.2s ease;
-}
+    /* 사도 아이콘 컨테이너 */
+    .apostle-container {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      cursor: pointer;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.1s ease;
+    }
 
-/* ✅ 핵심: 이미지를 가릴 어두운 덮개와 큰 체크 */
-.check-overlay {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.6); /* 어둡게 만들기 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    /* 처음엔 안 보임 */
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    
-    color: white;
-    font-size: 40px; /* 커다란 체크 표시 */
-    font-weight: bold;
-    z-index: 2;
-}
+    .apostle-container:active {
+      transform: scale(0.95);
+    }
 
-/* ✅ 체크되었을 때의 상태 */
-.apostle-container.checked .check-overlay {
-    opacity: 1; /* 어두운 배경과 체크 표시 등장 */
-}
+    .apostle-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: filter 0.2s ease;
+    }
 
-.apostle-container.checked .apostle-img {
-    filter: grayscale(40%) blur(1px); /* 이미지 살짝 흐리게 */
-}
+    .check-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      color: white;
+      font-size: 40px;
+      font-weight: bold;
+      z-index: 2;
+    }
 
-/* 엘다인 전용 황금 테두리 */
-.apostle-container.eldain {
-    border: 3px solid #ffd700;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
-}
+    .apostle-container.checked .check-overlay {
+      opacity: 1;
+    }
 
-#apostle-grid {
-    margin-top: 15px; /* 필터 버튼과 사도 목록 사이를 띄웁니다 */
-}
+    .apostle-container.checked .apostle-img {
+      filter: grayscale(40%) blur(1px);
+    }
 
-input[readonly] {
-    background-color: #f0f0f0 !important; /* 회색 배경 */
-    color: #999 !important; /* 글자색 흐리게 */
-    cursor: not-allowed; /* 금지 표시 커서 */
-    border: 1.5px solid #ddd !important;
-}
-        :root { --primary: #7db249; --bg: #fdf6e3; --card: #ffffff; }
-        body {
-            font-family: 'Pretendard', sans-serif;
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
-            margin: 0; padding: 20px;
-            transition: background-image 0.5s ease-in-out;
-        }
-        .container { max-width: 500px; margin: auto; }
-       .tabs { 
-    display: flex; 
-    gap: 2px;               /* 간격을 약간 줄임 */
-    margin-bottom: 15px; 
-    overflow-x: auto;      /* 너비가 부족하면 가로 스크롤 생성 */
-    white-space: nowrap;    /* 글자가 아래로 튕겨 나가는 것 방지 */
-    -ms-overflow-style: none; /* IE 스크롤바 숨기기 */
-    scrollbar-width: none;  /* 파이어폭스 스크롤바 숨기기 */
-}
-.tabs::-webkit-scrollbar { display: none; } /* 크롬/사파리 스크롤바 숨기기 */
+    .apostle-container.eldain {
+      border: 3px solid #ffd700;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    }
 
-.tab { 
-    flex: 1; 
-    min-width: fit-content; /* 글자 길이에 맞춰 최소 너비 확보 */
-    padding: 10px 6px;      /* 좌우 패딩을 줄여 공간 확보 */
-    text-align: center; 
-    background: #ddd; 
-    cursor: pointer; 
-    border-radius: 8px 8px 0 0; 
-    font-weight: bold; 
-    font-size: 0.75em;      /* 글자 크기를 아주 살짝 더 줄임 */
-}
-        .tab.active { background: var(--card); color: var(--primary); border-bottom: 3px solid var(--primary); }
-        .card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(5px);
-            padding: 20px; border-radius: 0 0 15px 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            display: none;
-        }
-        .card.active { display: block; }
+    #apostle-grid {
+      margin-top: 15px;
+    }
 
-        .filter-container { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
-        .search-input { flex: 2; padding: 10px; border: 1.5px solid var(--primary); border-radius: 8px; outline: none; font-size: 14px; }
-        .apostle-select { flex: 1; border: 1.5px solid #ddd; border-radius: 8px; padding: 5px; font-size: 0.85em; cursor: pointer; }
+    input[readonly] {
+      background-color: #f0f0f0 !important;
+      color: #999 !important;
+      cursor: not-allowed;
+      border: 1.5px solid #ddd !important;
+    }
 
-        .pkg-card { border: 1px solid #eee; border-radius: 12px; padding: 18px; margin-bottom: 18px; background: #fafafa; }
-        .pkg-name { font-weight: 800; color: #333; margin-bottom: 5px; display: block; font-size: 1.05em; }
-        .pkg-price-tag { color: var(--primary); font-weight: bold; font-size: 1em; display: block; margin-bottom: 8px; }
-        .pkg-items { font-size: 0.85em; color: #666; margin-top: 10px; line-height: 1.5; background: #f0f0f0; padding: 10px; border-radius: 8px; }
-        
-        .eff-badge { 
-            display: inline-block; 
-            background: #e8f5e9; 
-            color: #2e7d32; 
-            padding: 5px 10px; 
-            border-radius: 6px; 
-            font-size: 0.85em; 
-            font-weight: bold; 
-            border: 1px solid #c8e6c9;
-            margin-bottom: 10px;
-        }
+    :root {
+      --primary: #7db249;
+      --bg: #fdf6e3;
+      --card: #ffffff;
+    }
 
-        .apply-btn { margin-top: 15px; width: 100%; padding: 10px; background: #fff; border: 1.5px solid var(--primary); color: var(--primary); border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .apply-btn:hover { background: var(--primary); color: #fff; }
+    .container {
+      max-width: 500px;
+      margin: auto;
+    }
 
-        .row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .item-info { display: flex; align-items: center; gap: 10px; flex: 1; }
-        .item-icon { width: 32px; height: 32px; object-fit: contain; background: #eee; border-radius: 6px; flex-shrink: 0; }
-        .item-name { font-size: 0.95em; font-weight: 600; }
-        .input-wrapper { display: flex; align-items: center; gap: 5px; width: 150px; justify-content: flex-end; }
-        input[type="number"] { width: 120px; padding: 8px; border: 1.5px solid #eee; border-radius: 6px; text-align: right; font-size: 14px; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px; }
-        .btn-main { background: var(--primary); color: white; }
-        .btn-sub { background: #f0f0f0; color: #666; font-size: 0.85em; }
-        #result { margin-top: 20px; padding: 20px; border-radius: 12px; text-align: center; display: none; background: #f8f9fa; border: 1px solid #e9ecef; }
-        .result-val { font-size: 2.2em; font-weight: 800; color: var(--primary); margin: 5px 0; }
-        .small-text { font-size: 0.8em; color: #888; margin-bottom: 5px; }
-    </style>
+    /* 탭 메뉴 */
+    .tabs {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 15px;
+      overflow-x: auto;
+      white-space: nowrap;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab {
+      flex: 1;
+      min-width: fit-content;
+      padding: 10px 6px;
+      text-align: center;
+      background: #ddd;
+      cursor: pointer;
+      border-radius: 8px 8px 0 0;
+      font-weight: bold;
+      font-size: 0.75em;
+    }
+
+    .tab.active {
+      background: var(--card);
+      color: var(--primary);
+      border-bottom: 3px solid var(--primary);
+    }
+
+    /* 카드 공통 */
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(5px);
+      padding: 20px;
+      border-radius: 0 0 15px 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .card.active {
+      display: block;
+    }
+
+    /* 필터 및 검색 */
+    .filter-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .filter-container>div {
+      display: flex;
+      gap: 5px !important;
+      width: 100%;
+    }
+
+    .search-input {
+      flex: 2;
+      padding: 10px;
+      border: 1.5px solid var(--primary);
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .apostle-select {
+      flex: 1;
+      min-width: 0;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      padding: 5px;
+      font-size: 0.85em;
+      cursor: pointer;
+    }
+
+    /* 패키지 카드 */
+    .pkg-card {
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 18px;
+      background: #fafafa;
+    }
+
+    .pkg-name {
+      font-weight: 800;
+      color: #333;
+      margin-bottom: 5px;
+      display: block;
+      font-size: 1.05em;
+    }
+
+    .pkg-price-tag {
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 1em;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .pkg-items {
+      font-size: 0.85em;
+      color: #666;
+      margin-top: 10px;
+      line-height: 1.5;
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .eff-badge {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.85em;
+      font-weight: bold;
+      border: 1px solid #c8e6c9;
+      margin-bottom: 10px;
+    }
+
+    .apply-btn {
+      margin-top: 15px;
+      width: 100%;
+      padding: 10px;
+      background: #fff;
+      border: 1.5px solid var(--primary);
+      color: var(--primary);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .apply-btn:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* 계산기 행 스타일 */
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .item-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .item-icon {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      background: #eee;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .item-name {
+      font-size: 0.95em;
+      font-weight: 600;
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      width: auto;
+      justify-content: flex-end;
+    }
+
+    input[type="number"] {
+      width: 80px;
+      padding: 8px;
+      border: 1.5px solid #eee;
+      border-radius: 6px;
+      text-align: right;
+      font-size: 14px;
+    }
+
+    /* 버튼 스타일 */
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    .btn-main {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-sub {
+      background: #f0f0f0;
+      color: #666;
+      font-size: 0.85em;
+    }
+
+    /* 결과창 */
+    #result {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      display: none;
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+    }
+
+    .result-val {
+      font-size: 2.2em;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 5px 0;
+    }
+
+    .small-text {
+      font-size: 0.8em;
+      color: #888;
+      margin-bottom: 5px;
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="container">
+  <div class="container">
     <div class="tabs">
-        <div class="tab active" onclick="openTab('preset')">🎁 주간 패키지</div>
-        <div class="tab" onclick="openTab('constant')">🏛️ 데일리/패스/은총</div>
-        <div class="tab" onclick="openTab('calc')">📊 분석</div>
-	<div class="tab" onclick="openTab('apostle-list')">👤 뽑기권 계산용</div>
-        <div class="tab" onclick="openTab('settings')">⚙️ 설정</div>
-	
+      <div class="tab active" onclick="openTab('preset')">🎁 주간 패키지</div>
+      <div class="tab" onclick="openTab('constant')">🏛️ 데일리/패스/은총</div>
+      <div class="tab" onclick="openTab('calc')">📊 분석</div>
+      <div class="tab" onclick="openTab('apostle-list')">👤 뽑기권 계산용</div>
+      <div class="tab" onclick="openTab('settings')">⚙️ 설정</div>
     </div>
 
     <div id="preset" class="card active">
-        <div class="filter-container">
-<div id="chart-container" style="display:none; background:rgba(255,255,255,0.9); border-radius:12px; padding:15px; margin-bottom:15px; border:1px solid var(--primary);">
-    <p style="margin:0 0 5px 0; font-size:0.85em; font-weight:bold; color:#555;">📊 선택 사도 패키지 효율 비교 (회색선: 은총 패키지 기준(201))</p>
-    <p style="margin:0 0 10px 0; font-size:0.75em; color:#d32f2f; font-weight: 500;">주의) 사도 증명서 20장 패키지는 교단 증명서로 일괄 계산</p>
-    <div id="chart-wrapper">
-        <canvas id="releasedChart"></canvas>
-    </div>
-</div>
-            <div style="display: flex; gap: 8px;">
-                <input type="text" id="pkg-search" class="search-input" placeholder="패키지 또는 사도 검색..." oninput="filterReleased()">
-                <select id="apostle-select" class="apostle-select" onchange="filterReleased()">
-                    <option value="all">전체 사도</option>
-                </select>
-            </div>
-            <div style="display: flex; gap: 8px; align-items: center;">
-                <select id="sort-type" class="apostle-select" onchange="filterReleased()" style="flex: 1;">
-                    <option value="price">가격 기준</option>
-                    <option value="score">효율 점수 기준</option>
-                </select>
-                <select id="sort-order" class="apostle-select" onchange="filterReleased()" style="flex: 1;">
-                    <option value="asc">오름차순 (낮은순)</option>
-                    <option value="desc">내림차순 (높은순)</option>
-                </select>
-            </div>
+      <div class="filter-container">
+        <div id="chart-container" style="display:none; background:rgba(255,255,255,0.9); border-radius:12px; padding:15px; margin-bottom:15px; border:1px solid var(--primary);">
+          <p style="margin:0 0 5px 0; font-size:0.85em; font-weight:bold; color:#555;">📊 선택 사도 패키지 효율 비교 (회색선: 은총 패키지 기준(201))</p>
+          <p style="margin:0 0 10px 0; font-size:0.75em; color:#d32f2f; font-weight: 500;">주의) 사도 증명서 20장 패키지는 교단 증명서로 일괄 계산</p>
+          <div id="chart-wrapper">
+            <canvas id="releasedChart"></canvas>
+          </div>
         </div>
-        <div id="released-list"></div>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="pkg-search" class="search-input" placeholder="패키지 또는 사도 검색..." oninput="filterReleased()">
+          <select id="apostle-select" class="apostle-select" onchange="filterReleased()">
+            <option value="all">전체 사도</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <select id="sort-type" class="apostle-select" onchange="filterReleased()" style="flex: 1;">
+            <option value="price">가격 기준</option>
+            <option value="score">효율 점수 기준</option>
+          </select>
+          <select id="sort-order" class="apostle-select" onchange="filterReleased()" style="flex: 1;">
+            <option value="asc">오름차순 (낮은순)</option>
+            <option value="desc">내림차순 (높은순)</option>
+          </select>
+        </div>
+      </div>
+      <div id="released-list"></div>
     </div>
 
     <div id="constant" class="card">
-        <div id="constant-list"></div>
+      <div id="constant-list"></div>
     </div>
 
     <div id="calc" class="card">
-        <div class="row">
-            <div class="item-info"><span class="item-name" style="font-size: 1.1em; color: var(--primary);">📦 패키지 가격</span></div>
-            <div class="input-wrapper"><input type="number" id="pkg-price" placeholder="0" oninput="saveCurrentPrice()"><span>원</span></div>
+      <div class="row">
+        <div class="item-info">
+          <span class="item-name" style="font-size: 1.1em; color: var(--primary);">📦 패키지 가격</span>
         </div>
-        <div id="item-inputs" style="margin-top:10px;"></div>
-        <button class="btn btn-main" onclick="calculate()">효율 계산하기</button>
-        <div id="result">
-            <div class="small-text">이 패키지의 1,000원당 가치</div>
-            <div class="result-val" id="res-rate">0개</div>
-            <div id="res-total" style="font-size: 0.9em; color: #666;">(총 엘리프 환산: 0개)</div>
+        <div class="input-wrapper">
+          <input type="number" id="pkg-price" placeholder="0" oninput="saveCurrentPrice()">
+          <span>원</span>
         </div>
+      </div>
+      <div id="item-inputs" style="margin-top:10px;"></div>
+      <button class="btn btn-main" onclick="calculate()">효율 계산하기</button>
+      <div id="result">
+        <div class="small-text">이 패키지의 1,000원당 가치</div>
+        <div class="result-val" id="res-rate">0개</div>
+        <div id="res-total" style="font-size: 0.9em; color: #666;">(총 엘리프 환산: 0개)</div>
+      </div>
     </div>
 
     <div id="settings" class="card">
-        <div id="settings-list"></div>
-        <button class="btn btn-sub" onclick="copyShareLink()">🔗 설정 공유 링크 복사</button>
-        <div style="text-align: right; margin-top: 20px;"><button style="color: #e91e63; border: none; background: none; cursor: pointer; font-weight: bold;" onclick="resetConfig()">⚠️ 초기화</button></div>
+      <div id="settings-list"></div>
+      <button class="btn btn-sub" onclick="copyShareLink()">🔗 설정 공유 링크 복사</button>
+      <div style="text-align: right; margin-top: 20px;">
+        <button style="color: #e91e63; border: none; background: none; cursor: pointer; font-weight: bold;" onclick="resetConfig()">⚠️ 초기화</button>
+      </div>
     </div>
 
-<div id="apostle-list" class="card">
-    <div style="background:#fff3e0; padding:10px; border-radius:8px; margin-bottom:15px; font-size:0.85em; color:#e65100;">
+    <div id="apostle-list" class="card">
+      <div style="background:#fff3e0; padding:10px; border-radius:8px; margin-bottom:15px; font-size:0.85em; color:#e65100;">
         💡 원하는 사도를 클릭하여 체크하세요. 브라우저를 닫아도 유지됩니다.
-    </div>
-    
-    <div class="filter-container">
-    <input type="text" id="apostle-search" class="search-input" placeholder="사도 이름 검색..." oninput="filterApostles()">
-    
-    <div style="display: flex; gap: 4px; margin-top: 8px;">
-        <select id="filter-rarity" class="apostle-select" onchange="filterApostles()" style="flex: 1;">
+      </div>
+
+      <div class="filter-container">
+        <input type="text" id="apostle-search" class="search-input" placeholder="사도 이름 검색..." oninput="filterApostles()">
+
+        <div style="display: flex; gap: 4px; margin-top: 8px;">
+          <select id="filter-rarity" class="apostle-select" onchange="filterApostles()" style="flex: 1;">
             <option value="all">모든 등급</option>
             <option value="eldain">엘다인</option>
             <option value="normal">일반사도</option>
-        </select>
+          </select>
 
-        <select id="filter-type" class="apostle-select" onchange="filterApostles()" style="flex: 1;">
+          <select id="filter-type" class="apostle-select" onchange="filterApostles()" style="flex: 1;">
             <option value="all">모든 속성</option>
             <option value="순수">순수</option>
             <option value="광기">광기</option>
             <option value="냉정">냉정</option>
             <option value="우울">우울</option>
             <option value="활발">활발</option>
-        </select>
-        
-        <select id="filter-role" class="apostle-select" onchange="filterApostles()" style="flex: 1;">
+          </select>
+
+          <select id="filter-role" class="apostle-select" onchange="filterApostles()" style="flex: 1;">
             <option value="all">모든 포지션</option>
             <option value="탱커">탱커</option>
             <option value="딜러">딜러</option>
             <option value="서포터">서포터</option>
-        </select>
-    </div>
-
-    <div style="display: flex; gap: 6px; margin-top: 10px;">
-            <button class="btn-main" onclick="runCalculation()" style="flex: 1; margin-top: 0; background: #4caf50; font-weight: bold;">
-                📊 가치 계산하기
-            </button>
-            <button class="btn-sub" onclick="resetApostles()" style="flex: 0.4; margin-top: 0; color: #e91e63; font-size: 0.8em;">
-                선택 초기화
-            </button>
+          </select>
         </div>
-    </div>
 
-<div id="quick-calc-result" style="display:none; margin: 15px 0; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px;">
+        <div style="display: flex; gap: 6px; margin-top: 10px;">
+          <button class="btn-main" onclick="runCalculation()" style="flex: 1; margin-top: 0; background: #4caf50; font-weight: bold;">
+            📊 가치 계산하기
+          </button>
+          <button class="btn-sub" onclick="resetApostles()" style="flex: 0.4; margin-top: 0; color: #e91e63; font-size: 0.8em;">
+            선택 초기화
+          </button>
+        </div>
+      </div>
+
+      <div id="quick-calc-result" style="display:none; margin: 15px 0; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px;">
         <div style="font-size: 0.9em; color: #666; margin-bottom: 5px;">선택한 사도 등장 확률</div>
         <div style="font-size: 1.5em; font-weight: bold; color: #2e7d32;">
-            <span id="result-percent">0</span>%
+          <span id="result-percent">0</span>%
         </div>
         <div id="result-text" style="font-size: 0.8em; color: #888; margin-top: 5px;"></div>
+      </div>
+
+      <div id="apostle-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px;">
+      </div>
     </div>
+  </div>
 
-    <div id="apostle-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px;">
-        </div>
-</div>
-    
-<script src="config.js?v=1.2"></script>
-<script src="package.js?v=1.2"></script>
-<script src="apostle_db.js?v=1.2"></script>
-<script src="apostle.js?v=1.2"></script>
-<script src="app.js?v=1.2"></script>
+  <script src="config.js?v=1.2"></script>
+  <script src="package.js?v=1.2"></script>
+  <script src="apostle_db.js?v=1.2"></script>
+  <script src="apostle.js?v=1.2"></script>
+  <script src="app.js?v=1.2"></script>
 
-<script>
+  <script>
     // 4. 모든 파일이 로드된 후 최종 실행
     window.onload = function() {
-        if (typeof loadAll === 'function') {
-            loadAll(); 
-            applyRandomBackground();
-	    setupLocalPackages();
-            renderConstantPackages();
-        } else {
-            console.error("app.js가 제대로 로드되지 않았습니다. 파일명을 확인해주세요.");
-        }
+      if (typeof loadAll === 'function') {
+        loadAll();
+        applyRandomBackground();
+        setupLocalPackages();
+        renderConstantPackages();
+      } else {
+        console.error("app.js가 제대로 로드되지 않았습니다. 파일명을 확인해주세요.");
+      }
     };
-</script>
+  </script>
 </body>
+
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
