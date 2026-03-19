@@ -760,5 +760,18 @@ const dbPackages = [
     "attr_활발": 3,
     "cert": 800
   }
+},
+{
+  id: "사복 패스(에피카)",
+  name: "사복 패스(에피카)",
+  price: 29500,
+  releasedApostle: "델리아",
+  contents: {
+    "p_elif": 900,
+    "f_elif": 2400,
+    "t_apostle": 20,
+    "t_card": 20,
+    "crayon_highest": 8
+  }
 }
 ];
