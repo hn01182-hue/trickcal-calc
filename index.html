@@ -104,7 +104,7 @@
     .tabs {
       display: flex;
       gap: 2px;
-      margin-bottom: 15px;
+      margin-bottom: 0;
       overflow-x: auto;
       white-space: nowrap;
       -ms-overflow-style: none;
@@ -126,7 +126,24 @@
       font-weight: bold;
       font-size: 0.75em;
     }
-
+/* 탭을 감싸는 부모 요소에 그림자 효과 추가 */
+    .tabs-container {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+    }
+    
+    /* 좌우 그라데이션 (스크롤 가능함을 암시) */
+    .tabs-container::after {
+        content: "";
+        position: absolute;
+        top: 0; right: 0;
+        width: 30px;
+        height: 100%;
+        background: linear-gradient(to right, rgba(255,255,255,0), rgba(0,0,0,0.1));
+        pointer-events: none; /* 클릭 방해 금지 */
+    }
+    
     .tab.active {
       background: var(--card);
       color: var(--primary);
@@ -342,12 +359,13 @@
 <body>
 
   <div class="container">
-    <div class="tabs">
+    <div class="tabs-container"><div class="tabs">
       <div class="tab active" onclick="openTab('preset')">🎁 주간 패키지</div>
       <div class="tab" onclick="openTab('constant')">🏛️ 데일리/패스/은총</div>
       <div class="tab" onclick="openTab('calc')">📊 분석</div>
       <div class="tab" onclick="openTab('apostle-list')">👤 뽑기권 계산용</div>
       <div class="tab" onclick="openTab('settings')">⚙️ 설정</div>
+    </div>
     </div>
 
     <div id="preset" class="card active">
