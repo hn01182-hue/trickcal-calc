@@ -8,8 +8,13 @@ const constantPackages = [
         { name: "월간 교단 증명서 패키지", price: 49500, contents: { p_elif: 1500, f_elif: 1500, cert: 500 } },
         { name: "은총 패키지", price: 99000, contents: { p_elif: 6000, crayon_highest: 10, scandy: 500, kcandy: 500 } },
         { name: "트릭컬 패스 (기본)", price: 11000, contents: {"gold":66,"p_elif":700,"t_card":6,"t_apostle":6,"kcandy":300,"scandy":200,"m_high":10,"m_mid":40,"m_low":60,"r_high":3,"r_mid":6,"r_low":9,"crayon_high":3,"crayon_highest":2} },
-        { name: "트릭컬 패스 (업그레이드)", price: 13000, contents: { p_elif: 800, thumbs: 30} }
-    ]; //데일리, 월간, 은총, 패스
+        { name: "트릭컬 패스 (업그레이드)", price: 13000, contents: { p_elif: 800, thumbs: 30} },
+		{ name: '레벨 패스 1', price: 15000, contents: { p_elif: 600, t_apostle: 30, scandy: 100, adv_ticket: 1 } },
+		{ name: '레벨 패스 2', price: 29500, contents: { p_elif: 1200, crayon_highest: 4, gold: 300, select_ticket: 2 } },
+		{ name: '레벨 패스 3', price: 49500, contents: { p_elif: 1800, crayon_highest: 12, pos_탱커: 1, pos_딜러: 1, pos_서포터: 1, elch_ticket: 1 } },
+		{ name: '레벨 패스 4', price: 99000, contents: { p_elif: 6000, crayon_highest: 24, select_ticket: 3, elch_ticket: 2 } },
+		{ name: '레벨 패스 5', price: 99000, contents: { p_elif: 6000, crayon_highest: 16, cert: 800, t_apostle: 100, elch_ticket: 2 } }
+]; //데일리, 월간, 은총, 패스
 const defaultConfig = {
         price: 0,
         items: [
