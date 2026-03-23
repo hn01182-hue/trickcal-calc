@@ -133,17 +133,49 @@
         overflow: hidden;
     }
     
-    /* 좌우 그라데이션 (스크롤 가능함을 암시) */
     .tabs-container::after {
-        content: "";
-        position: absolute;
-        top: 0; right: 0;
-        width: 30px;
-        height: 100%;
-        background: linear-gradient(to right, rgba(255,255,255,0), rgba(0,0,0,0.1));
-        pointer-events: none; /* 클릭 방해 금지 */
+    display: none;
     }
     
+    @media (max-width: 600px) {
+    .tabs {
+        display: flex;
+        gap: 2px;
+        overflow-x: auto !important; /* 가로 스크롤 강제 허용 */
+        white-space: nowrap;
+        
+        /* 모바일에서 숨겼던 스크롤바 기능을 다시 켭니다 */
+        -ms-overflow-style: auto !important; 
+        scrollbar-width: thin !important;
+        scrollbar-color: var(--primary) rgba(0,0,0,0.05);
+        
+        /* 스크롤바와 탭 사이의 간격을 위해 하단 패딩 살짝 추가 */
+        padding-bottom: 5px; 
+    }
+
+    /* 크롬, 사파리, 삼성인터넷용 스크롤바 디자인 */
+    .tabs::-webkit-scrollbar {
+        display: block !important; /* 숨김 해제 */
+        height: 4px;
+    }
+
+    .tabs::-webkit-scrollbar-thumb {
+        background-color: var(--primary); /* 포인트 컬러(초록색)로 강조 */
+        border-radius: 10px;
+    }
+
+    .tabs::-webkit-scrollbar-track {
+        background-color: rgba(0, 0, 0, 0.05); /* 트랙은 아주 연하게 */
+        border-radius: 10px;
+    }
+
+    .tab {
+        flex: 0 0 auto; /* 글자 길이에 맞춰 박스 크기 유지 */
+        min-width: fit-content; 
+        padding: 10px 15px; /* 터치하기 편하게 좌우 여백 확보 */
+        font-size: 0.8em;
+    }
+}
     .tab.active {
       background: var(--card);
       color: var(--primary);
