@@ -786,5 +786,9 @@ const dbPackages = [
 { name: '네르의 사명감 패키지', price: 99000, contents: { p_elif: 3750, f_elif: 7500 }, releasedApostle: '네르(빡침)' },
 { name: '네르의 계시 패키지', price: 99000, contents: { elch_ticket: 1, nuru: 30 }, releasedApostle: '네르(빡침)' },
 { name: '2.5주년 특별 패키지', price: 49500, contents: { elch_yeon: 1, t_apostle: 60, scandy: 500, kcandy: 500 }, releasedApostle: '네르(빡침)' },
-{ name: '왕관의 수여자 패키지', price: 29500, contents: { p_elif: 900, t_apostle: 20, t_card: 10, nuru: 10 }, releasedApostle: '네르(빡침)', note:'스킨 등 포함' }
+{ name: '왕관의 수여자 패키지', price: 29500, contents: { p_elif: 900, t_apostle: 20, t_card: 10, nuru: 10 }, releasedApostle: '네르(빡침)', note:'스킨 등 포함' },
+{ name: '스텝업 패키지 3', price: 9900, contents: { t_apostle: 10, crayon_highest: 1, p_elif: 100, f_elif: 700, spec_ticket: 1, nuru: 5 }, releasedApostle: '네르(빡침)', note: '뽑기 토큰 200엘리프로 계산' },
+{ name: '스텝업 패키지 6', price: 29500, contents: { t_apostle: 30, crayon_highest: 3, p_elif: 300, f_elif: 2100, adv_ticket: 1, nuru: 15 }, releasedApostle: '네르(빡침)', note: '뽑기 토큰 200엘리프로 계산' },
+{ name: '스텝업 패키지 9', price: 49500, contents: { t_apostle: 50, crayon_highest: 5, p_elif: 500, f_elif: 3500, select_ticket: 1, nuru: 25 }, releasedApostle: '네르(빡침)', note: '뽑기 토큰 200엘리프로 계산' },
+{ name: '스텝업 패키지 12', price: 99000, contents: { elch_ticket: 1, kcandy: 1000, scandy: 1000, p_elif: 1000, f_elif: 3000, crayon_highest: 10, nuru: 50, halo_select: 1 }, releasedApostle: '네르(빡침)', note: '뽑기 토큰 200엘리프로 계산' },  
 ];
