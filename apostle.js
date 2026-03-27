@@ -1,22 +1,27 @@
-// apostle.js
 
-// 전역 변수 선언 확인
 window.wantedApostles = window.wantedApostles || new Set(JSON.parse(localStorage.getItem('wanted_apostles') || '[]'));
+window.unownedApostles = window.unownedApostles || new Set(JSON.parse(localStorage.getItem('unowned_apostles') || '[]')); // 💡 미보유 목록 추가
 window.lastCalcResults = null;
 
-// 1. 사도 리스트 렌더링
+// 1. 사도 리스트 렌더링 수정
 window.renderApostleList = function(data = apostleDB) {
     const grid = document.getElementById('apostle-grid');
     if(!grid) return;
 
     grid.innerHTML = data.map(a => {
         const isChecked = wantedApostles.has(a.id);
+        const isUnowned = unownedApostles.has(a.id); // 미보유 여부 확인
+        
         return `
             <div class="pkg-card" style="padding:10px; display:flex; flex-direction:column; align-items:center;">
-                <div class="apostle-container ${a.isEldain ? 'eldain' : ''} ${isChecked ? 'checked' : ''}" 
-                     onclick="toggleApostle(this, '${a.id}')">
+                <div class="apostle-container ${a.isEldain ? 'eldain' : ''} ${isChecked ? 'checked' : ''} ${isUnowned ? 'unowned' : ''}" 
+                     onclick="toggleApostle(this, '${a.id}')"
+                     oncontextmenu="toggleUnowned(event, this, '${a.id}')">
                     <img src="images/${a.name}.webp" onerror="this.src='images/default.png'" class="apostle-img">
+                    
                     <div class="check-overlay">✓</div>
+                    
+                    <div class="unowned-overlay">✕</div>
                 </div>
                 <div style="text-align:center; margin-top:8px;">
                     <div style="font-weight:bold; font-size:0.85em; ${a.isEldain ? 'color:#d32f2f;' : ''}">${a.name}</div>
@@ -25,6 +30,20 @@ window.renderApostleList = function(data = apostleDB) {
             </div>
         `;
     }).join('');
+}
+
+// 우클릭 미보유 토글 함수
+window.toggleUnowned = function(event, element, apostleId) {
+    event.preventDefault(); // 메뉴 팝업 방지
+    
+    if(unownedApostles.has(apostleId)) {
+        unownedApostles.delete(apostleId);
+        element.classList.remove('unowned');
+    } else {
+        unownedApostles.add(apostleId);
+        element.classList.add('unowned');
+    }
+    localStorage.setItem('unowned_apostles', JSON.stringify([...unownedApostles]));
 }
 
 window.filterApostles = function() {
@@ -64,7 +83,8 @@ window.saveApostles = function() {
     localStorage.setItem('wanted_apostles', JSON.stringify([...wantedApostles]));
 }
 
-// 3. 가치 계산 실행
+
+// 3. 가치 계산 실행 (미보유/중복 및 티켓별 가치 보존 로직 반영)
 window.runCalculation = function() {
     const selectedApostles = Array.from(wantedApostles);
     if (selectedApostles.length === 0) {
@@ -79,53 +99,100 @@ window.runCalculation = function() {
     const allNormal = apostleDB.filter(a => !a.isEldain);
     const allEldain = apostleDB.filter(a => a.isEldain);
 
-    const advEV = calculateBaseEV(allNormal, allEldain);
-    //초특별
-    results.adv_ticket = advEV;
-    //초고급
-    results.spec_ticket = advEV * 0.5;
-    //속성,포지션뽑 증명서 10장 제공하므로 밸류 절반
+    // 1. 초특별 모집권 (가치 보존: 중복이라도 풀 점수)
+    results.adv_ticket = calculateBaseEV(allNormal, allEldain, true);
+
+    // 2. 초고급 모집권 (가치 감가: 중복이면 절반)
+    results.spec_ticket = calculateBaseEV(allNormal, allEldain, false);
+
+    // 3. 속성 모집권 (가치 감가 + 공명 가중치 적용)
     ["순수", "광기", "냉정", "우울", "활발"].forEach(t => {
         const typeNormal = allNormal.filter(a => a.type === t || a.type === "공명");
         const typeEldain = allEldain.filter(a => a.type === t || a.type === "공명");
-        results.all_attrs[t] = calculateAttrEV(typeNormal, typeEldain)*0.5;
+        results.all_attrs[t] = calculateAttrEV(typeNormal, typeEldain, false);
     });
 
+    // 4. 포지션 모집권 (가치 감가)
     ["탱커", "딜러", "서포터"].forEach(r => {
         const posNormal = allNormal.filter(a => a.role === r);
         const posEldain = allEldain.filter(a => a.role === r);
-        results.all_roles[r] = calculateBaseEV(posNormal, posEldain)*0.5;
+        results.all_roles[r] = calculateBaseEV(posNormal, posEldain, false);
     });
 
+    // 5. 엘다인 연성권 (가치 감가 + 확정권 로직)
     let elchEV = 0;
     allEldain.forEach(e => {
         const prob = 1 / allEldain.length;
-        elchEV += prob * (wantedApostles.has(e.id) ? VAL_ELDAIN : 0);
+        elchEV += prob * getApostleValue(e, false);
     });
-    results.elch_yeon = elchEV*0.5;
+    results.elch_yeon = elchEV;
+	//6. 교주의 빛무리 모집권
+	const special7Names = ["디아나(왕년)", "란", "리뉴아", "벨라", "우로스", "죠안", "티그(영웅)"];
+const special7List = apostleDB.filter(a => special7Names.includes(a.name));
 
-    // 전역 변수에 결과 저장
-    window.lastCalcResults = results;
-    displayResults(results);
+let haloEV = 0;
+if (special7List.length > 0) {
+    special7List.forEach(a => {
+        haloEV += (1 / special7List.length) * getApostleValue(a, false);
+    });
+}
+results.halo_select = haloEV; // 👈 ID와 일치시킴
+
+window.lastCalcResults = results;
+displayResults(results);
 }
 
-// 보조 계산 함수들
-function calculateBaseEV(normals, eldains) {
+
+/**
+ * 💡 사도 개별 가치 판정 함수
+ * @param {Object} a - 사도 객체
+ * @param {Boolean} isAdvanced - 가치 보존 티켓(초특별) 여부
+ */
+function getApostleValue(a, isAdvanced) {
+    if (!wantedApostles.has(a.id)) return 0; // 위시 아니면 0점
+
+    const baseVal = a.isEldain ? 6800 : 2550;
+    
+    // 초특별 티켓이거나 미보유(X) 상태면 풀 점수, 아니면 절반
+    if (isAdvanced || unownedApostles.has(a.id)) {
+        return baseVal;
+    } else {
+        return baseVal * 0.5;
+    }
+}
+
+// 일반적인 97:3 확률 기반 EV 계산 (초특별, 초고급, 포지션용)
+function calculateBaseEV(normals, eldains, isAdvanced) {
     let ev = 0;
-    if (normals.length > 0) normals.forEach(a => ev += (0.97/normals.length) * (wantedApostles.has(a.id) ? 2550 : 0));
-    if (eldains.length > 0) eldains.forEach(a => ev += (0.03/eldains.length) * (wantedApostles.has(a.id) ? 6800 : 0));
+    if (normals.length > 0) {
+        normals.forEach(a => {
+            ev += (0.97 / normals.length) * getApostleValue(a, isAdvanced);
+        });
+    }
+    if (eldains.length > 0) {
+        eldains.forEach(a => {
+            ev += (0.03 / eldains.length) * getApostleValue(a, isAdvanced);
+        });
+    }
     return ev;
 }
 
-function calculateAttrEV(normals, eldains) {
+// 속성 뽑기 전용 EV 계산 (공명 가중치 반영)
+function calculateAttrEV(normals, eldains, isAdvanced) {
     let ev = 0;
-    if (normals.length > 0) normals.forEach(a => ev += (0.97/normals.length) * (wantedApostles.has(a.id) ? 2550 : 0));
+    // 일반 사도: 균등 분배
+    if (normals.length > 0) {
+        normals.forEach(a => {
+            ev += (0.97 / normals.length) * getApostleValue(a, isAdvanced);
+        });
+    }
+    // 엘다인: 공명(1) vs 전용(2) 가중치 분배
     if (eldains.length > 0) {
         let totalW = 0;
         eldains.forEach(e => totalW += (e.type === "공명" ? 1 : 2));
         eldains.forEach(e => {
             const w = (e.type === "공명" ? 1 : 2);
-            ev += (0.03 * (w / totalW)) * (wantedApostles.has(e.id) ? 6800 : 0);
+            ev += (0.03 * (w / totalW)) * getApostleValue(e, isAdvanced);
         });
     }
     return ev;
@@ -154,6 +221,7 @@ window.displayResults = function(res) {
     html += renderRow("🎟️ 초특별 모집권 (20장)", res.adv_ticket);
     html += renderRow("🎫 초고급 모집권 (10장)", res.spec_ticket);
     html += renderRow("✨ 엘다인 연성권", res.elch_yeon);
+    html += renderRow("🌈 교주의 빛무리 모집권", res.halo_select);
 
     // 2. 속성별 모집권 (순서대로 나열)
     Object.entries(res.all_attrs).forEach(([type, val]) => {
@@ -188,7 +256,8 @@ window.applyToSettings = function() {
     const newValuesMap = {
         'spec_ticket': Math.round(res.spec_ticket),
         'adv_ticket': Math.round(res.adv_ticket),
-        'elch_yeon': Math.round(res.elch_yeon)
+        'elch_yeon': Math.round(res.elch_yeon),
+        'halo_select': Math.round(res.halo_select)
     };
 
     // 속성별 가치 (attr_순수 등)
