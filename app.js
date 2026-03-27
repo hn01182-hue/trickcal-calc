@@ -29,18 +29,16 @@
         return (total / price) * 1000;
     }
 
-function renderPackageList(containerId, list = []) { // 👈 list가 없으면 빈 배열([])을 기본값으로 사용
+function renderPackageList(containerId, list = []) {
     const div = document.getElementById(containerId);
-    if (!div) return; // 컨테이너가 없으면 종료
+    if (!div) return;
 
-    // list가 undefined나 null이더라도 에러가 나지 않도록 한 번 더 안전장치
     const safeList = Array.isArray(list) ? list : [];
 
     div.innerHTML = safeList.map(pkg => {
         const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
-        const noteHtml = pkg.note ? `<div class="pkg-note">📝 ${pkg.note}</div>` : "";
+        const noteHtml = pkg.note ? `<div class="pkg-note">📝 ${pkg.note}</div>` : ""; // 💡 변수 생성됨
         const summary = Object.entries(pkg.contents).map(([id, count]) => {
-            // config.items가 로드되지 않았을 경우를 대비한 안전장치
             const item = (config && config.items) ? config.items.find(i => i.id === id) : null;
             return `${item ? item.name : id} x${count}`;
         }).join(', ');
@@ -49,7 +47,8 @@ function renderPackageList(containerId, list = []) { // 👈 list가 없으면 �
             <div class="pkg-card">
                 <span class="pkg-name">[${pkg.releasedApostle}] ${pkg.name}</span>
                 <span class="pkg-price-tag">${pkg.price.toLocaleString()}원</span>
-                <div><span class="eff-badge">효율 점수 : ${score}</span></div>
+                
+                ${noteHtml} <div><span class="eff-badge">효율 점수 : ${score}</span></div>
                 <div class="pkg-items">${summary}</div>
                 <button class="apply-btn" onclick="applyPackageData('${containerId}', '${pkg.id}')">이 구성으로 분석하기</button>
             </div>`;
@@ -236,26 +235,28 @@ function openTab(id) {
     }
 
     function renderConstantPackages() {
-        const listDiv = document.getElementById('constant-list');
-        listDiv.innerHTML = constantPackages.map((pkg, index) => {
-            // 💡 상시 패키지의 효율 점수를 계산합니다.
-            const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
-            const noteHtml = pkg.note ? `<div class="pkg-note">📝 ${pkg.note}</div>` : "";
-            const summary = Object.entries(pkg.contents).map(([id, count]) => {
-                const item = config.items.find(i => i.id === id);
-                return `${item ? item.name : id} x${count}`;
-            }).join(', ');
+    const listDiv = document.getElementById('constant-list');
+    if (!listDiv) return; // 안전장치 추가
 
-            return `
-                <div class="pkg-card">
-                    <span class="pkg-name">${pkg.name}</span>
-                    <span class="pkg-price-tag">${pkg.price.toLocaleString()}원</span>
-                    <div><span class="eff-badge">효율 점수 : ${score}</span></div>
-                    <div class="pkg-items">${summary}</div>
-                    <button class="apply-btn" onclick="applyPackageData('constant-list', ${index})">이 구성으로 분석하기</button>
-                </div>`;
-        }).join('');
-    }
+    listDiv.innerHTML = constantPackages.map((pkg, index) => {
+        const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
+        const noteHtml = pkg.note ? `<div class="pkg-note">📝 ${pkg.note}</div>` : ""; // 💡 변수 생성됨
+        const summary = Object.entries(pkg.contents).map(([id, count]) => {
+            const item = config.items.find(i => i.id === id);
+            return `${item ? item.name : id} x${count}`;
+        }).join(', ');
+
+        return `
+            <div class="pkg-card">
+                <span class="pkg-name">${pkg.name}</span>
+                <span class="pkg-price-tag">${pkg.price.toLocaleString()}원</span>
+                
+                ${noteHtml} <div><span class="eff-badge">효율 점수 : ${score}</span></div>
+                <div class="pkg-items">${summary}</div>
+                <button class="apply-btn" onclick="applyPackageData('constant-list', ${index})">이 구성으로 분석하기</button>
+            </div>`;
+    }).join('');
+}
 
     function loadAll() {
         const saved = localStorage.getItem(STORAGE_KEY);
