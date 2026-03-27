@@ -38,6 +38,7 @@ function renderPackageList(containerId, list = []) { // 👈 list가 없으면 �
 
     div.innerHTML = safeList.map(pkg => {
         const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
+        const noteHtml = pkg.note ? `<div class="pkg-note">📝 ${pkg.note}</div>` : "";
         const summary = Object.entries(pkg.contents).map(([id, count]) => {
             // config.items가 로드되지 않았을 경우를 대비한 안전장치
             const item = (config && config.items) ? config.items.find(i => i.id === id) : null;
