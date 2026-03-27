@@ -278,10 +278,18 @@ function openTab(id) {
     }
 
     function resetConfig() { if(confirm("기본 설정으로 초기화 하시겠습니까?")) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
-    function copyShareLink() { 
-        const data = encodeURIComponent(JSON.stringify(config));
-        const url = `${window.location.origin}${window.location.pathname}?v=${data}`;
-        navigator.clipboard.writeText(url).then(() => alert("설정 링크 복사 완료!"));
+    function copyShareLink() {
+          const essentialData = {};
+            config.items.forEach(item => {
+            essentialData[item.id] = item.val;
+          });
+
+          const encodedData = btoa(encodeURIComponent(JSON.stringify(essentialData)));
+          const url = `${window.location.origin}${window.location.pathname}?s=${encodedData}`;
+
+          navigator.clipboard.writeText(url).then(() => {
+             alert("설정 링크 복사 완료!");
+          });
     }
 
 function drawReleasedChart(filteredData) {
@@ -406,3 +414,26 @@ function setupLocalPackages() {
         console.error("dbPackages 데이터를 찾을 수 없습니다. packages.js 파일 연결을 확인하세요.");
     }
 }
+
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedData = urlParams.get('s');
+
+    if (sharedData) {
+        try {
+            const vals = JSON.parse(decodeURIComponent(atob(sharedData)));
+
+            config.items.forEach(item => {
+                if (vals[item.id] !== undefined) {
+                    item.val = vals[item.id];
+                }
+            });
+
+            if (typeof renderItems === 'function') renderItems();
+            if (typeof renderPackages === 'function') renderPackages();
+            if (typeof renderConstantPackages === 'function') renderConstantPackages();
+        } catch (e) {
+            console.error("Data Load Error:", e);
+        }
+    }
+};
