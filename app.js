@@ -439,42 +439,58 @@ function drawReleasedChart(filteredData) {
 }
 
 window.togglePackageVisibility = function(pkgName) {
-    // id 대신 name으로 찾기
     const targetPkg = dbPackages.find(p => p.name === pkgName);
 
     if (targetPkg) {
         targetPkg.hidden = !targetPkg.hidden;
+
+        // 💾 1. 현재 숨겨진 패키지들의 이름만 추출해서 저장
+        const hiddenNames = dbPackages
+            .filter(p => p.hidden)
+            .map(p => p.name);
+        localStorage.setItem('trickcal_hidden_list', JSON.stringify(hiddenNames));
+
         if (typeof filterReleased === 'function') filterReleased();
     }
 }
 
 function setupLocalPackages() {
-    console.log("로컬 데이터 세팅 시작...");
-    
-    // 1. 사도 목록(Select 박스) 필터용 데이터 모으기
+    console.log("로컬 데이터 세팅 및 숨김 목록 복구 시작...");
+
+    // 💾 2. 저장된 숨김 목록 불러오기 및 적용
+    const savedHidden = localStorage.getItem('trickcal_hidden_list');
+    if (savedHidden && typeof dbPackages !== 'undefined') {
+        try {
+            const hiddenNames = JSON.parse(savedHidden);
+            dbPackages.forEach(p => {
+                if (hiddenNames.includes(p.name)) {
+                    p.hidden = true;
+                }
+            });
+        } catch (e) {
+            console.error("숨김 목록 복구 실패:", e);
+        }
+    }
+
+    // --- 기존 로직 (사도 Select 박스 생성 등) ---
     const apostleSet = new Set();
-    
-    // dbPackages는 packages.js에서 이미 가져온 상태입니다.
     if (typeof dbPackages !== 'undefined' && dbPackages.length > 0) {
         dbPackages.forEach(data => {
             apostleSet.add(data.releasedApostle || "기타");
         });
 
-        // 2. Select 박스(드롭다운)에 사도 이름들 채워넣기
         const select = document.getElementById('apostle-select');
         if (select) {
             select.innerHTML = '<option value="all">전체 사도</option>';
             Array.from(apostleSet).sort().forEach(name => {
-                const opt = document.createElement('option'); 
-                opt.value = name; 
-                opt.innerText = name; 
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.innerText = name;
                 select.appendChild(opt);
             });
         }
 
-        // 3. ⭐️ 핵심: 리스트와 그래프를 처음으로 그리기
-        filterReleased(); 
-    } else {
-        console.error("dbPackages 데이터를 찾을 수 없습니다. packages.js 파일 연결을 확인하세요.");
+        // 3. 필터링 및 그래프 그리기 (이제 hidden이 적용된 채로 그려짐)
+        filterReleased();
     }
 };
