@@ -297,7 +297,7 @@ function openTab(id) {
 function drawReleasedChart(filteredData) {
     const canvas = document.getElementById('releasedChart');
     const container = document.getElementById('chart-container');
-    const wrapper = document.getElementById('chart-wrapper'); // 💡 wrapper 추가
+    const wrapper = document.getElementById('chart-wrapper');
     const selectedApostle = document.getElementById('apostle-select').value;
 
     if (selectedApostle === "all" || filteredData.length === 0) {
@@ -307,16 +307,11 @@ function drawReleasedChart(filteredData) {
 
     if(container) container.style.display = 'block';
 
-    // 💡 데이터 개수에 따라 높이 계산 (1개당 40px 정도로 넉넉히)
     const dynamicHeight = Math.max(200, filteredData.length * 40); 
-    
-    // 💡 부모 wrapper의 높이를 직접 변경하여 캔버스가 늘어날 공간을 만듭니다.
     wrapper.style.height = dynamicHeight + 'px';
     canvas.style.height = dynamicHeight + 'px';
 
     const ctx = canvas.getContext('2d');
-
-    // 은총 패키지 기준점 계산
     const gracePkg = constantPackages.find(p => p.name === "은총 패키지") || {price: 99000, contents: {p_elif: 6000}};
     const graceScore = calculateScore(gracePkg.contents, gracePkg.price);
 
@@ -340,33 +335,63 @@ function drawReleasedChart(filteredData) {
         options: {
             indexAxis: 'y',
             responsive: true,
-            maintainAspectRatio: false, // 💡 반드시 false여야 높이 조절이 먹힙니다.
-            layout: {
-                padding: { bottom: 20 } // 하단 수치 글자가 잘리지 않게 여백 추가
+            maintainAspectRatio: false,
+            scales: {
+                x: { 
+                    beginAtZero: true, 
+                    max: 1000, // 💡 최대치를 1000으로 고정
+                    grid: { display: false },
+                    ticks: { callback: (val) => val >= 1000 ? '1,000+' : val }
+                },
+                y: { grid: { display: false } }
             },
             plugins: {
                 legend: { display: false },
-                // 수직 기준선(은총 패키지) 그리기
-                beforeDraw: (chart) => {
-                    const {ctx, chartArea: {top, bottom, left, right}, scales: {x}} = chart;
-                    ctx.save();
-                    ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
-                    ctx.setLineDash([5, 5]);
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.moveTo(x.getPixelForValue(graceScore), top);
-                    ctx.lineTo(x.getPixelForValue(graceScore), bottom);
-                    ctx.stroke();
-                    ctx.restore();
+                tooltip: {
+                    callbacks: {
+                        label: (context) => `효율 점수: ${context.raw.toFixed(1)}` // 마우스 대면 실제 수치 표시
+                    }
                 }
-            },
-            scales: {
-                x: { beginAtZero: true, grid: { display: false } },
-                y: { grid: { display: false } }
             }
         },
-        // 기준선을 그리기 위한 커스텀 플러그인
         plugins: [{
+            // 💡 그래프를 뚫고 나가는 '지그재그' 효과 그리기
+            afterDatasetsDraw: (chart) => {
+                const { ctx, data, chartArea: { left }, scales: { x, y } } = chart;
+                ctx.save();
+                
+                data.datasets[0].data.forEach((value, i) => {
+                    if (value > 1000) {
+                        const meta = chart.getDatasetMeta(0);
+                        const bar = meta.data[i];
+                        const posX = x.getPixelForValue(1000);
+                        const posY = bar.y;
+                        const height = bar.height;
+
+                        // 막대 끝부분 지우기 (지그재그 자리를 위해)
+                        ctx.clearRect(posX - 5, posY - height/2, 10, height);
+
+                        // 지그재그 그리기
+                        ctx.beginPath();
+                        ctx.lineWidth = 2;
+                        ctx.strokeStyle = bar.options.borderColor;
+                        ctx.fillStyle = bar.options.backgroundColor;
+
+                        let startY = posY - height/2;
+                        ctx.moveTo(posX, startY);
+                        
+                        // 지그재그 패턴
+                        for (let step = 1; step <= 4; step++) {
+                            const side = step % 2 === 0 ? 5 : -5;
+                            ctx.lineTo(posX + side, startY + (height/4) * step);
+                        }
+                        
+                        ctx.stroke();
+                    }
+                });
+                ctx.restore();
+            },
+            // 기존 은총 패키지 기준선 그리기 로직 유지
             afterDraw: chart => {
                 const {ctx, chartArea: {top, bottom}, scales: {x}} = chart;
                 const xPos = x.getPixelForValue(graceScore);
@@ -385,7 +410,6 @@ function drawReleasedChart(filteredData) {
         }]
     });
 }
-
 function setupLocalPackages() {
     console.log("로컬 데이터 세팅 시작...");
     
