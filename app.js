@@ -328,10 +328,8 @@ function drawReleasedChart(filteredData) {
     const wrapper = document.getElementById('chart-wrapper');
     const selectedApostle = document.getElementById('apostle-select').value;
 
-    // 💡 1. 체크 해제된(hidden: true) 패키지 제외 로직 추가
     const visibleData = filteredData.filter(p => !p.hidden);
 
-    // 💡 2. 이후 로직에서 filteredData 대신 visibleData 사용
     if (selectedApostle === "all" || visibleData.length === 0) {
         if(container) container.style.display = 'none';
         return;
@@ -345,10 +343,22 @@ function drawReleasedChart(filteredData) {
 
     const ctx = canvas.getContext('2d');
     const gracePkg = constantPackages.find(p => p.name === "은총 패키지") || {price: 99000, contents: {p_elif: 6000}};
-    const graceScore = calculateScore(gracePkg.contents, gracePkg.price);
+    const graceScore = calculateScore(gracePkg.contents, gracePkg.price); // 약 201.0
 
     const labels = visibleData.map(p => p.name);
     const scores = visibleData.map(p => calculateScore(p.contents, p.price));
+
+    const realMax = scores.length > 0 ? Math.max(...scores) : 0;
+    
+    // 💡 [핵심 로직]
+    let xAxisMax;
+    if (realMax > 1000) {
+        xAxisMax = 1000; // 1000 넘으면 지그재그 모드
+    } else {
+        // 데이터 중 최대값과 은총 점수(201) 중 더 큰 값을 Max로 잡음
+        // -> 모든 패키지가 201 미만이면 201이 Max가 되어 기준선이 맨 우측에 위치함
+        xAxisMax = Math.max(realMax, graceScore);
+    }
 
     if (releasedChartObj) releasedChartObj.destroy();
 
@@ -370,10 +380,15 @@ function drawReleasedChart(filteredData) {
             maintainAspectRatio: false,
             scales: {
                 x: { 
-                    beginAtZero: true, 
-                    max: 1000,
+                    beginAtZero: true, // 💡 다시 0부터 시작해서 막대 길이를 온전히 보여줌
+                    max: xAxisMax,
                     grid: { display: false },
-                    ticks: { callback: (val) => val >= 1000 ? '1,000+' : val }
+                    ticks: { 
+                        callback: function(val) {
+                            if (val >= 1000) return '1,000+';
+                            return Number(val).toFixed(1); 
+                        }
+                    }
                 },
                 y: { grid: { display: false } }
             },
@@ -388,9 +403,8 @@ function drawReleasedChart(filteredData) {
         },
         plugins: [{
             afterDatasetsDraw: (chart) => {
-                const { ctx, data, chartArea: { left }, scales: { x, y } } = chart;
+                const { ctx, data, scales: { x, y } } = chart;
                 ctx.save();
-                
                 data.datasets[0].data.forEach((value, i) => {
                     if (value > 1000) {
                         const meta = chart.getDatasetMeta(0);
@@ -398,22 +412,17 @@ function drawReleasedChart(filteredData) {
                         const posX = x.getPixelForValue(1000);
                         const posY = bar.y;
                         const height = bar.height;
-
                         ctx.clearRect(posX - 5, posY - height/2, 10, height);
-
                         ctx.beginPath();
                         ctx.lineWidth = 2;
                         ctx.strokeStyle = bar.options.borderColor;
                         ctx.fillStyle = bar.options.backgroundColor;
-
                         let startY = posY - height/2;
                         ctx.moveTo(posX, startY);
-                        
                         for (let step = 1; step <= 4; step++) {
                             const side = step % 2 === 0 ? 5 : -5;
                             ctx.lineTo(posX + side, startY + (height/4) * step);
                         }
-                        
                         ctx.stroke();
                     }
                 });
@@ -422,6 +431,7 @@ function drawReleasedChart(filteredData) {
             afterDraw: chart => {
                 const {ctx, chartArea: {top, bottom}, scales: {x}} = chart;
                 const xPos = x.getPixelForValue(graceScore);
+                // 기준선 그리기
                 if (xPos >= chart.chartArea.left && xPos <= chart.chartArea.right) {
                     ctx.save();
                     ctx.beginPath();
