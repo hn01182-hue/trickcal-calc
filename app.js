@@ -415,27 +415,4 @@ function setupLocalPackages() {
     } else {
         console.error("dbPackages 데이터를 찾을 수 없습니다. packages.js 파일 연결을 확인하세요.");
     }
-}
-
-window.onload = function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const sharedData = urlParams.get('s');
-
-    if (sharedData) {
-        try {
-            const vals = JSON.parse(decodeURIComponent(atob(sharedData)));
-
-            config.items.forEach(item => {
-                if (vals[item.id] !== undefined) {
-                    item.val = vals[item.id];
-                }
-            });
-
-            if (typeof renderItems === 'function') renderItems();
-            if (typeof renderPackages === 'function') renderPackages();
-            if (typeof renderConstantPackages === 'function') renderConstantPackages();
-        } catch (e) {
-            console.error("Data Load Error:", e);
-        }
-    }
 };
