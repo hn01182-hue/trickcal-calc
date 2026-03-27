@@ -426,6 +426,12 @@
     font-weight: bold;
     display: inline-block;
     }
+
+.pkg-card.is-hidden {
+    opacity: 0.5; /* 투명도 조절 */
+    filter: grayscale(0.5); /* 약간 회색빛으로 */
+    transition: all 0.2s ease;
+}
   </style>
 </head>
 
@@ -503,7 +509,7 @@
 
     <div id="apostle-list" class="card">
       <div style="background:#fff3e0; padding:10px; border-radius:8px; margin-bottom:15px; font-size:0.85em; color:#e65100;">
-        💡 브라우저를 닫아도 설정은 유지됩니다.원하는 사도는 좌클릭, 보유여부는 우클릭입니다.
+        💡 원하는 사도를 클릭하여 체크하세요. 브라우저를 닫아도 유지됩니다.
       </div>
 
       <div class="filter-container">
@@ -556,11 +562,11 @@
     </div>
   </div>
 
-  <script src="config.js?v=1.6"></script>
-  <script src="package.js?v=1.6"></script>
-  <script src="apostle_db.js?v=1.6"></script>
-  <script src="apostle.js?v=1.6"></script>
-  <script src="app.js?v=1.6"></script>
+  <script src="config.js?v=1.7"></script>
+  <script src="package.js?v=1.7"></script>
+  <script src="apostle_db.js?v=1.7"></script>
+  <script src="apostle.js?v=1.7"></script>
+  <script src="app.js?v=1.7"></script>
 
   <script>
     // 4. 모든 파일이 로드된 후 최종 실행
@@ -569,6 +575,7 @@
       const urlParams = new URLSearchParams(window.location.search);
       const sharedData = urlParams.get('s');
       if (sharedData && typeof config !== 'undefined') {
+
         try {
           const vals = JSON.parse(decodeURIComponent(atob(sharedData)));
           config.items.forEach(item => {
