@@ -239,7 +239,7 @@ function openTab(id) {
         listDiv.innerHTML = constantPackages.map((pkg, index) => {
             // 💡 상시 패키지의 효율 점수를 계산합니다.
             const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
-            
+            const noteHtml = pkg.note ? `<div class="pkg-note">📝 ${pkg.note}</div>` : "";
             const summary = Object.entries(pkg.contents).map(([id, count]) => {
                 const item = config.items.find(i => i.id === id);
                 return `${item ? item.name : id} x${count}`;
