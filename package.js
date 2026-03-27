@@ -773,5 +773,18 @@ const dbPackages = [
     "t_card": 20,
     "crayon_highest": 8
   }
-}
+},
+{ name: '★3 4인조 커스텀 패키지', price: 1100, contents: { cert: 600 }, releasedApostle: '네르(빡침)', note:'4픽 모두 신규 사도 시 효율 2배'},
+{ name: '네르의 외침 패키지', price: 3300, contents: { p_elif: 100, f_elif: 100, kcandy: 200, manual: 800, food_purple: 3 }, releasedApostle: '네르(빡침)' },
+{ name: '네르의 반격 패키지', price: 3300, contents: { p_elif: 100, f_elif: 100, scandy: 100, light_box: 300, food_purple: 3 }, releasedApostle: '네르(빡침)' },
+{ name: '네르의 부탁 패키지', price: 9900, contents: { p_elif: 300, t_apostle: 10, thumbs: 20 }, releasedApostle: '네르(빡침)' },
+{ name: '네르의 결심 패키지', price: 9900, contents: { p_elif: 300, t_apostle: 10, thumbs: 20 }, releasedApostle: '네르(빡침)' },
+{ name: '네르의 진격 패키지', price: 29500, contents: { p_elif: 900, f_elif: 900, crayon_highest: 4 }, releasedApostle: '네르(빡침)' },
+{ name: '네르의 의지 패키지', price: 49500, contents: { p_elif: 1500, cert: 500, select_ticket: 1 }, releasedApostle: '네르(빡침)' },
+{ name: '네르의 믿음 패키지', price: 99000, contents: { t_apostle: 100, f_elif: 2000 }, releasedApostle: '네르(빡침)' },
+{ name: '네르의 선언 패키지', price: 99000, contents: { t_apostle: 100, attr_활발: 3 }, releasedApostle: '네르(빡침)' },
+{ name: '네르의 사명감 패키지', price: 99000, contents: { p_elif: 3750, f_elif: 7500 }, releasedApostle: '네르(빡침)' },
+{ name: '네르의 계시 패키지', price: 99000, contents: { elch_ticket: 1, nuru: 30 }, releasedApostle: '네르(빡침)' },
+{ name: '2.5주년 특별 패키지', price: 49500, contents: { elch_yeon: 1, t_apostle: 60, scandy: 500, kcandy: 500 }, releasedApostle: '네르(빡침)' },
+{ name: '왕관의 수여자 패키지', price: 29500, contents: { p_elif: 900, t_apostle: 20, t_card: 10, nuru: 10 }, releasedApostle: '네르(빡침)', note:'스킨 등 포함' }
 ];
