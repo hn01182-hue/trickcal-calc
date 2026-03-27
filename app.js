@@ -1,23 +1,27 @@
       function filterReleased() {
-        const query = document.getElementById('pkg-search').value.toLowerCase();
-        const apostle = document.getElementById('apostle-select').value;
-        const type = document.getElementById('sort-type').value;
-        const order = document.getElementById('sort-order').value;
+    const query = document.getElementById('pkg-search').value.toLowerCase();
+    const apostle = document.getElementById('apostle-select').value;
+    const type = document.getElementById('sort-type').value;
+    const order = document.getElementById('sort-order').value;
 
-        let filtered = dbPackages.filter(p => {
-            return (p.name.toLowerCase().includes(query) || p.releasedApostle.toLowerCase().includes(query)) && 
-                   (apostle === "all" || p.releasedApostle === apostle);
-        });
+    let filtered = dbPackages.filter(p => {
+        return (p.name.toLowerCase().includes(query) || p.releasedApostle.toLowerCase().includes(query)) && 
+               (apostle === "all" || p.releasedApostle === apostle);
+    });
 
-        filtered.sort((a, b) => {
-            let vA = (type === 'price') ? a.price : calculateScore(a.contents, a.price);
-            let vB = (type === 'price') ? b.price : calculateScore(b.contents, b.price);
-            return (order === 'asc') ? vA - vB : vB - vA;
-        });
+    // 정렬 로직 (기존 유지)
+    filtered.sort((a, b) => {
+        let vA = (type === 'price') ? a.price : calculateScore(a.contents, a.price);
+        let vB = (type === 'price') ? b.price : calculateScore(b.contents, b.price);
+        return (order === 'asc') ? vA - vB : vB - vA;
+    });
 
-        renderPackageList('released-list', filtered); // 리스트 먼저 그리고
-        drawReleasedChart(filtered);
-      }
+    // 1. 리스트를 먼저 그립니다 (체크박스 상태 포함됨)
+    renderPackageList('released-list', filtered); 
+    
+    // 2. 그래프를 그립니다 (drawReleasedChart 내부의 visibleData 필터가 작동함)
+    drawReleasedChart(filtered);
+}
 
  function calculateScore(contents, price) {
         if (!price || price <= 0) return 0;
@@ -37,32 +41,56 @@ function renderPackageList(containerId, list = []) {
 
     div.innerHTML = safeList.map(pkg => {
         const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
-        const noteHtml = pkg.note ? `<div class="pkg-note">📝 ${pkg.note}</div>` : ""; // 💡 변수 생성됨
+        const noteHtml = pkg.note ? `<div class="pkg-note">📝 ${pkg.note}</div>` : "";
+        const isVisible = !pkg.hidden;
+
         const summary = Object.entries(pkg.contents).map(([id, count]) => {
             const item = (config && config.items) ? config.items.find(i => i.id === id) : null;
             return `${item ? item.name : id} x${count}`;
         }).join(', ');
         
         return `
-            <div class="pkg-card">
-                <span class="pkg-name">[${pkg.releasedApostle}] ${pkg.name}</span>
-                <span class="pkg-price-tag">${pkg.price.toLocaleString()}원</span>
-                
-                ${noteHtml} <div><span class="eff-badge">효율 점수 : ${score}</span></div>
-                <div class="pkg-items">${summary}</div>
-                <button class="apply-btn" onclick="applyPackageData('${containerId}', '${pkg.id}')">이 구성으로 분석하기</button>
+            <div class="pkg-card ${!isVisible ? 'is-hidden' : ''}" style="position: relative;">
+                <div style="display: flex; align-items: flex-start; gap: 8px;">
+                    <input type="checkbox" 
+                           ${isVisible ? 'checked' : ''} 
+                           onclick="togglePackageVisibility('${pkg.name}')" 
+                           style="margin-top: 4px; cursor: pointer; width: 16px; height: 16px;">
+                    
+                    <div style="flex: 1;">
+                        <span class="pkg-name">[${pkg.releasedApostle}] ${pkg.name}</span>
+                        <span class="pkg-price-tag" style="float: right;">${pkg.price.toLocaleString()}원</span>
+                        ${noteHtml} 
+                        <div style="margin-top: 5px;">
+                            <span class="eff-badge">효율 점수 : ${score}</span>
+                        </div>
+                        <div class="pkg-items" style="margin-top: 8px; font-size: 0.85em; color: #666;">${summary}</div>
+                        <button class="apply-btn" onclick="applyPackageData('${containerId}', '${pkg.name}')" style="margin-top: 10px; width: 100%;">이 구성으로 분석하기</button>
+                    </div>
+                </div>
             </div>`;
     }).join('');
 }
 
-    function applyPackageData(sourceId, pkgId) {
-        const pkg = (sourceId === 'released-list') ? dbPackages.find(p => p.id === pkgId) : constantPackages[pkgId];
-        if(!pkg) return;
-        document.body.style.backgroundImage = "url('images/쌀이드.gif')";
-        config.price = pkg.price;
-        config.items.forEach(item => { item.count = pkg.contents[item.id] || ""; });
-        openTab('calc'); calculate();
+    function applyPackageData(sourceId, pkgIdentifier) {
+    // 💡 수정된 부분: released-list일 때 id 대신 name으로 찾도록 변경
+    const pkg = (sourceId === 'released-list') 
+        ? dbPackages.find(p => p.name === pkgIdentifier) // 👈 p.id 대신 p.name
+        : constantPackages[pkgIdentifier]; // 상시는 기존 인덱스 방식 유지
+
+    if(!pkg) {
+        console.error("패키지를 찾을 수 없습니다:", pkgIdentifier);
+        return;
     }
+
+    document.body.style.backgroundImage = "url('images/쌀이드.gif')";
+    config.price = pkg.price;
+    config.items.forEach(item => { 
+        item.count = pkg.contents[item.id] || ""; 
+    });
+    openTab('calc'); 
+    calculate();
+}
 
 function openTab(id) {
     // 모든 탭과 카드에서 active 클래스 제거
@@ -300,14 +328,18 @@ function drawReleasedChart(filteredData) {
     const wrapper = document.getElementById('chart-wrapper');
     const selectedApostle = document.getElementById('apostle-select').value;
 
-    if (selectedApostle === "all" || filteredData.length === 0) {
+    // 💡 1. 체크 해제된(hidden: true) 패키지 제외 로직 추가
+    const visibleData = filteredData.filter(p => !p.hidden);
+
+    // 💡 2. 이후 로직에서 filteredData 대신 visibleData 사용
+    if (selectedApostle === "all" || visibleData.length === 0) {
         if(container) container.style.display = 'none';
         return;
     }
 
     if(container) container.style.display = 'block';
 
-    const dynamicHeight = Math.max(200, filteredData.length * 40); 
+    const dynamicHeight = Math.max(200, visibleData.length * 40); 
     wrapper.style.height = dynamicHeight + 'px';
     canvas.style.height = dynamicHeight + 'px';
 
@@ -315,8 +347,8 @@ function drawReleasedChart(filteredData) {
     const gracePkg = constantPackages.find(p => p.name === "은총 패키지") || {price: 99000, contents: {p_elif: 6000}};
     const graceScore = calculateScore(gracePkg.contents, gracePkg.price);
 
-    const labels = filteredData.map(p => p.name);
-    const scores = filteredData.map(p => calculateScore(p.contents, p.price));
+    const labels = visibleData.map(p => p.name);
+    const scores = visibleData.map(p => calculateScore(p.contents, p.price));
 
     if (releasedChartObj) releasedChartObj.destroy();
 
@@ -339,7 +371,7 @@ function drawReleasedChart(filteredData) {
             scales: {
                 x: { 
                     beginAtZero: true, 
-                    max: 1000, // 💡 최대치를 1000으로 고정
+                    max: 1000,
                     grid: { display: false },
                     ticks: { callback: (val) => val >= 1000 ? '1,000+' : val }
                 },
@@ -349,13 +381,12 @@ function drawReleasedChart(filteredData) {
                 legend: { display: false },
                 tooltip: {
                     callbacks: {
-                        label: (context) => `효율 점수: ${context.raw.toFixed(1)}` // 마우스 대면 실제 수치 표시
+                        label: (context) => `효율 점수: ${context.raw.toFixed(1)}`
                     }
                 }
             }
         },
         plugins: [{
-            // 💡 그래프를 뚫고 나가는 '지그재그' 효과 그리기
             afterDatasetsDraw: (chart) => {
                 const { ctx, data, chartArea: { left }, scales: { x, y } } = chart;
                 ctx.save();
@@ -368,10 +399,8 @@ function drawReleasedChart(filteredData) {
                         const posY = bar.y;
                         const height = bar.height;
 
-                        // 막대 끝부분 지우기 (지그재그 자리를 위해)
                         ctx.clearRect(posX - 5, posY - height/2, 10, height);
 
-                        // 지그재그 그리기
                         ctx.beginPath();
                         ctx.lineWidth = 2;
                         ctx.strokeStyle = bar.options.borderColor;
@@ -380,7 +409,6 @@ function drawReleasedChart(filteredData) {
                         let startY = posY - height/2;
                         ctx.moveTo(posX, startY);
                         
-                        // 지그재그 패턴
                         for (let step = 1; step <= 4; step++) {
                             const side = step % 2 === 0 ? 5 : -5;
                             ctx.lineTo(posX + side, startY + (height/4) * step);
@@ -391,7 +419,6 @@ function drawReleasedChart(filteredData) {
                 });
                 ctx.restore();
             },
-            // 기존 은총 패키지 기준선 그리기 로직 유지
             afterDraw: chart => {
                 const {ctx, chartArea: {top, bottom}, scales: {x}} = chart;
                 const xPos = x.getPixelForValue(graceScore);
@@ -410,6 +437,17 @@ function drawReleasedChart(filteredData) {
         }]
     });
 }
+
+window.togglePackageVisibility = function(pkgName) {
+    // id 대신 name으로 찾기
+    const targetPkg = dbPackages.find(p => p.name === pkgName);
+
+    if (targetPkg) {
+        targetPkg.hidden = !targetPkg.hidden;
+        if (typeof filterReleased === 'function') filterReleased();
+    }
+}
+
 function setupLocalPackages() {
     console.log("로컬 데이터 세팅 시작...");
     
