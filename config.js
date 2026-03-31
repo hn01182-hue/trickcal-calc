@@ -40,12 +40,12 @@ const defaultConfig = {
             { id: 'pos_탱커', name: '탱커 모집권', val: 260, icon: 'images/탱커모집권.webp', count: "" },
             { id: 'pos_딜러', name: '딜러 모집권', val: 260, icon: 'images/딜러모집권.webp', count: "" },
             { id: 'pos_서포터', name: '서포터 모집권', val: 260, icon: 'images/서포터모집권.webp', count: "" },
-            { id: 'elch_ticket', name: '엘다인 선택권', val: 6800, icon: 'images/선택엘다인.png', count: "" },
-            { id: 'elch_yeon', name: '엘다인 연성권', val: 680, icon: 'images/엘다인 연성권.png', count: "" },
+            { id: 'elch_ticket', name: '엘다인 선택권', val: 10700, icon: 'images/선택엘다인.png', count: "" },
+            { id: 'elch_yeon', name: '엘다인 연성권', val: 1070, icon: 'images/엘다인 연성권.png', count: "" },
             { id: 'light_box', name: '무작위 빛 상자', val: 0, icon: 'images/빛상자.png', count: "" },
             { id: 'food_blue', name: '요리(파랑)', val: 0, icon: 'images/파란랜덤밥.png', count: "" },
             { id: 'food_purple', name: '요리(보라)', val: 0, icon: 'images/보라랜덤밥.png', count: "" },
-            { id: 't_apostle', name: '사도뽑기권', val: 60, icon: 'images/사도뽑기.png', count: "" },
+            { id: 't_apostle', name: '사도뽑기권', val: 100, icon: 'images/사도뽑기.png', count: "" },
             { id: 't_card', name: '카드뽑기권', val: 40, icon: 'images/카드뽑기.png', count: "" },
             { id: 'nuru', name: '누루링', val: 40, icon: 'images/누루링.png', count: "" },
             { id: 'manual', name: '장비의 정석', val: 0.125, icon: 'images/장비의 정석.png', count: "" },
@@ -59,8 +59,8 @@ const defaultConfig = {
             { id: 'growth_box', name: '교단 성장 상자', val: 0, icon: 'images/교단성장재료상자.png', count: "" },
             { id: 'l_spell_box', name: '전설 스펠 선택 상자', val: 6000, icon: 'images/전설스펠상자.webp', count: "" },
 	    	{ id: 'l_arti_box', name: '전설 아티팩트 선택 상자', val: 6000, icon: 'images/전설아티팩트상자.webp', count: "" },
-			{ id: 'halo_select', name: '교주의 빛무리! 모집권', val: 3000, icon: 'images/교주의 빛무리! 선택권.png', count: "" },
-			{ id: 'seven_select', name: '영원살이! 일곱자매 선택권', val: 6800, icon: 'images/영원살이! 일곱자매 선택권.png', count: "" },
+			{ id: 'halo_select', name: '교주의 빛무리! 모집권', val: 5350, icon: 'images/교주의 빛무리! 선택권.png', count: "" },
+			{ id: 'seven_select', name: '영원살이! 일곱자매 선택권', val: 10700, icon: 'images/영원살이! 일곱자매 선택권.png', count: "" },
 			{ id: 'mileage', name: '마일리지', val: 7, icon: 'images/마일리지.png', count: "" }
         ]    
     };
