@@ -342,21 +342,27 @@ function drawReleasedChart(filteredData) {
     canvas.style.height = dynamicHeight + 'px';
 
     const ctx = canvas.getContext('2d');
-    const gracePkg = constantPackages.find(p => p.name === "은총 패키지") || {price: 99000, contents: {p_elif: 6000}};
-    const graceScore = calculateScore(gracePkg.contents, gracePkg.price); // 약 201.0
+
+    // ⭐ [핵심 수정] constantPackages에서 실제 은총 패키지를 찾아 점수를 계산합니다.
+    // 만약 리스트에 없다면 예비용(Fallback) 데이터를 사용합니다.
+    const gracePkg = constantPackages.find(p => p.name === "은총 패키지") || {
+        price: 99000, 
+        contents: { p_elif: 6000, crayon_highest: 10, scandy: 500, kcandy: 500 } 
+    };
+    
+    // 현재 아이템 가치 설정이 반영된 은총 패키지의 1000원당 효율 점수
+    const graceScore = calculateScore(gracePkg.contents, gracePkg.price);
 
     const labels = visibleData.map(p => p.name);
     const scores = visibleData.map(p => calculateScore(p.contents, p.price));
 
     const realMax = scores.length > 0 ? Math.max(...scores) : 0;
     
-    // 💡 [핵심 로직]
     let xAxisMax;
     if (realMax > 1000) {
-        xAxisMax = 1000; // 1000 넘으면 지그재그 모드
+        xAxisMax = 1000; 
     } else {
-        // 데이터 중 최대값과 은총 점수(201) 중 더 큰 값을 Max로 잡음
-        // -> 모든 패키지가 201 미만이면 201이 Max가 되어 기준선이 맨 우측에 위치함
+        // 모든 패키지가 은총보다 구리면 은총 점수가 Max가 되어 선이 맨 우측에 붙음
         xAxisMax = Math.max(realMax, graceScore);
     }
 
@@ -380,7 +386,7 @@ function drawReleasedChart(filteredData) {
             maintainAspectRatio: false,
             scales: {
                 x: { 
-                    beginAtZero: true, // 💡 다시 0부터 시작해서 막대 길이를 온전히 보여줌
+                    beginAtZero: true, 
                     max: xAxisMax,
                     grid: { display: false },
                     ticks: { 
@@ -402,6 +408,7 @@ function drawReleasedChart(filteredData) {
             }
         },
         plugins: [{
+            // 지그재그 로직
             afterDatasetsDraw: (chart) => {
                 const { ctx, data, scales: { x, y } } = chart;
                 ctx.save();
@@ -428,26 +435,35 @@ function drawReleasedChart(filteredData) {
                 });
                 ctx.restore();
             },
+            // ⭐ [기준선 로직] graceScore 위치에 선을 긋습니다.
             afterDraw: chart => {
                 const {ctx, chartArea: {top, bottom}, scales: {x}} = chart;
                 const xPos = x.getPixelForValue(graceScore);
-                // 기준선 그리기
+                
                 if (xPos >= chart.chartArea.left && xPos <= chart.chartArea.right) {
                     ctx.save();
                     ctx.beginPath();
                     ctx.lineWidth = 2;
-                    ctx.strokeStyle = '#888';
-                    ctx.setLineDash([5, 5]);
+                    ctx.strokeStyle = '#888'; // 기준선 색상
+                    ctx.setLineDash([5, 5]); // 점선 스타일
                     ctx.moveTo(xPos, top);
                     ctx.lineTo(xPos, bottom);
                     ctx.stroke();
+                    
+
+                    ctx.fillStyle = '#666'; // 글자 색상 (약간 더 진하게)
+                    ctx.font = 'bold 11px Arial'; // 폰트 스타일
+                    ctx.textAlign = 'left';
+                    
+
+                    const label = graceScore.toFixed(1);
+                    ctx.fillText(label, xPos + 5, top + 12);
                     ctx.restore();
                 }
             }
         }]
     });
 }
-
 window.togglePackageVisibility = function(pkgName) {
     const targetPkg = dbPackages.find(p => p.name === pkgName);
 
