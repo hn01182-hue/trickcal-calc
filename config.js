@@ -1,7 +1,7 @@
 // config.js
 const STORAGE_KEY = 'trickcal_calc_v10_final';
 const constantPackages = [
-        { name: "데일리 엘리프", price: 9900, contents: { p_elif: 1500, f_elif: 2000, manual: 2139, r_low: 124 } },
+        { name: "데일리 엘리프", price: 9900, contents: { p_elif: 1500, f_elif: 2000, manual: 2294, r_low: 155 } },
         { name: "데일리 별사탕", price: 9900, contents: { scandy: 4460 } },
         { name: "데일리 왕사탕", price: 5500, contents: { kcandy: 4850, nuru: 31 } },
         { name: "(구)월간 크레파스 패키지", price: 29500, contents: { p_elif: 900, gold: 200, crayon_highest: 4 } },
@@ -18,7 +18,7 @@ const constantPackages = [
 const defaultConfig = {
         price: 0,
         items: [
-            { id: 'p_elif', name: '유료 엘리프', val: 2, icon: 'images/엘리프.png', count: "" },
+            { id: 'p_elif', name: '유료 엘리프', val: 2.7, icon: 'images/엘리프.png', count: "" },
             { id: 'f_elif', name: '무료 엘리프', val: 1, fixed: true, icon: 'images/엘리프.png', count: "" },
             { id: 'thumbs', name: '따봉', val: 20, icon: 'images/따봉.png', count: "" },
             { id: 'kcandy', name: '왕사탕', val: 0.5, icon: 'images/왕사탕.png', count: "" },
@@ -27,7 +27,7 @@ const defaultConfig = {
             { id: 'crayon_mid', name: '중급 크레파스', val: 0, icon: 'images/파란크레파스.png', count: "" },
             { id: 'crayon_high', name: '상급 크레파스', val: 60, icon: 'images/보라크레파스.png', count: "" },
             { id: 'crayon_highest', name: '최상급 크레파스', val: 668, icon: 'images/황금크레파스.png', count: "" },
-            { id: 'gold', name: '골드 (1만 단위)', val: 4, icon: 'images/골드.png', count: "" },
+            { id: 'gold', name: '골드 (1만 단위)', val: 3.4, icon: 'images/골드.png', count: "" },
             { id: 'cert', name: '교단 증명서', val: 8.5, icon: 'images/교단증명서.png', count: "" },
             { id: 'spec_ticket', name: '초고급 모집권', val: 130, icon: 'images/사도랜덤(10).png', count: "" },
             { id: 'adv_ticket', name: '초특별 모집권', val: 260, icon: 'images/초고급모집권(20).png', count: "" },
