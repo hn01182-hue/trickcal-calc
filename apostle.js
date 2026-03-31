@@ -92,8 +92,8 @@ window.runCalculation = function() {
         return;
     }
 
-    const VAL_NORMAL = 2550;
-    const VAL_ELDAIN = 6800;
+    const VAL_NORMAL = config.items.find(i => i.id === 'select_ticket')?.val || 2550;
+    const VAL_ELDAIN = config.items.find(i => i.id === 'elch_ticket')?.val || 10700;
     const results = { all_attrs: {}, all_roles: {} };
 
     const allNormal = apostleDB.filter(a => !a.isEldain);
@@ -149,11 +149,14 @@ displayResults(results);
  * @param {Boolean} isAdvanced - 가치 보존 티켓(초특별) 여부
  */
 function getApostleValue(a, isAdvanced) {
-    if (!wantedApostles.has(a.id)) return 0; // 위시 아니면 0점
+    if (!wantedApostles.has(a.id)) return 0; 
 
-    const baseVal = a.isEldain ? 6800 : 2550;
+    // 💡 설정창(config)에서 실시간으로 각 사도의 기준 가치를 가져옵니다.
+    const valEldain = config.items.find(i => i.id === 'elch_ticket')?.val || 10700;
+    const valNormal = config.items.find(i => i.id === 'select_ticket')?.val || 2550;
     
-    // 초특별 티켓이거나 미보유(X) 상태면 풀 점수, 아니면 절반
+    const baseVal = a.isEldain ? valEldain : valNormal;
+    
     if (isAdvanced || unownedApostles.has(a.id)) {
         return baseVal;
     } else {
