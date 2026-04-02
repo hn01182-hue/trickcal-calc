@@ -819,6 +819,6 @@ const dbPackages = [
 { name: "대환장 만우절 포스터 패키지", price: 9900, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "포스터 포함, 토큰 200엘리프 환산", contents: { p_elif: 300, f_elif: 700 } },
 { name: "에르핀의 책임감 패키지", price: 3300, releasedApostle: "네르(빡침)&에르핀(왕도)", contents: { p_elif: 100, kcandy: 100, scandy: 100, thumbs: 10, food_blue: 10, food_purple: 3 } },
 { name: "뒤죽박죽 파티의 시작 로비 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "로비 포함, 토큰 600엘리프 환산", contents: { p_elif: 900, f_elif: 2100, thumbs: 60 } },
-{ name: "2.5주년 축제 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "축제 토큰 1200엘리프 환산, 성격뽑기 포함", contents: { f_elif: 4400, t_apostle: 40, food_purple: 20 } },
+{ name: "2.5주년 축제 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "축제 토큰 1200엘리프 환산, 성격뽑기 포함", contents: { f_elif: 3200, t_apostle: 40, food_purple: 20 } },
  
  ];
