@@ -6,7 +6,7 @@ const constantPackages = [
     { name: "데일리 왕사탕", price: 5500, category: "판매중", contents: { kcandy: 4850, nuru: 31 } },
     { name: "(구)월간 크레파스 패키지", price: 29500, category: "미판매", contents: { p_elif: 900, gold: 200, crayon_highest: 4 } },
     { name: "(구)월간 교단 증명서 패키지", price: 49500, category: "미판매", contents: { p_elif: 1500, f_elif: 1500, cert: 500 } },
-    { name: "은총 패키지", price: 99000, category: "미판매", contents: { p_elif: 6000, crayon_highest: 10, scandy: 500, kcandy: 500 } },
+    { name: "은총 패키지(요미)", price: 99000, category: "미판매", contents: { p_elif: 6000, crayon_highest: 10, scandy: 500, kcandy: 500 } },
     { name: "트릭컬 패스 (기본)", price: 11000, category: "판매중", contents: {"gold":66,"p_elif":700,"t_card":6,"t_apostle":6,"kcandy":300,"scandy":200,"m_high":10,"m_mid":40,"m_low":60,"r_high":3,"r_mid":6,"r_low":9,"crayon_high":3,"crayon_highest":2} },
     { name: "트릭컬 패스 (업그레이드)", price: 13000, category: "판매중", contents: { p_elif: 800, thumbs: 30} },
     { name: '레벨 패스 1', price: 15000, category: "판매중", contents: { p_elif: 600, t_apostle: 30, scandy: 100, adv_ticket: 1 } },
