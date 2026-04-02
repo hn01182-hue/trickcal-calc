@@ -72,7 +72,7 @@ const defaultConfig = {
 			{ id: 'seven_select', name: '영원살이! 일곱자매 선택권', val: 10700, icon: 'images/영원살이! 일곱자매 선택권.png', count: "" },
 			{ id: 'mileage', name: '마일리지', val: 7, icon: 'images/마일리지.png', count: "" },
 			{ id: 'wildcard', name: '전설 와일드 카드', val: 0, icon : 'images/전설 와일드 카드.png', count:""},
-			{ id: 'l_card_select', name: '전설 카드 선택 상자', val: 0, icon : 'imaages/전설 카드 선택 상자.png', count:""}
+			{ id: 'l_card_select', name: '전설 카드 선택 상자', val: 0, icon : 'imaages/전설 카드 선택 상자.webp', count:""}
         ]    
     };
 let config = JSON.parse(JSON.stringify(defaultConfig));
