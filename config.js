@@ -13,7 +13,16 @@ const constantPackages = [
     { name: '레벨 패스 2', price: 29500, category: "일회성", contents: { p_elif: 1200, crayon_highest: 4, gold: 300, select_ticket: 2 } },
     { name: '레벨 패스 3', price: 49500, category: "일회성", contents: { p_elif: 1800, crayon_highest: 12, pos_탱커: 1, pos_딜러: 1, pos_서포터: 1, elch_ticket: 1 } },
     { name: '레벨 패스 4', price: 99000, category: "일회성", contents: { p_elif: 6000, crayon_highest: 24, select_ticket: 3, elch_ticket: 2 } },
-    { name: '레벨 패스 5', price: 99000, category: "일회성", contents: { p_elif: 6000, crayon_highest: 16, cert: 800, t_apostle: 100, elch_ticket: 2 } }
+    { name: '레벨 패스 5', price: 99000, category: "일회성", contents: { p_elif: 6000, crayon_highest: 16, cert: 800, t_apostle: 100, elch_ticket: 2 } },
+	{ name: "크레파스 & 와일드 카드 패키지", price: 49500, category: "월간 패키지", contents: { crayon_highest: 8, crayon_high: 50, wildcard: 2 } },
+	{ name: "새콤한 카드 뽑기 패키지", price: 99000, category: "월간 패키지", contents: { t_card: 50, f_elif: 5000, scandy: 1000, thumbs: 100 } },
+	{ name: "달달한 사도 모집 패키지", price: 99000, category: "월간 패키지", contents: { t_apostle: 50, f_elif: 5000, kcandy: 1000, thumbs: 100 } },
+	{ name: "하급 마시멜로 패키지", price: 3300, category: "주간 패키지", contents: { p_elif: 100, m_low: 1200 } },
+	{ name: "중급 마시멜로 패키지", price: 6600, category: "주간 패키지", contents: { p_elif: 200, m_mid: 600 } },
+	{ name: "상급 마시멜로 패키지", price: 9900, category: "주간 패키지", contents: { p_elif: 300, m_high: 210 } },
+	{ name: "주간 교단 증명서 패키지", price: 19800, category: "주간 패키지", contents: { p_elif: 600, nuru: 20, cert: 200 } },
+	{ name: "카드 성장 패키지", price: 19800, category: "주간 패키지", contents: { t_card: 20, l_card_select: 1 } },
+	{ name: "사도 색칠 패키지", price: 19800, category: "주간 패키지", contents: { t_apostle: 20, crayon_highest: 2 } }
 ];
 const defaultConfig = {
         price: 0,
@@ -61,7 +70,9 @@ const defaultConfig = {
 	    	{ id: 'l_arti_box', name: '전설 아티팩트 선택 상자', val: 6000, icon: 'images/전설아티팩트상자.webp', count: "" },
 			{ id: 'halo_select', name: '교주의 빛무리! 모집권', val: 5350, icon: 'images/교주의 빛무리! 선택권.png', count: "" },
 			{ id: 'seven_select', name: '영원살이! 일곱자매 선택권', val: 10700, icon: 'images/영원살이! 일곱자매 선택권.png', count: "" },
-			{ id: 'mileage', name: '마일리지', val: 7, icon: 'images/마일리지.png', count: "" }
+			{ id: 'mileage', name: '마일리지', val: 7, icon: 'images/마일리지.png', count: "" },
+			{ id: 'wildcard', name: '전설 와일드 카드', val: 0, icon : 'images/전설 와일드 카드.png', count:""},
+			{ id: 'l_card_select', name: '전설 카드 선택 상자', val: 0, icon : 'imaages/전설 카드 선택 상자.png', count:""}
         ]    
     };
 let config = JSON.parse(JSON.stringify(defaultConfig));
