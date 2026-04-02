@@ -808,7 +808,7 @@ const dbPackages = [
 { name: '에르핀의 각오 패키지', price: 9900, contents: { p_elif: 300, scandy: 300, kcandy: 300, thumbs: 20, f_elif: 200 }, releasedApostle: '네르(빡침)&에르핀(왕도)' },
 { name: "네르(빡침)의 육아 일기", price: 5500, contents: { p_elif: 170, thumbs: 50, kcandy: 800, scandy: 420 }, releasedApostle: '네르(빡침)&에르핀(왕도)' },
 { name: "에르핀의 기특함 패키지", price: 99000, releasedApostle: "네르(빡침)&에르핀(왕도)", contents: { p_elif: 6000, crayon_highest: 10, scandy: 500, kcandy: 500 } },
-{ name: "자신과 싸우는 자 우로스 패키지", price: 99000, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "우로스 증명서 20 = 엘다인 선택권 1장 가치로 산정", contents: { p_elif: 6000, adv_ticket: 2, elch_ticket: 1 } },
+{ name: "자신과 싸우는 자 우로스 패키지", price: 99000, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "우로스 증명서 20 = 엘다인 선택권 1장 가치로 산정", contents: { p_elif: 3000, adv_ticket: 2, elch_ticket: 1 } },
 { name: "에르핀의 기개 패키지", price: 49500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "성격뽑 = 사도뽑으로 계산", contents: { t_apostle: 50, thumbs: 100 } },
 { name: "에르핀의 주먹 패키지", price: 49500, releasedApostle: "네르(빡침)&에르핀(왕도)", contents: { t_apostle: 50, thumbs: 100 } },
 { name: "최고의 소설가 셰럼 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "셰럼 증명서 20장 = 증명서 300장으로 계산", contents: { p_elif: 900, f_elif: 900, cert: 300, attr_순수: 1, m_high: 30 } },
