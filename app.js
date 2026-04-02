@@ -269,25 +269,17 @@ function openTab(id) {
     
     if (!listDiv) return;
 
-    // 1. 검색어 및 선택된 카테고리 값 가져오기
     const query = searchInput ? searchInput.value.toLowerCase() : "";
     const selectedCategory = categorySelect ? categorySelect.value : "all";
 
-    // 2. 교주님이 config.js에 넣은 "판매중", "미판매" 값으로 필터링
     const filtered = constantPackages.filter(pkg => {
-        // 이름 검색 필터링
         const matchesSearch = pkg.name.toLowerCase().includes(query);
-        // 카테고리 필터링 ("all" 이거나 데이터의 category 값과 일치할 때)
         const matchesCategory = (selectedCategory === "all") || (pkg.category === selectedCategory);
-        
         return matchesSearch && matchesCategory;
     });
 
-    // 3. 필터링된 결과 렌더링
     listDiv.innerHTML = filtered.map((pkg) => {
-        // 필터링되어 순서가 바뀌어도 원본 index를 찾아야 분석 기능이 정상 작동함
         const originalIndex = constantPackages.indexOf(pkg);
-        
         const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
         const noteHtml = pkg.note ? `<div class="pkg-note">📝 ${pkg.note}</div>` : "";
         
