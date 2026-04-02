@@ -816,9 +816,9 @@ const dbPackages = [
 { name: "최고의 장난꾼 림(혼돈) 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "림(혼돈) 증명서 20장 = 증명서 300장으로 계산", contents: { p_elif: 900, f_elif: 900, cert: 300, attr_광기: 1, m_high: 30 } },
 { name: "빵집 주인 미로 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "미로 증명서 20장 = 증명서 300장으로 계산", contents: { p_elif: 900, f_elif: 900, cert: 300, attr_활발: 1, m_high: 30 } },
 { name: "CEO 리스티 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "리스티 증명서 20장 = 증명서 300장으로 계산", contents: { p_elif: 900, f_elif: 900, cert: 300, attr_우울: 1, m_high: 30 } },
-{ name: "대환장 만우절 포스터 패키지", price: 9900, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "포스터 포함, 토큰 200엘리프 환산", contents: { p_elif: 300, f_elif: 700 } },
+{ name: "대환장 만우절 포스터 패키지", price: 9900, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "포스터 포함, 뽑기 토큰(200엘리프 환산)", contents: { p_elif: 300, f_elif: 500 } },
 { name: "에르핀의 책임감 패키지", price: 3300, releasedApostle: "네르(빡침)&에르핀(왕도)", contents: { p_elif: 100, kcandy: 100, scandy: 100, thumbs: 10, food_blue: 10, food_purple: 3 } },
-{ name: "뒤죽박죽 파티의 시작 로비 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "로비 포함, 토큰 600엘리프 환산", contents: { p_elif: 900, f_elif: 2100, thumbs: 60 } },
+{ name: "뒤죽박죽 파티의 시작 로비 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "로비 포함, 뽑기 토큰 3개(600엘리프 환산)", contents: { p_elif: 900, f_elif: 1500, thumbs: 60 } },
 { name: "2.5주년 축제 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "축제 토큰 1200엘리프 환산, 성격뽑기 포함", contents: { f_elif: 3200, t_apostle: 40, food_purple: 20 } },
  
  ];
