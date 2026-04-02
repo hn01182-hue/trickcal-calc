@@ -267,10 +267,22 @@ function openTab(id) {
     const searchInput = document.getElementById('constant-search');
     const categorySelect = document.getElementById('constant-category');
     
-    if (!listDiv) return;
+    if (!listDiv || !categorySelect) return;
 
+    // 1. 드롭다운 메뉴 자동 생성 (최초 1회 또는 데이터 변경 시)
+    // "전체" 옵션은 유지하고 데이터에 있는 카테고리들을 중복 없이 가져와 추가합니다.
+    const currentCategory = categorySelect.value;
+    const categories = [...new Set(constantPackages.map(pkg => pkg.category))].filter(Boolean);
+    
+    let selectHtml = `<option value="all">전체</option>`;
+    categories.forEach(cat => {
+        selectHtml += `<option value="${cat}" ${currentCategory === cat ? 'selected' : ''}>${cat}</option>`;
+    });
+    categorySelect.innerHTML = selectHtml;
+
+    // 2. 필터링 로직
     const query = searchInput ? searchInput.value.toLowerCase() : "";
-    const selectedCategory = categorySelect ? categorySelect.value : "all";
+    const selectedCategory = categorySelect.value;
 
     const filtered = constantPackages.filter(pkg => {
         const matchesSearch = pkg.name.toLowerCase().includes(query);
@@ -278,6 +290,7 @@ function openTab(id) {
         return matchesSearch && matchesCategory;
     });
 
+    // 3. 렌더링 로직
     listDiv.innerHTML = filtered.map((pkg) => {
         const originalIndex = constantPackages.indexOf(pkg);
         const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
@@ -292,14 +305,10 @@ function openTab(id) {
             <div class="pkg-card">
                 <span class="pkg-name">${pkg.name}</span>
                 <span class="pkg-price-tag">${pkg.price.toLocaleString()}원</span>
-                
                 ${noteHtml} 
                 <div><span class="eff-badge">효율 점수 : ${score}</span></div>
                 <div class="pkg-items">${summary}</div>
-                
-                <button class="apply-btn" onclick="applyPackageData('constant-list', ${originalIndex})">
-                    이 구성으로 분석하기
-                </button>
+                <button class="apply-btn" onclick="applyPackageData('constant-list', ${originalIndex})">이 구성으로 분석하기</button>
             </div>`;
     }).join('');
 }
