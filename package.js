@@ -806,6 +806,19 @@ const dbPackages = [
 { name: '에르핀의 참! 잘했어요 패키지', price: 99000, contents: { t_apostle: 100, thumbs: 200 }, releasedApostle: '네르(빡침)&에르핀(왕도)' },
 { name: '왕관의 주인공 패키지', price: 29500, contents: { p_elif: 900, t_apostle: 20, thumbs: 60 }, releasedApostle: '네르(빡침)&에르핀(왕도)', note: '스킨 등 포함' },
 { name: '에르핀의 각오 패키지', price: 9900, contents: { p_elif: 300, scandy: 300, kcandy: 300, thumbs: 20, f_elif: 200 }, releasedApostle: '네르(빡침)&에르핀(왕도)' },
-{ name: "네르(빡침)의 육아 일기", price: 5500, contents: { p_elif: 170, thumbs: 50, kcandy: 800, scandy: 420 }, releasedApostle: '네르(빡침)&에르핀(왕도)' }
+{ name: "네르(빡침)의 육아 일기", price: 5500, contents: { p_elif: 170, thumbs: 50, kcandy: 800, scandy: 420 }, releasedApostle: '네르(빡침)&에르핀(왕도)' },
+{ name: "에르핀의 기특함 패키지", price: 99000, releasedApostle: "네르(빡침)&에르핀(왕도)", contents: { p_elif: 6000, crayon_highest: 10, scandy: 500, kcandy: 500 } },
+{ name: "자신과 싸우는 자 우로스 패키지", price: 99000, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "우로스 증명서 20 = 엘다인 선택권 1장 가치로 산정", contents: { p_elif: 6000, adv_ticket: 2, elch_ticket: 1 } },
+{ name: "에르핀의 기개 패키지", price: 49500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "성격뽑 = 사도뽑으로 계산", contents: { t_apostle: 50, thumbs: 100 } },
+{ name: "에르핀의 주먹 패키지", price: 49500, releasedApostle: "네르(빡침)&에르핀(왕도)", contents: { t_apostle: 50, thumbs: 100 } },
+{ name: "최고의 소설가 셰럼 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "셰럼 증명서 20장 = 증명서 300장으로 계산", contents: { p_elif: 900, f_elif: 900, cert: 300, attr_순수: 1, m_high: 30 } },
+{ name: "백수 아이시아 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "아이시아 증명서 20장 = 증명서 300장으로 계산", contents: { p_elif: 900, f_elif: 900, cert: 300, attr_냉정: 1, m_high: 30 } },
+{ name: "최고의 장난꾼 림(혼돈) 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "림(혼돈) 증명서 20장 = 증명서 300장으로 계산", contents: { p_elif: 900, f_elif: 900, cert: 300, attr_광기: 1, m_high: 30 } },
+{ name: "빵집 주인 미로 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "미로 증명서 20장 = 증명서 300장으로 계산", contents: { p_elif: 900, f_elif: 900, cert: 300, attr_활발: 1, m_high: 30 } },
+{ name: "CEO 리스티 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "리스티 증명서 20장 = 증명서 300장으로 계산", contents: { p_elif: 900, f_elif: 900, cert: 300, attr_우울: 1, m_high: 30 } },
+{ name: "대환장 만우절 포스터 패키지", price: 9900, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "포스터 포함, 토큰 200엘리프 환산", contents: { p_elif: 300, f_elif: 700 } },
+{ name: "에르핀의 책임감 패키지", price: 3300, releasedApostle: "네르(빡침)&에르핀(왕도)", contents: { p_elif: 100, kcandy: 100, scandy: 100, thumbs: 10, food_blue: 10, food_purple: 3 } },
+{ name: "뒤죽박죽 파티의 시작 로비 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "로비 포함, 토큰 600엘리프 환산", contents: { p_elif: 900, f_elif: 2100, thumbs: 60 } },
+{ name: "2.5주년 축제 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "축제 토큰 1200엘리프 환산, 성격뽑기 포함", contents: { f_elif: 4400, t_apostle: 40, food_purple: 20 } },
  
  ];
