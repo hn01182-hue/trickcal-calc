@@ -22,7 +22,8 @@ const constantPackages = [
 	{ name: "상급 마시멜로 패키지", price: 9900, category: "주간 패키지", contents: { p_elif: 300, m_high: 210 } },
 	{ name: "주간 교단 증명서 패키지", price: 19800, category: "주간 패키지", contents: { p_elif: 600, nuru: 20, cert: 200 } },
 	{ name: "카드 성장 패키지", price: 19800, category: "주간 패키지", contents: { t_card: 20, l_card_select: 1 } },
-	{ name: "사도 색칠 패키지", price: 19800, category: "주간 패키지", contents: { t_apostle: 20, crayon_highest: 2 } }
+	{ name: "사도 색칠 패키지", price: 19800, category: "주간 패키지", contents: { t_apostle: 20, crayon_highest: 2 } },
+	{ name: '티켓 3종 패키지', price: 1100, category: '주간 패키지', contents: { t_apostle: 3, t_card: 3, nuru: 3 } }
 ];
 const defaultConfig = {
         price: 0,
