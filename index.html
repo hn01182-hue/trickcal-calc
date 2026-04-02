@@ -477,9 +477,18 @@
       <div id="released-list"></div>
     </div>
 
-    <div id="constant" class="card">
-      <div id="constant-list"></div>
+   <div id="constant" class="card">
+  <div class="filter-container">
+    <div style="display: flex; gap: 8px;">
+      <select id="constant-category-select" class="apostle-select" onchange="renderConstantPackages()" style="flex: 1; padding: 10px;">
+        <option value="all">전체 패키지</option>
+        <option value="판매중">판매 중</option>
+        <option value="미판매">판매 종료 (비교용)</option>
+      </select>
     </div>
+  </div>
+  <div id="constant-list"></div>
+</div>
 
     <div id="calc" class="card">
       <div class="row">
