@@ -477,16 +477,17 @@
       <div id="released-list"></div>
     </div>
 
-   <div id="constant" class="card">
-  <div class="filter-container">
-    <div style="display: flex; gap: 8px;">
-      <select id="constant-category-select" class="apostle-select" onchange="renderConstantPackages()" style="flex: 1; padding: 10px;">
-        <option value="all">전체 패키지</option>
-        <option value="판매중">판매 중</option>
-        <option value="미판매">판매 종료 (비교용)</option>
-      </select>
+  <div id="constant" class="card">
+    <div class="filter-container">
+      <div style="display: flex; gap: 8px;">
+        <input type="text" id="constant-search" class="search-input" placeholder="상시 패키지 검색..." oninput="renderConstantPackages()">
+        <select id="constant-category" class="apostle-select" onchange="renderConstantPackages()" style="flex: 0.4;">
+          <option value="all">전체</option>
+          <option value="판매중">판매중</option>
+          <option value="미판매">미판매</option>
+        </select>
+      </div>
     </div>
-  </div>
   <div id="constant-list"></div>
 </div>
 
