@@ -72,7 +72,7 @@ const defaultConfig = {
 			{ id: 'halo_select', name: '교주의 빛무리! 모집권', val: 5350, icon: 'images/교주의 빛무리! 선택권.png', count: "" },
 			{ id: 'seven_select', name: '영원살이! 일곱자매 선택권', val: 10700, icon: 'images/영원살이! 일곱자매 선택권.png', count: "" },
 			{ id: 'mileage', name: '마일리지', val: 7, icon: 'images/마일리지.png', count: "" },
-			{ id: 'wildcard', name: '전설 와일드 카드', val: 0, icon : 'images/전설 와일드 카드.png', count:""},
+			{ id: 'wildcard', name: '전설 와일드 카드', val: 0, icon : 'images/전설 와일드 카드.webp', count:""},
 			{ id: 'l_card_select', name: '보유 전설 카드 선택 상자', val: 0, icon : 'images/보유 전설 카드 선택 상자.webp', count:""}
         ]    
     };
