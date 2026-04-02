@@ -262,13 +262,33 @@ function openTab(id) {
         calculate(); 
     }
 
-    function renderConstantPackages() {
+   function renderConstantPackages() {
     const listDiv = document.getElementById('constant-list');
-    if (!listDiv) return; // 안전장치 추가
+    const searchInput = document.getElementById('constant-search');
+    const categorySelect = document.getElementById('constant-category');
+    
+    if (!listDiv) return;
 
-    listDiv.innerHTML = constantPackages.map((pkg, index) => {
+    // 1. 검색어 및 카테고리 값 가져오기
+    const query = searchInput ? searchInput.value.toLowerCase() : "";
+    const selectedCategory = categorySelect ? categorySelect.value : "all";
+
+    // 2. 데이터 필터링 (이름 검색 + 카테고리 일치)
+    const filtered = constantPackages.filter(pkg => {
+        const matchesSearch = pkg.name.toLowerCase().includes(query);
+        const matchesCategory = (selectedCategory === "all") || (pkg.category === selectedCategory);
+        return matchesSearch && matchesCategory;
+    });
+
+    // 3. 필터링된 결과 렌더링
+    listDiv.innerHTML = filtered.map((pkg) => {
+        // 💡 중요: 필터링된 리스트에서 원본 constantPackages의 실제 인덱스를 찾아야 
+        // '분석하기' 버튼을 눌렀을 때 엉뚱한 데이터가 들어가지 않습니다.
+        const originalIndex = constantPackages.indexOf(pkg);
+        
         const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
-        const noteHtml = pkg.note ? `<div class="pkg-note">📝 ${pkg.note}</div>` : ""; // 💡 변수 생성됨
+        const noteHtml = pkg.note ? `<div class="pkg-note">📝 ${pkg.note}</div>` : "";
+        
         const summary = Object.entries(pkg.contents).map(([id, count]) => {
             const item = config.items.find(i => i.id === id);
             return `${item ? item.name : id} x${count}`;
@@ -279,9 +299,10 @@ function openTab(id) {
                 <span class="pkg-name">${pkg.name}</span>
                 <span class="pkg-price-tag">${pkg.price.toLocaleString()}원</span>
                 
-                ${noteHtml} <div><span class="eff-badge">효율 점수 : ${score}</span></div>
+                ${noteHtml} 
+                <div><span class="eff-badge">효율 점수 : ${score}</span></div>
                 <div class="pkg-items">${summary}</div>
-                <button class="apply-btn" onclick="applyPackageData('constant-list', ${index})">이 구성으로 분석하기</button>
+                <button class="apply-btn" onclick="applyPackageData('constant-list', ${originalIndex})">이 구성으로 분석하기</button>
             </div>`;
     }).join('');
 }
