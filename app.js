@@ -535,3 +535,74 @@ function setupLocalPackages() {
         filterReleased();
     }
 };
+
+// 1. 상시 패키지 그래프 객체 저장을 위한 전역 변수
+let constantChartObj = null;
+
+// 2. 상시 패키지 전용 그래프 그리기 함수
+function drawConstantChart(filteredData) {
+    const canvas = document.getElementById('constantChart');
+    const container = document.getElementById('constant-chart-container');
+    const wrapper = document.getElementById('constant-chart-wrapper');
+    
+    // HTML에 해당 요소가 없으면 중단
+    if (!canvas || !container || !wrapper) return;
+
+    // 데이터가 없으면 그래프 영역 숨김
+    if (filteredData.length === 0) {
+        container.style.display = 'none';
+        return;
+    }
+    
+    // 데이터가 있으면 영역 표시
+    container.style.display = 'block';
+
+    // 데이터 개수에 따라 높이 동적 조절 (1개당 35px)
+    const dynamicHeight = Math.max(200, filteredData.length * 35);
+    wrapper.style.height = dynamicHeight + 'px';
+    canvas.style.height = dynamicHeight + 'px';
+
+    const ctx = canvas.getContext('2d');
+    const labels = filteredData.map(p => p.name);
+    const scores = filteredData.map(p => calculateScore(p.contents, p.price));
+
+    // 기존 그래프가 있으면 파괴하고 새로 생성 (잔상 방지)
+    if (constantChartObj) constantChartObj.destroy();
+
+    constantChartObj = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: scores,
+                backgroundColor: 'rgba(54, 162, 235, 0.7)', // 상시는 파란색 계열
+                borderColor: '#36a2eb',
+                borderWidth: 1,
+                borderRadius: 5
+            }]
+        },
+        options: {
+            indexAxis: 'y', // 가로 막대 그래프
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { 
+                    beginAtZero: true,
+                    grid: { display: false }
+                },
+                y: { 
+                    grid: { display: false },
+                    ticks: { font: { size: 11 } }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: (context) => `효율 점수: ${context.raw.toFixed(1)}`
+                    }
+                }
+            }
+        }
+    });
+}
