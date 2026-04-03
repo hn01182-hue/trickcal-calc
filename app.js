@@ -116,7 +116,7 @@ function openTab(id) {
     }
 }
 
-   function renderCalc() {
+  function renderCalc() {
     const priceInput = document.getElementById('pkg-price');
     const inputContainer = document.getElementById('item-inputs');
     if (!priceInput || !inputContainer) return;
@@ -124,12 +124,12 @@ function openTab(id) {
     priceInput.value = config.price;
     const items = config.items;
 
-    // 1. 그룹별 데이터 분류
-    const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_'));
+    // [수정] 필터 조건에 !i.id.startsWith('marsh_') 추가
+    const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_'));
     const attrItems = items.filter(i => i.id.startsWith('attr_'));
     const posItems = items.filter(i => i.id.startsWith('pos_'));
+    const marshItems = items.filter(i => i.id.startsWith('marsh_')); // [추가] 마시멜로 전용 변수
 
-    // 개별 행을 만드는 보조 함수 (기존 디자인 유지)
     const renderRow = (item) => `
         <div class="row">
             <div class="item-info">
@@ -142,34 +142,28 @@ function openTab(id) {
         </div>`;
 
     let html = "";
-
-    // 2. 일반 아이템 출력 (엘리프, 티켓 등)
     html += normalItems.map(item => renderRow(item)).join('');
 
-    // 3. 속성별 모집권 그룹 (접기/펴기)
+    // 속성/포지션 그룹 로직 (기존과 동일)
     if (attrItems.length > 0) {
-        html += `
-            <details style="margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; background: #fff;">
-                <summary style="padding: 12px; cursor: pointer; background: #f1f1f1; font-weight: bold; font-size: 0.9em; border-radius: 4px;">
-                    📂 속성별 모집권 (클릭)
-                </summary>
-                <div style="padding: 5px 0;">
-                    ${attrItems.map(item => renderRow(item)).join('')}
-                </div>
-            </details>`;
+        html += `<details style="margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; background: #fff;">
+            <summary style="padding: 12px; cursor: pointer; background: #f1f1f1; font-weight: bold; font-size: 0.9em; border-radius: 4px;">📂 속성별 모집권 (클릭)</summary>
+            <div style="padding: 5px 0;">${attrItems.map(item => renderRow(item)).join('')}</div>
+        </details>`;
+    }
+    if (posItems.length > 0) {
+        html += `<details style="margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; background: #fff;">
+            <summary style="padding: 12px; cursor: pointer; background: #f1f1f1; font-weight: bold; font-size: 0.9em; border-radius: 4px;">📂 포지션별 모집권 (클릭)</summary>
+            <div style="padding: 5px 0;">${posItems.map(item => renderRow(item)).join('')}</div>
+        </details>`;
     }
 
-    // 4. 포지션별 모집권 그룹 (접기/펴기)
-    if (posItems.length > 0) {
-        html += `
-            <details style="margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; background: #fff;">
-                <summary style="padding: 12px; cursor: pointer; background: #f1f1f1; font-weight: bold; font-size: 0.9em; border-radius: 4px;">
-                    📂 포지션별 모집권 (클릭)
-                </summary>
-                <div style="padding: 5px 0;">
-                    ${posItems.map(item => renderRow(item)).join('')}
-                </div>
-            </details>`;
+    // [추가] 마시멜로 그룹 UI
+    if (marshItems.length > 0) {
+        html += `<details style="margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; background: #fff;">
+            <summary style="padding: 12px; cursor: pointer; background: #f1f1f1; font-weight: bold; font-size: 0.9em; border-radius: 4px;">📂 마시멜로 종류별 (클릭)</summary>
+            <div style="padding: 5px 0;">${marshItems.map(item => renderRow(item)).join('')}</div>
+        </details>`;
     }
 
     inputContainer.innerHTML = html;
@@ -192,7 +186,7 @@ function openTab(id) {
     function saveInputs() { config.items.forEach(item => { const input = document.getElementById(`cnt-${item.id}`); if(input) item.count = input.value; }); }
     function saveCurrentPrice() { config.price = document.getElementById('pkg-price').value; }
 
- function renderSettings() {
+function renderSettings() {
     const items = config.items;
     
     const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_'));
@@ -213,48 +207,29 @@ function openTab(id) {
         </div>`;
 
     let html = "";
-
     html += normalItems.map(item => renderRow(item)).join('');
 
+    // 속성/포지션/마시멜로 그룹 (기존 로직 유지)
     if (attrItems.length > 0) {
-        html += `
-            <details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
-                <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">
-                    📂 속성별 모집권 (클릭하여 열기)
-                </summary>
-                <div style="background: #fff; padding-top: 5px;">
-                    ${attrItems.map(item => renderRow(item)).join('')}
-                </div>
-            </details>`;
+        html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
+            <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 속성별 모집권 (클릭)</summary>
+            <div style="background: #fff; padding-top: 5px;">${attrItems.map(item => renderRow(item)).join('')}</div>
+        </details>`;
     }
-
     if (posItems.length > 0) {
-        html += `
-            <details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
-                <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">
-                    📂 포지션별 모집권 (클릭하여 열기)
-                </summary>
-                <div style="background: #fff; padding-top: 5px;">
-                    ${posItems.map(item => renderRow(item)).join('')}
-                </div>
-            </details>`;
+        html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
+            <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 포지션별 모집권 (클릭)</summary>
+            <div style="background: #fff; padding-top: 5px;">${posItems.map(item => renderRow(item)).join('')}</div>
+        </details>`;
     }
-
     if (marshItems.length > 0) {
-        html += `
-            <details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
-                <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">
-                    📂 마시멜로 종류별 (클릭하여 열기)
-                </summary>
-                <div style="background: #fff; padding-top: 5px;">
-                    ${marshItems.map(item => renderRow(item)).join('')}
-                </div>
-            </details>`;
+        html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
+            <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 마시멜로 종류별 (클릭)</summary>
+            <div style="background: #fff; padding-top: 5px;">${marshItems.map(item => renderRow(item)).join('')}</div>
+        </details>`;
     }
 
-    document.getElementById('settings-list').innerHTML = html;
-}
-
+    // [수정] 중복되었던 부분을 하나로 합침
     document.getElementById('settings-list').innerHTML = html;
 }
 
