@@ -252,35 +252,54 @@ function renderConstantPackages() {
     const listDiv = document.getElementById('constant-list');
     const searchInput = document.getElementById('constant-search');
     const categorySelect = document.getElementById('constant-category');
+    const sortTypeSelect = document.getElementById('constant-sort-type');
+    const sortOrderSelect = document.getElementById('constant-sort-order');
     
     if (!listDiv || !categorySelect) return;
 
-    // 1. 드롭다운 메뉴 자동 생성 (기존 로직 유지)
+    // 1. 카테고리 자동 갱신 (기존 유지)
     const currentCategory = categorySelect.value;
     const categories = [...new Set(constantPackages.map(pkg => pkg.category))].filter(Boolean);
     
-    let selectHtml = `<option value="all">전체</option>`;
+    let selectHtml = `
+        <option value="all" ${currentCategory === 'all' ? 'selected' : ''}>전체</option>
+        <option value="판매중" ${currentCategory === '판매중' ? 'selected' : ''}>판매중</option>
+        <option value="미판매" ${currentCategory === '미판매' ? 'selected' : ''}>미판매</option>
+    `;
     categories.forEach(cat => {
         selectHtml += `<option value="${cat}" ${currentCategory === cat ? 'selected' : ''}>${cat}</option>`;
     });
     categorySelect.innerHTML = selectHtml;
 
-    // 2. 필터링 로직 (기존 로직 유지)
-    const query = searchInput ? searchInput.value.toLowerCase() : "";
+    // 2. 필터링 로직 (기존 유지)
+    const query = searchInput.value.toLowerCase();
     const selectedCategory = categorySelect.value;
+    const sortType = sortTypeSelect ? sortTypeSelect.value : 'score';
+    const sortOrder = sortOrderSelect ? sortOrderSelect.value : 'desc';
 
-    const filtered = constantPackages.filter(pkg => {
+    let filtered = constantPackages.filter(pkg => {
         const matchesSearch = pkg.name.toLowerCase().includes(query);
-        const matchesCategory = (selectedCategory === "all") || (pkg.category === selectedCategory);
+        let matchesCategory = (selectedCategory === "all");
+        
+        if (selectedCategory === "판매중") matchesCategory = !pkg.isExpired;
+        else if (selectedCategory === "미판매") matchesCategory = pkg.isExpired;
+        else if (selectedCategory !== "all") matchesCategory = (pkg.category === selectedCategory);
+        
         return matchesSearch && matchesCategory;
     });
 
-    // 3. 렌더링 로직 (기존 카드 디자인 유지)
+    // 3. ⭐ 정렬 로직 (가격/효율 기준)
+    filtered.sort((a, b) => {
+        let vA = (sortType === 'price') ? a.price : calculateScore(a.contents, a.price);
+        let vB = (sortType === 'price') ? b.price : calculateScore(b.contents, b.price);
+        return (sortOrder === 'asc') ? vA - vB : vB - vA;
+    });
+
+    // 4. 리스트 렌더링 (기존 유지)
     listDiv.innerHTML = filtered.map((pkg) => {
         const originalIndex = constantPackages.indexOf(pkg);
         const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
         const noteHtml = pkg.note ? `<div class="pkg-note">📝 ${pkg.note}</div>` : "";
-        
         const summary = Object.entries(pkg.contents).map(([id, count]) => {
             const item = config.items.find(i => i.id === id);
             return `${item ? item.name : id} x${count}`;
@@ -297,6 +316,7 @@ function renderConstantPackages() {
             </div>`;
     }).join('');
 
+    // 5. 그래프 업데이트
     if (typeof drawConstantChart === 'function') {
         drawConstantChart(filtered);
     }
