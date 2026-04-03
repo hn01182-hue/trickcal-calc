@@ -192,15 +192,14 @@ function openTab(id) {
     function saveInputs() { config.items.forEach(item => { const input = document.getElementById(`cnt-${item.id}`); if(input) item.count = input.value; }); }
     function saveCurrentPrice() { config.price = document.getElementById('pkg-price').value; }
 
-    function renderSettings() {
+ function renderSettings() {
     const items = config.items;
     
-    // 1. 그룹별로 데이터 분류
-    const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_'));
+    const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_'));
     const attrItems = items.filter(i => i.id.startsWith('attr_'));
     const posItems = items.filter(i => i.id.startsWith('pos_'));
+    const marshItems = items.filter(i => i.id.startsWith('marsh_'));
 
-    // 개별 행을 만드는 보조 함수 (원본 HTML 구조 유지)
     const renderRow = (item) => `
         <div class="row">
             <div class="item-info">
@@ -215,10 +214,8 @@ function openTab(id) {
 
     let html = "";
 
-    // 2. 일반 아이템 출력
     html += normalItems.map(item => renderRow(item)).join('');
 
-    // 3. 속성별 모집권 그룹 (확장 화살표)
     if (attrItems.length > 0) {
         html += `
             <details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
@@ -231,7 +228,6 @@ function openTab(id) {
             </details>`;
     }
 
-    // 4. 포지션별 모집권 그룹 (확장 화살표)
     if (posItems.length > 0) {
         html += `
             <details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
@@ -243,6 +239,21 @@ function openTab(id) {
                 </div>
             </details>`;
     }
+
+    if (marshItems.length > 0) {
+        html += `
+            <details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
+                <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">
+                    📂 마시멜로 종류별 (클릭하여 열기)
+                </summary>
+                <div style="background: #fff; padding-top: 5px;">
+                    ${marshItems.map(item => renderRow(item)).join('')}
+                </div>
+            </details>`;
+    }
+
+    document.getElementById('settings-list').innerHTML = html;
+}
 
     document.getElementById('settings-list').innerHTML = html;
 }
