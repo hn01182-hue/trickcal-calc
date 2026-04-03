@@ -487,6 +487,17 @@
           <option value="미판매">미판매</option>
         </select>
       </div>
+      
+      <div style="display: flex; gap: 8px; margin-top: 8px;">
+        <select id="constant-sort-type" class="apostle-select" onchange="renderConstantPackages()" style="flex: 1;">
+          <option value="price">가격 기준</option>
+          <option value="score" selected>효율 점수 기준</option>
+        </select>
+        <select id="constant-sort-order" class="apostle-select" onchange="renderConstantPackages()" style="flex: 1;">
+          <option value="desc">내림차순 (높은순)</option>
+          <option value="asc">오름차순 (낮은순)</option>
+        </select>
+      </div>
     </div>
 
     <div id="constant-chart-container" style="display:none; margin: 15px 0; padding: 15px; background: #fff; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
