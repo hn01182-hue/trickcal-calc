@@ -248,15 +248,14 @@ function renderSettings() {
         calculate(); 
     }
 
-   function renderConstantPackages() {
+function renderConstantPackages() {
     const listDiv = document.getElementById('constant-list');
     const searchInput = document.getElementById('constant-search');
     const categorySelect = document.getElementById('constant-category');
     
     if (!listDiv || !categorySelect) return;
 
-    // 1. 드롭다운 메뉴 자동 생성 (최초 1회 또는 데이터 변경 시)
-    // "전체" 옵션은 유지하고 데이터에 있는 카테고리들을 중복 없이 가져와 추가합니다.
+    // 1. 드롭다운 메뉴 자동 생성 (기존 로직 유지)
     const currentCategory = categorySelect.value;
     const categories = [...new Set(constantPackages.map(pkg => pkg.category))].filter(Boolean);
     
@@ -266,7 +265,7 @@ function renderSettings() {
     });
     categorySelect.innerHTML = selectHtml;
 
-    // 2. 필터링 로직
+    // 2. 필터링 로직 (기존 로직 유지)
     const query = searchInput ? searchInput.value.toLowerCase() : "";
     const selectedCategory = categorySelect.value;
 
@@ -276,7 +275,7 @@ function renderSettings() {
         return matchesSearch && matchesCategory;
     });
 
-    // 3. 렌더링 로직
+    // 3. 렌더링 로직 (기존 카드 디자인 유지)
     listDiv.innerHTML = filtered.map((pkg) => {
         const originalIndex = constantPackages.indexOf(pkg);
         const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
@@ -297,6 +296,10 @@ function renderSettings() {
                 <button class="apply-btn" onclick="applyPackageData('constant-list', ${originalIndex})">이 구성으로 분석하기</button>
             </div>`;
     }).join('');
+
+    if (typeof drawConstantChart === 'function') {
+        drawConstantChart(filtered);
+    }
 }
     function loadAll() {
         const saved = localStorage.getItem(STORAGE_KEY);
