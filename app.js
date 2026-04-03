@@ -536,37 +536,39 @@ function setupLocalPackages() {
     }
 };
 
-// 1. 상시 패키지 그래프 객체 저장을 위한 전역 변수
 let constantChartObj = null;
 
-// 2. 상시 패키지 전용 그래프 그리기 함수
 function drawConstantChart(filteredData) {
     const canvas = document.getElementById('constantChart');
     const container = document.getElementById('constant-chart-container');
     const wrapper = document.getElementById('constant-chart-wrapper');
-    
-    // HTML에 해당 요소가 없으면 중단
-    if (!canvas || !container || !wrapper) return;
+    if (!canvas) return;
 
-    // 데이터가 없으면 그래프 영역 숨김
     if (filteredData.length === 0) {
         container.style.display = 'none';
         return;
     }
-    
-    // 데이터가 있으면 영역 표시
     container.style.display = 'block';
 
-    // 데이터 개수에 따라 높이 동적 조절 (1개당 35px)
     const dynamicHeight = Math.max(200, filteredData.length * 35);
     wrapper.style.height = dynamicHeight + 'px';
     canvas.style.height = dynamicHeight + 'px';
 
     const ctx = canvas.getContext('2d');
+
+    const gracePkg = constantPackages.find(p => p.name === "은총 패키지") || {
+        price: 99000, 
+        contents: { p_elif: 6000, crayon_highest: 10, scandy: 500, kcandy: 500 }
+    };
+    const graceScore = calculateScore(gracePkg.contents, gracePkg.price);
+
     const labels = filteredData.map(p => p.name);
     const scores = filteredData.map(p => calculateScore(p.contents, p.price));
 
-    // 기존 그래프가 있으면 파괴하고 새로 생성 (잔상 방지)
+    const realMax = scores.length > 0 ? Math.max(...scores) : 0;
+    let xAxisMax = Math.max(realMax, graceScore) * 1.1; 
+    if (xAxisMax > 1000) xAxisMax = 1000;
+
     if (constantChartObj) constantChartObj.destroy();
 
     constantChartObj = new Chart(ctx, {
@@ -575,34 +577,52 @@ function drawConstantChart(filteredData) {
             labels: labels,
             datasets: [{
                 data: scores,
-                backgroundColor: 'rgba(54, 162, 235, 0.7)', // 상시는 파란색 계열
-                borderColor: '#36a2eb',
+                backgroundColor: scores.map(s => s >= graceScore ? 'rgba(125, 178, 73, 0.7)' : 'rgba(233, 30, 99, 0.7)'),
+                borderColor: scores.map(s => s >= graceScore ? '#7db249' : '#e91e63'),
                 borderWidth: 1,
                 borderRadius: 5
             }]
         },
         options: {
-            indexAxis: 'y', // 가로 막대 그래프
+            indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
             scales: {
                 x: { 
-                    beginAtZero: true,
-                    grid: { display: false }
+                    beginAtZero: true, 
+                    max: xAxisMax,
+                    grid: { display: false } 
                 },
-                y: { 
-                    grid: { display: false },
-                    ticks: { font: { size: 11 } }
-                }
+                y: { grid: { display: false } }
             },
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    callbacks: {
-                        label: (context) => `효율 점수: ${context.raw.toFixed(1)}`
-                    }
+                    callbacks: { label: (context) => `효율 점수: ${context.raw.toFixed(1)}` }
                 }
             }
-        }
+        },
+        plugins: [{
+            afterDraw: chart => {
+                const {ctx, chartArea: {top, bottom}, scales: {x}} = chart;
+                const xPos = x.getPixelForValue(graceScore);
+                
+                if (xPos >= chart.chartArea.left && xPos <= chart.chartArea.right) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = '#888';
+                    ctx.setLineDash([5, 5]);
+                    ctx.moveTo(xPos, top);
+                    ctx.lineTo(xPos, bottom);
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#666';
+                    ctx.font = 'bold 11px Arial';
+                    ctx.fillText(graceScore.toFixed(1), xPos + 5, top + 12);
+                    ctx.restore();
+                }
+            }
+        }]
     });
 }
