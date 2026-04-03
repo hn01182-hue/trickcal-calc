@@ -488,7 +488,15 @@
         </select>
       </div>
     </div>
-  <div id="constant-list"></div>
+
+    <div id="constant-chart-container" style="display:none; margin: 15px 0; padding: 15px; background: #fff; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <div style="margin-bottom: 10px; font-weight: bold; color: #333; font-size: 0.9em;">📈 상시 패키지 효율 비교</div>
+        <div id="constant-chart-wrapper" style="position: relative; width: 100%;">
+            <canvas id="constantChart"></canvas>
+        </div>
+    </div>
+
+    <div id="constant-list"></div>
 </div>
 
     <div id="calc" class="card">
