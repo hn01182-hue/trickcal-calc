@@ -108,5 +108,16 @@ const dbPackages = [
 { name: "에르핀의 책임감 패키지", price: 3300, releasedApostle: "네르(빡침)&에르핀(왕도)", contents: { p_elif: 100, kcandy: 100, scandy: 100, thumbs: 10, food_blue: 10, food_purple: 3 } },
 { name: "뒤죽박죽 파티의 시작 로비 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "로비 포함, 뽑기 토큰 3개(600엘리프 환산)", contents: { p_elif: 900, f_elif: 1500, thumbs: 60 } },
 { name: "2.5주년 축제 패키지", price: 29500, releasedApostle: "네르(빡침)&에르핀(왕도)", note: "축제 토큰 1200엘리프 환산, 성격뽑기 포함", contents: { f_elif: 3200, t_apostle: 40, food_purple: 20 } },
-{ name: "헤일리의 진료노트", price: 5500, releasedApostle: "헤일리(멀쩡)", contents: { "p_elif": 170, "t_apostle": 8, "t_card": 7, "kcandy": 200, "scandy": 300 } }
+{ name: "헤일리의 진료노트", price: 5500, releasedApostle: "헤일리(멀쩡)", contents: { "p_elif": 170, "t_apostle": 8, "t_card": 7, "kcandy": 200, "scandy": 300 } },
+{ name: "마침내 일어선 티그(영웅) 패키지", price: 99000, releasedApostle: "헤일리(멀쩡)", contents: { p_elif: 3000, elch_ticket: 1, attr_광기: 3 }, note: "티그(영웅) 증명서 20 = 엘다인 선택권 1장 가치로 산정" },
+{ name: "헤일리의 정의 패키지", price: 99000, releasedApostle: "헤일리(멀쩡)", contents: { t_apostle: 100, thumbs: 200 } },
+{ name: "헤일리의 집중 패키지", price: 99000, releasedApostle: "헤일리(멀쩡)", contents: { t_apostle: 100, crayon_highest: 10 }},
+{ name: "헤일리의 정조준 패키지", price: 49500, releasedApostle: "헤일리(멀쩡)", contents: { p_elif: 1500, cert: 400, f_elif: 1000, kcandy: 500, scandy: 500 }, note: "토큰=200엘리프로 계산" },
+{ name: "전장의 지휘관 헤일리 패키지", price: 19800, releasedApostle: "헤일리(멀쩡)", contents: { p_elif: 600, kcandy: 600, scandy: 600, thumbs: 40, f_elif: 400 }, note: "토큰=200엘리프로 계산" },
+{ name: "헤일리의 책임감 패키지", price: 9900, releasedApostle: "헤일리(멀쩡)", contents: { p_elif: 300, f_elif: 500, t_card: 10 }, note: "토큰=200엘리프로 계산" },
+{ name: "헤일리의 후회 패키지", price: 9900, releasedApostle: "헤일리(멀쩡)", contents: { p_elif: 300, f_elif: 500, t_apostle: 10 }, note: "토큰=200엘리프로 계산" },
+{ name: "헤일리의 각성 패키지", price: 9900, releasedApostle: "헤일리(멀쩡)", contents: { p_elif: 300, f_elif: 500, t_apostle: 10 }, note: "토큰=200엘리프로 계산" },
+{ name: "헤일리의 쾌속 전진 패키지", price: 3300, releasedApostle: "헤일리(멀쩡)", contents: { p_elif: 100, scandy: 100, thumbs: 10, light_box: 200, food_blue: 5 } },
+{ name: "헤일리의 결심 패키지", price: 3300, releasedApostle: "헤일리(멀쩡)", contents: { p_elif: 100, kcandy: 200, thumbs: 10, manual: 800, food_blue: 5 }},
+{ name: "새벽의 여정 로비 패키지", price: 29500, releasedApostle: "헤일리(멀쩡)", contents: { p_elif: 900, f_elif: 600, t_apostle: 20 }, note: "토큰=200엘리프로 계산, 로비 포함" }
  ];
