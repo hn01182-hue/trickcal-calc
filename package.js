@@ -119,5 +119,15 @@ const dbPackages = [
 { name: "헤일리의 각성 패키지", price: 9900, releasedApostle: "헤일리(멀쩡)", contents: { p_elif: 300, f_elif: 500, t_apostle: 10 }, note: "토큰=200엘리프로 계산" },
 { name: "헤일리의 쾌속 전진 패키지", price: 3300, releasedApostle: "헤일리(멀쩡)", contents: { p_elif: 100, scandy: 100, thumbs: 10, light_box: 200, food_blue: 5 } },
 { name: "헤일리의 결심 패키지", price: 3300, releasedApostle: "헤일리(멀쩡)", contents: { p_elif: 100, kcandy: 200, thumbs: 10, manual: 800, food_blue: 5 }},
-{ name: "새벽의 여정 로비 패키지", price: 29500, releasedApostle: "헤일리(멀쩡)", contents: { p_elif: 900, f_elif: 600, t_apostle: 20 }, note: "토큰=200엘리프로 계산, 로비 포함" }
+{ name: "새벽의 여정 로비 패키지", price: 29500, releasedApostle: "헤일리(멀쩡)", contents: { p_elif: 900, f_elif: 600, t_apostle: 20 }, note: "토큰=200엘리프로 계산, 로비 포함" },
+{ name: "2.5주년 기념 웹 상점 특별 패키지", price: 29500, releasedApostle: "아이시움(~26.4.23.)", contents: { f_elif: 3500, kcandy: 2500, t_apostle: 25, wildcard: 2, mileage: 30 }, note: "토큰=200엘리프로 계산" },
+{ name: "사도 장비 성장 패키지", price: 9900, releasedApostle: "아이시움(~26.4.23.)", contents: { p_elif: 300, t_apostle: 10, manual: 1500, mileage: 10 } },
+{ name: "새콤달콤 우수 증표 패키지", price: 9900, releasedApostle: "아이시움(~26.4.23.)", contents: { p_elif: 300, kcandy: 300, scandy: 300, gold: 70, f_elif: 200, mileage: 10 }, note: "토큰=200엘리프로 계산" },
+{ name: "사도 모집 가득 패키지", price: 19800, releasedApostle: "아이시움(~26.4.23.)", contents: { p_elif: 600, attr_광기: 1, t_apostle: 20, food_purple: 10, mileage: 20 } },
+{ name: "엘리아스 교단 증명서 패키지", price: 29500, releasedApostle: "아이시움(~26.4.23.)", contents: { p_elif: 900, f_elif: 900, cert: 300, mileage: 30 } },
+{ name: "최상급 크레파스 색칠 패키지", price: 49500, releasedApostle: "아이시움(~26.4.23.)", contents: { p_elif: 1500, f_elif: 1500, crayon_highest: 6, mileage: 50 } },
+{ name: "골드 듬뿍 사도 모집 패키지", price: 49500, releasedApostle: "아이시움(~26.4.23.)", contents: { t_apostle: 50, gold: 350, mileage: 50 } },
+{ name: "사탕 듬뿍 사도 모집 패키지", price: 99000, releasedApostle: "아이시움(~26.4.23.)", contents: { t_apostle: 100, kcandy: 1000, scandy: 1000, mileage: 100 } },
+{ name: "성격 모집&우수 증표 패키지", price: 99000, releasedApostle: "아이시움(~26.4.23.)", contents: { t_apostle: 100, f_elif: 2000, mileage: 100 }, note: "토큰=200엘리프로 계산" },
+{ name: "보유 엘다인 사도 선택권 패키지", price: 99000, releasedApostle: "아이시움(~26.4.23.)", contents: { elch_ticket: 1, scandy: 500, mileage: 100 } },
  ];
