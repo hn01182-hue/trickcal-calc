@@ -258,21 +258,23 @@ function renderConstantPackages() {
     
     if (!listDiv || !categorySelect) return;
 
-    // 1. 카테고리 자동 갱신 (기존 유지)
+    // 1. 카테고리 자동 갱신 (중복 방지 로직 적용)
     const currentCategory = categorySelect.value;
-    const categories = [...new Set(constantPackages.map(pkg => pkg.category))].filter(Boolean);
+    // 데이터에서 카테고리를 가져오되, 수동으로 넣을 '판매중', '미판매'는 중복 방지를 위해 제외
+    const categoriesFromData = [...new Set(constantPackages.map(pkg => pkg.category))]
+        .filter(cat => cat && cat !== "판매중" && cat !== "미판매");
     
     let selectHtml = `
         <option value="all" ${currentCategory === 'all' ? 'selected' : ''}>전체</option>
         <option value="판매중" ${currentCategory === '판매중' ? 'selected' : ''}>판매중</option>
         <option value="미판매" ${currentCategory === '미판매' ? 'selected' : ''}>미판매</option>
     `;
-    categories.forEach(cat => {
+    categoriesFromData.forEach(cat => {
         selectHtml += `<option value="${cat}" ${currentCategory === cat ? 'selected' : ''}>${cat}</option>`;
     });
     categorySelect.innerHTML = selectHtml;
 
-    // 2. 필터링 로직 (기존 유지)
+    // 2. 필터링 로직 (변동 없음)
     const query = searchInput.value.toLowerCase();
     const selectedCategory = categorySelect.value;
     const sortType = sortTypeSelect ? sortTypeSelect.value : 'score';
@@ -289,14 +291,14 @@ function renderConstantPackages() {
         return matchesSearch && matchesCategory;
     });
 
-    // 3. ⭐ 정렬 로직 (가격/효율 기준)
+    // 3. 정렬 로직 (변동 없음)
     filtered.sort((a, b) => {
         let vA = (sortType === 'price') ? a.price : calculateScore(a.contents, a.price);
         let vB = (sortType === 'price') ? b.price : calculateScore(b.contents, b.price);
         return (sortOrder === 'asc') ? vA - vB : vB - vA;
     });
 
-    // 4. 리스트 렌더링 (수정: 스크롤용 ID 추가)
+    // 4. 리스트 렌더링 (스크롤용 ID 보존)
     listDiv.innerHTML = filtered.map((pkg) => {
         const originalIndex = constantPackages.indexOf(pkg);
         const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
@@ -317,7 +319,7 @@ function renderConstantPackages() {
             </div>`;
     }).join('');
 
-    // 5. 그래프 업데이트
+    // 5. 그래프 업데이트 (변동 없음)
     if (typeof drawConstantChart === 'function') {
         drawConstantChart(filtered);
     }
