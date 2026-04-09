@@ -258,47 +258,56 @@ function renderConstantPackages() {
     
     if (!listDiv || !categorySelect) return;
 
-    // 1. 카테고리 자동 갱신 (중복 방지 로직 적용)
-    const currentCategory = categorySelect.value;
-    // 데이터에서 카테고리를 가져오되, 수동으로 넣을 '판매중', '미판매'는 중복 방지를 위해 제외
-    const categoriesFromData = [...new Set(constantPackages.map(pkg => pkg.category))]
-        .filter(cat => cat && cat !== "판매중" && cat !== "미판매");
-    
-    let selectHtml = `
-        <option value="all" ${currentCategory === 'all' ? 'selected' : ''}>전체</option>
-        <option value="판매중" ${currentCategory === '판매중' ? 'selected' : ''}>판매중</option>
-        <option value="미판매" ${currentCategory === '미판매' ? 'selected' : ''}>미판매</option>
-    `;
-    categoriesFromData.forEach(cat => {
-        selectHtml += `<option value="${cat}" ${currentCategory === cat ? 'selected' : ''}>${cat}</option>`;
-    });
-    categorySelect.innerHTML = selectHtml;
-
-    // 2. 필터링 로직 (변동 없음)
-    const query = searchInput.value.toLowerCase();
-    const selectedCategory = categorySelect.value;
+    // 1. 현재 선택된 값 저장
+    const selectedCategory = categorySelect.value || "all";
+    const query = (searchInput.value || "").toLowerCase().trim();
     const sortType = sortTypeSelect ? sortTypeSelect.value : 'score';
     const sortOrder = sortOrderSelect ? sortOrderSelect.value : 'desc';
 
+    // 2. 카테고리 목록 자동 갱신 (중복 방지)
+    const categoriesFromData = [...new Set(constantPackages.map(pkg => pkg.category))]
+        .filter(cat => cat && cat !== "판매중" && cat !== "미판매")
+        .sort();
+    
+    let selectHtml = `
+        <option value="all" ${selectedCategory === 'all' ? 'selected' : ''}>전체</option>
+        <option value="판매중" ${selectedCategory === '판매중' ? 'selected' : ''}>판매중</option>
+        <option value="미판매" ${selectedCategory === '미판매' ? 'selected' : ''}>미판매</option>
+    `;
+    categoriesFromData.forEach(cat => {
+        selectHtml += `<option value="${cat}" ${selectedCategory === cat ? 'selected' : ''}>${cat}</option>`;
+    });
+    categorySelect.innerHTML = selectHtml;
+
+    // 3. 필터링 로직 (isExpired 대신 category: "미판매" 기준으로 수정)
     let filtered = constantPackages.filter(pkg => {
         const matchesSearch = pkg.name.toLowerCase().includes(query);
-        let matchesCategory = (selectedCategory === "all");
-        
-        if (selectedCategory === "판매중") matchesCategory = !pkg.isExpired;
-        else if (selectedCategory === "미판매") matchesCategory = pkg.isExpired;
-        else if (selectedCategory !== "all") matchesCategory = (pkg.category === selectedCategory);
+        let matchesCategory = false;
+        const pkgCat = pkg.category || "";
+
+        if (selectedCategory === "all") {
+            matchesCategory = true;
+        } else if (selectedCategory === "판매중") {
+            // 카테고리가 "미판매"가 아닌 것들을 판매중으로 간주
+            matchesCategory = (pkgCat !== "미판매");
+        } else if (selectedCategory === "미판매") {
+            // 카테고리가 "미판매"인 것들만 필터링
+            matchesCategory = (pkgCat === "미판매");
+        } else {
+            matchesCategory = (pkgCat === selectedCategory);
+        }
         
         return matchesSearch && matchesCategory;
     });
 
-    // 3. 정렬 로직 (변동 없음)
+    // 4. 정렬 로직 (기존 유지)
     filtered.sort((a, b) => {
         let vA = (sortType === 'price') ? a.price : calculateScore(a.contents, a.price);
         let vB = (sortType === 'price') ? b.price : calculateScore(b.contents, b.price);
         return (sortOrder === 'asc') ? vA - vB : vB - vA;
     });
 
-    // 4. 리스트 렌더링 (스크롤용 ID 보존)
+    // 5. 리스트 렌더링 (스크롤용 ID 포함)
     listDiv.innerHTML = filtered.map((pkg) => {
         const originalIndex = constantPackages.indexOf(pkg);
         const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
@@ -319,7 +328,7 @@ function renderConstantPackages() {
             </div>`;
     }).join('');
 
-    // 5. 그래프 업데이트 (변동 없음)
+    // 6. 그래프 업데이트
     if (typeof drawConstantChart === 'function') {
         drawConstantChart(filtered);
     }
