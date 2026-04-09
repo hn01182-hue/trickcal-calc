@@ -89,5 +89,6 @@ const apostleDB = [
     { id: "피코라", name: "피코라", role: "서포터", type: "냉정", isEldain: false },
     { id: "하이디", name: "하이디", role: "딜러", type: "광기", isEldain: false },
     { id: "헤일리", name: "헤일리", role: "딜러", type: "순수", isEldain: false },
+    { id: "헤일리(멀쩡)", name : "헤일리(멀쩡)", role: "탱커", type: "광기", isEldain: false },
     { id: "힐데", name: "힐데", role: "서포터", type: "우울", isEldain: false }
 ];
