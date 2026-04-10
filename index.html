@@ -432,6 +432,58 @@
     filter: grayscale(0.5); /* 약간 회색빛으로 */
     transition: all 0.2s ease;
 }
+
+/* 설정 도우미 관련 스타일 */
+.helper-btn {
+    font-size: 0.7em;
+    padding: 2px 6px;
+    margin-left: 6px;
+    background: #fff;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.helper-box {
+    display: none;
+    width: 100%;
+    background: #f1f8e9;
+    border: 1px dashed var(--primary);
+    border-radius: 8px;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 0.85em;
+}
+
+.helper-box.active {
+    display: block;
+}
+
+.helper-select {
+    width: 100%;
+    padding: 6px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+.helper-box label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 2px 0;
+}
+
+.helper-box label:hover {
+    color: var(--primary);
+}
+
+.helper-box input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
   </style>
 </head>
 
@@ -592,10 +644,10 @@
     </div>
   </div>
 
-  <script src="config.js?v=1.9"></script>
-  <script src="package.js?v=1.9"></script>
-  <script src="apostle_db.js?v=1.9"></script>
-  <script src="apostle.js?v=1.9"></script>
+  <script src="config.js?v=1.8"></script>
+  <script src="package.js?v=1.8"></script>
+  <script src="apostle_db.js?v=1.8"></script>
+  <script src="apostle.js?v=1.8"></script>
   <script src="app.js?v=1.9"></script>
 
   <script>
