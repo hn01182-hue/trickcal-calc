@@ -189,6 +189,8 @@ function openTab(id) {
 
 function renderSettings() {
     const items = config.items;
+    
+    // 아이템 필터링 로직 (기존 유지)
     const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_'));
     const attrItems = items.filter(i => i.id.startsWith('attr_'));
     const posItems = items.filter(i => i.id.startsWith('pos_'));
@@ -198,16 +200,19 @@ function renderSettings() {
         const isPaidElif = item.id === 'p_elif';
         const helperBtn = isPaidElif ? `<button class="helper-btn" onclick="toggleSettingHelper()">설정 도우미</button>` : '';
         
+        // 💡 탭 이동 시 체크박스 상태 유지를 위해 config.paidElifCriteria 확인
+        const isChecked = (val) => (config.paidElifCriteria && config.paidElifCriteria.includes(val)) ? 'checked' : '';
+
         // 체크박스 기반 도우미 박스
         const helperBox = isPaidElif ? `
             <div id="p_elif-helper" class="helper-box">
                 <strong style="display:block; margin-bottom:8px;">유료 엘리프 주요 소모처 (복수 선택)</strong>
                 <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label><input type="checkbox" class="elif-helper-chk" value="3.0" onchange="updatePaidElifValue()"> 사도랑 왕사탕 패키지</label>
-                    <label><input type="checkbox" class="elif-helper-chk" value="4.8" onchange="updatePaidElifValue()"> 카드랑 별사탕 패키지</label>
-                    <label><input type="checkbox" class="elif-helper-chk" value="2.8" onchange="updatePaidElifValue()"> 새콤 교단 증명서 패키지</label>
-                    <label><input type="checkbox" class="elif-helper-chk" value="3.3" onchange="updatePaidElifValue()"> 1일 1회 모집 뽑기(일일뽑)</label>
-                    <label><input type="checkbox" class="elif-helper-chk" value="2.7" onchange="updatePaidElifValue()"> 엘리프 교체 패키지</label>
+                    <label><input type="checkbox" class="elif-helper-chk" value="3.0" onchange="updatePaidElifValue()" ${isChecked("3.0")}> 사도랑 왕사탕 패키지</label>
+                    <label><input type="checkbox" class="elif-helper-chk" value="4.8" onchange="updatePaidElifValue()" ${isChecked("4.8")}> 카드랑 별사탕 패키지</label>
+                    <label><input type="checkbox" class="elif-helper-chk" value="2.8" onchange="updatePaidElifValue()" ${isChecked("2.8")}> 새콤 교단 증명서 패키지</label>
+                    <label><input type="checkbox" class="elif-helper-chk" value="3.3" onchange="updatePaidElifValue()" ${isChecked("3.3")}> 1일 1회 모집 뽑기(일일뽑)</label>
+                    <label><input type="checkbox" class="elif-helper-chk" value="2.7" onchange="updatePaidElifValue()" ${isChecked("2.7")}> 엘리프 교체 패키지</label>
                 </div>
                 <p style="margin-top: 10px; font-size: 0.8em; color: #d32f2f;">* 선택한 항목 중 가장 낮은 효율이 기준값으로 적용됩니다.</p>
             </div>
@@ -231,19 +236,23 @@ function renderSettings() {
     let html = "";
     html += normalItems.map(item => renderRow(item)).join('');
 
+    // 속성별 모집권 그룹
     if (attrItems.length > 0) {
         html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
             <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 속성별 모집권 (클릭)</summary>
             <div style="background: #fff; padding-top: 5px;">${attrItems.map(item => renderRow(item)).join('')}</div>
         </details>`;
     }
-    // ... (posItems, marshItems 렌더링 로직은 기존과 동일)
+    
+    // 포지션별 모집권 그룹
     if (posItems.length > 0) {
         html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
             <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 포지션별 모집권 (클릭)</summary>
             <div style="background: #fff; padding-top: 5px;">${posItems.map(item => renderRow(item)).join('')}</div>
         </details>`;
     }
+    
+    // 마시멜로 종류별 그룹
     if (marshItems.length > 0) {
         html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
             <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 마시멜로 종류별 (클릭)</summary>
@@ -265,19 +274,24 @@ function updatePaidElifValue() {
     const checkboxes = document.querySelectorAll('.elif-helper-chk');
     const checkedValues = Array.from(checkboxes)
         .filter(chk => chk.checked)
-        .map(chk => parseFloat(chk.value));
+        .map(chk => chk.value); // 문자열 그대로 저장
+
+    // 💡 체크 상태 저장
+    config.paidElifCriteria = checkedValues;
 
     if (checkedValues.length > 0) {
-        // 선택된 것 중 가장 효율이 낮은(작은 값)을 선택
-        const minValue = Math.min(...checkedValues);
-        
+        const minValue = Math.min(...checkedValues.map(v => parseFloat(v)));
         const input = document.getElementById('val-p_elif');
         if (input) {
             input.value = minValue;
-            saveSettings(); // 실시간 저장 및 UI 갱신
+            saveSettings(); // 여기서 config 전체가 localStorage에 저장됨
         }
+    } else {
+        // 모두 체크 해제 시 기본값 혹은 저장만 실행
+        saveSettings();
     }
 }
+
     function saveSettings() {
         config.items.forEach(item => { 
             const input = document.getElementById(`val-${item.id}`); 
