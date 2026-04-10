@@ -26,7 +26,8 @@ const constantPackages = [
 	{ name: '티켓 3종 패키지', price: 1100, category: '주간 패키지', contents: { t_apostle: 3, t_card: 3, nuru: 3 } }
 ];
 const defaultConfig = {
-        price: 0,
+        price: 0,	
+		paidElifCriteria: [],
         items: [
             { id: 'p_elif', name: '유료 엘리프', val: 2.7, icon: 'images/엘리프.png', count: "" },
             { id: 'f_elif', name: '무료 엘리프', val: 1, fixed: true, icon: 'images/엘리프.png', count: "" },
