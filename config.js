@@ -83,7 +83,7 @@ const defaultConfig = {
 			{ id: 'mileage', name: '마일리지', val: 10, icon: 'images/마일리지.png', count: "" },
 			{ id: 'wildcard', name: '전설 와일드 카드', val: 0, icon : 'images/전설 와일드 카드.webp', count:""},
 			{ id: 'l_card_select', name: '보유 전설 카드 선택 상자', val: 0, icon : 'images/보유 전설 카드 선택 상자.webp', count:""},
-			{ id: 'excellent_token', name: '우수 증표', val: 300, icon: 'images/우수 증표.png', count: "" }
+			{ id: 'excellent_token', name: '우수 증표', val: 300, icon: 'images/우수 증표.webp', count: "" }
         ]    
     };
 let config = JSON.parse(JSON.stringify(defaultConfig));
