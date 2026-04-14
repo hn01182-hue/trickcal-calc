@@ -27,7 +27,8 @@ const constantPackages = [
 ];
 const defaultConfig = {
         price: 0,	
-		paidElifCriteria: [],
+	paidElifCriteria: [],
+	kcandyCriteria: [],
         items: [
             { id: 'p_elif', name: '유료 엘리프', val: 2.7, icon: 'images/엘리프.png', count: "" },
             { id: 'f_elif', name: '무료 엘리프', val: 1, fixed: true, icon: 'images/엘리프.png', count: "" },

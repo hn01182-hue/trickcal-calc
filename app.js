@@ -45,9 +45,14 @@ function renderPackageList(containerId, list = []) {
         const isVisible = !pkg.hidden;
 
         const summary = Object.entries(pkg.contents).map(([id, count]) => {
-            const item = (config && config.items) ? config.items.find(i => i.id === id) : null;
-            return `${item ? item.name : id} x${count}`;
-        }).join(', ');
+    const item = (config && config.items) ? config.items.find(i => i.id === id) : null;
+    const iconPath = item ? item.icon : 'images/default.png'; // 아이콘 경로 가져오기
+    return `
+        <span class="content-item" style="display: inline-flex; align-items: center; gap: 4px; margin-right: 8px;">
+            <img src="${iconPath}" style="width: 18px; height: 18px; object-fit: contain;">
+            ${item ? item.name : id} x${count}
+        </span>`;
+}).join(''); // join(', ') 대신 빈 문자열로 합칩니다.
         
         // [수정] id="pkg-released-${pkg.name}" 추가 (공백이나 특수문자 대응을 위해 name 사용)
         return `
@@ -190,7 +195,7 @@ function openTab(id) {
 function renderSettings() {
     const items = config.items;
     
-    // 아이템 필터링 로직 (기존 유지)
+    // 아이템 필터링 로직
     const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_'));
     const attrItems = items.filter(i => i.id.startsWith('attr_'));
     const posItems = items.filter(i => i.id.startsWith('pos_'));
@@ -198,25 +203,43 @@ function renderSettings() {
 
     const renderRow = (item) => {
         const isPaidElif = item.id === 'p_elif';
-        const helperBtn = isPaidElif ? `<button class="helper-btn" onclick="toggleSettingHelper()">설정 도우미</button>` : '';
+        const isKcandy = item.id === 'kcandy';
         
-        // 💡 탭 이동 시 체크박스 상태 유지를 위해 config.paidElifCriteria 확인
-        const isChecked = (val) => (config.paidElifCriteria && config.paidElifCriteria.includes(val)) ? 'checked' : '';
+        // 유료 엘리프나 왕사탕인 경우에만 도우미 버튼 표시
+        const helperBtn = (isPaidElif || isKcandy) ? `<button class="helper-btn" onclick="toggleSettingHelper('${item.id}')">설정 도우미</button>` : '';
+        
+        // 탭 이동 시 상태 복구를 위한 체크 함수
+        const isChecked = (type, val) => {
+            const criteria = type === 'p_elif' ? config.paidElifCriteria : config.kcandyCriteria;
+            return (criteria && criteria.includes(val)) ? 'checked' : '';
+        };
 
-        // 체크박스 기반 도우미 박스
-        const helperBox = isPaidElif ? `
+        // 1. 유료 엘리프 도우미 (체크박스/복수 선택)
+        const pElifHelper = isPaidElif ? `
             <div id="p_elif-helper" class="helper-box">
                 <strong style="display:block; margin-bottom:8px;">유료 엘리프 주요 소모처 (복수 선택)</strong>
                 <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label><input type="checkbox" class="elif-helper-chk" value="3.0" onchange="updatePaidElifValue()" ${isChecked("3.0")}> 사도랑 왕사탕 패키지</label>
-                    <label><input type="checkbox" class="elif-helper-chk" value="4.8" onchange="updatePaidElifValue()" ${isChecked("4.8")}> 카드랑 별사탕 패키지</label>
-                    <label><input type="checkbox" class="elif-helper-chk" value="2.8" onchange="updatePaidElifValue()" ${isChecked("2.8")}> 새콤 교단 증명서 패키지</label>
-                    <label><input type="checkbox" class="elif-helper-chk" value="3.3" onchange="updatePaidElifValue()" ${isChecked("3.3")}> 1일 1회 모집 뽑기(일일뽑)</label>
-                    <label><input type="checkbox" class="elif-helper-chk" value="2.7" onchange="updatePaidElifValue()" ${isChecked("2.7")}> 엘리프 교체 패키지</label>
+                    <label><input type="checkbox" class="elif-helper-chk" value="3.0" onchange="updatePaidElifValue()" ${isChecked("p_elif", "3.0")}> 사도랑 왕사탕 패키지</label>
+                    <label><input type="checkbox" class="elif-helper-chk" value="4.8" onchange="updatePaidElifValue()" ${isChecked("p_elif", "4.8")}> 카드랑 별사탕 패키지</label>
+                    <label><input type="checkbox" class="elif-helper-chk" value="2.8" onchange="updatePaidElifValue()" ${isChecked("p_elif", "2.8")}> 새콤 교단 증명서 패키지</label>
+                    <label><input type="checkbox" class="elif-helper-chk" value="3.3" onchange="updatePaidElifValue()" ${isChecked("p_elif", "3.3")}> 1일 1회 모집 뽑기(일일뽑)</label>
+                    <label><input type="checkbox" class="elif-helper-chk" value="2.7" onchange="updatePaidElifValue()" ${isChecked("p_elif", "2.7")}> 엘리프 교체 패키지</label>
                 </div>
                 <p style="margin-top: 10px; font-size: 0.8em; color: #d32f2f;">* 선택한 항목 중 가장 낮은 효율이 기준값으로 적용됩니다.</p>
-            </div>
-        ` : '';
+            </div>` : '';
+
+        // 2. 왕사탕 도우미 (라디오/단일 선택)
+        const kcandyHelper = isKcandy ? `
+            <div id="kcandy-helper" class="helper-box">
+                <strong style="display:block; margin-bottom:8px;">🍬 왕사탕 충전 기준 (택 1)</strong>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label><input type="radio" name="kcandy-group" class="kcandy-helper-radio" value="0.3" onchange="updateKcandyValue()" ${isChecked("kcandy", "0.3")}> ~3회 충전 (0.3)</label>
+                    <label><input type="radio" name="kcandy-group" class="kcandy-helper-radio" value="0.5" onchange="updateKcandyValue()" ${isChecked("kcandy", "0.5")}> ~5회 충전 (0.5)</label>
+                    <label><input type="radio" name="kcandy-group" class="kcandy-helper-radio" value="0.7" onchange="updateKcandyValue()" ${isChecked("kcandy", "0.7")}> ~8회 충전 (0.7)</label>
+                    <label><input type="radio" name="kcandy-group" class="kcandy-helper-radio" value="1.0" onchange="updateKcandyValue()" ${isChecked("kcandy", "1.0")}> ~10회 충전 (1.0)</label>
+                </div>
+                <p style="margin-top: 10px; font-size: 0.8em; color: #666;">* 본인의 일일 평균 충전 횟수를 선택해 주세요.</p>
+            </div>` : '';
 
         return `
             <div class="row" style="flex-wrap: wrap;">
@@ -229,11 +252,13 @@ function renderSettings() {
                     <input type="number" id="val-${item.id}" value="${item.val}" step="0.1" 
                            ${item.fixed ? 'readonly' : ''} oninput="saveSettings()">
                 </div>
-                ${helperBox}
+                ${pElifHelper}
+                ${kcandyHelper}
             </div>`;
     };
 
     let html = "";
+    // 일반 아이템 출력
     html += normalItems.map(item => renderRow(item)).join('');
 
     // 속성별 모집권 그룹
@@ -243,7 +268,7 @@ function renderSettings() {
             <div style="background: #fff; padding-top: 5px;">${attrItems.map(item => renderRow(item)).join('')}</div>
         </details>`;
     }
-    
+
     // 포지션별 모집권 그룹
     if (posItems.length > 0) {
         html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
@@ -251,7 +276,7 @@ function renderSettings() {
             <div style="background: #fff; padding-top: 5px;">${posItems.map(item => renderRow(item)).join('')}</div>
         </details>`;
     }
-    
+
     // 마시멜로 종류별 그룹
     if (marshItems.length > 0) {
         html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
@@ -260,12 +285,15 @@ function renderSettings() {
         </details>`;
     }
 
-    document.getElementById('settings-list').innerHTML = html;
+    // 최종 결과 적용
+    const settingsList = document.getElementById('settings-list');
+    if (settingsList) settingsList.innerHTML = html;
 }
 
+
 // 설정 도우미 토글
-function toggleSettingHelper() {
-    const helper = document.getElementById('p_elif-helper');
+function toggleSettingHelper(id) {
+    const helper = document.getElementById(`${id}-helper`);
     if (helper) helper.classList.toggle('active');
 }
 
@@ -274,9 +302,8 @@ function updatePaidElifValue() {
     const checkboxes = document.querySelectorAll('.elif-helper-chk');
     const checkedValues = Array.from(checkboxes)
         .filter(chk => chk.checked)
-        .map(chk => chk.value); // 문자열 그대로 저장
+        .map(chk => chk.value);
 
-    // 💡 체크 상태 저장
     config.paidElifCriteria = checkedValues;
 
     if (checkedValues.length > 0) {
@@ -284,10 +311,9 @@ function updatePaidElifValue() {
         const input = document.getElementById('val-p_elif');
         if (input) {
             input.value = minValue;
-            saveSettings(); // 여기서 config 전체가 localStorage에 저장됨
+            saveSettings(); 
         }
     } else {
-        // 모두 체크 해제 시 기본값 혹은 저장만 실행
         saveSettings();
     }
 }
@@ -370,10 +396,15 @@ function renderConstantPackages() {
         const originalIndex = constantPackages.indexOf(pkg);
         const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
         const noteHtml = pkg.note ? `<div class="pkg-note">📝 ${pkg.note}</div>` : "";
-        const summary = Object.entries(pkg.contents).map(([id, count]) => {
-            const item = config.items.find(i => i.id === id);
-            return `${item ? item.name : id} x${count}`;
-        }).join(', ');
+       const summary = Object.entries(pkg.contents).map(([id, count]) => {
+    const item = config.items.find(i => i.id === id);
+    const iconPath = item ? item.icon : 'images/default.png';
+    return `
+        <span class="content-item" style="display: inline-flex; align-items: center; gap: 4px; margin-right: 8px;">
+            <img src="${iconPath}" style="width: 18px; height: 18px; object-fit: contain;">
+            ${item ? item.name : id} x${count}
+        </span>`;
+}).join('');
 
         return `
             <div class="pkg-card" id="pkg-constant-${originalIndex}">
@@ -745,4 +776,17 @@ function drawConstantChart(filteredData) {
             }
         }]
     });
+}
+
+function updateKcandyValue() {
+    const selected = document.querySelector('.kcandy-helper-radio:checked');
+    if (selected) {
+        const val = selected.value;
+        config.kcandyCriteria = [val]; 
+        const input = document.getElementById('val-kcandy');
+        if (input) {
+            input.value = val;
+            saveSettings();
+        }
+    }
 }
