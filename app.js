@@ -427,10 +427,18 @@ function loadAll() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if(saved) {
         const parsed = JSON.parse(saved);
-        config.items = config.items.map(item => {
-            const s = parsed.items.find(si => si.id === item.id);
-            return s ? { ...item, val: s.val } : item;
-        });
+        
+        // 1. 기존 아이템 가치(val) 복구 로직
+        if (parsed.items) {
+            config.items = config.items.map(item => {
+                const s = parsed.items.find(si => si.id === item.id);
+                return s ? { ...item, val: s.val } : item;
+            });
+        }
+        
+        // 2. 설정 도우미 체크 상태 복구 (추가)
+        config.paidElifCriteria = parsed.paidElifCriteria || [];
+        config.kcandyCriteria = parsed.kcandyCriteria || [];
     }
 }
 
