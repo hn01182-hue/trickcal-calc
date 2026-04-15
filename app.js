@@ -204,15 +204,18 @@ function renderSettings() {
     const renderRow = (item) => {
         const isPaidElif = item.id === 'p_elif';
         const isKcandy = item.id === 'kcandy';
+	const isManual = item.id === 'manual';
         
-        // 유료 엘리프나 왕사탕인 경우에만 도우미 버튼 표시
-        const helperBtn = (isPaidElif || isKcandy) ? `<button class="helper-btn" onclick="toggleSettingHelper('${item.id}')">설정 도우미</button>` : '';
-        
-        // 탭 이동 시 상태 복구를 위한 체크 함수
-        const isChecked = (type, val) => {
-            const criteria = type === 'p_elif' ? config.paidElifCriteria : config.kcandyCriteria;
-            return (criteria && criteria.includes(val)) ? 'checked' : '';
-        };
+       const helperBtn = (isPaidElif || isKcandy || isManual) ? 
+        `<button class="helper-btn" onclick="toggleSettingHelper('${item.id}')">설정 도우미</button>` : '';
+    
+    const isChecked = (type, val) => {
+        let criteria = [];
+        if (type === 'p_elif') criteria = config.paidElifCriteria;
+        else if (type === 'kcandy') criteria = config.kcandyCriteria;
+        else if (type === 'manual') criteria = config.manualCriteria; // 👈 복구 로직 추가
+        return (criteria && criteria.includes(val)) ? 'checked' : '';
+    };
 
         // 1. 유료 엘리프 도우미 (체크박스/복수 선택)
         const pElifHelper = isPaidElif ? `
@@ -241,6 +244,26 @@ function renderSettings() {
                 <p style="margin-top: 10px; font-size: 0.8em; color: #666;">* 본인의 일일 평균 충전 횟수를 선택해 주세요.</p>
             </div>` : '';
 
+	// 장비의 정석 도우미 박스 (최신 경험치 반영)
+    const manualHelper = isManual ? `
+        <div id="manual-helper" class="helper-box">
+            <strong style="display:block; margin-bottom:8px;">🛠️ 장비의 정석 소모처(장비 랭크)</strong>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                <label><input type="checkbox" class="manual-helper-chk" value="0.900" onchange="updateManualValue()" ${isChecked("manual", "0.900")}> 2랭크 (0.900)</label>
+                <label><input type="checkbox" class="manual-helper-chk" value="0.750" onchange="updateManualValue()" ${isChecked("manual", "0.750")}> 3랭크 (0.750)</label>
+                <label><input type="checkbox" class="manual-helper-chk" value="0.450" onchange="updateManualValue()" ${isChecked("manual", "0.450")}> 4랭크 (0.450)</label>
+                <label><input type="checkbox" class="manual-helper-chk" value="0.375" onchange="updateManualValue()" ${isChecked("manual", "0.375")}> 5랭크 (0.375)</label>
+                <label><input type="checkbox" class="manual-helper-chk" value="0.321" onchange="updateManualValue()" ${isChecked("manual", "0.321")}> 6랭크 (0.321)</label>
+                <label><input type="checkbox" class="manual-helper-chk" value="0.205" onchange="updateManualValue()" ${isChecked("manual", "0.205")}> 7랭크 (0.205)</label>
+                <label><input type="checkbox" class="manual-helper-chk" value="0.188" onchange="updateManualValue()" ${isChecked("manual", "0.188")}> 8랭크 (0.188)</label>
+                <label><input type="checkbox" class="manual-helper-chk" value="0.150" onchange="updateManualValue()" ${isChecked("manual", "0.150")}> 9랭크 (0.150)</label>
+                <label><input type="checkbox" class="manual-helper-chk" value="0.125" onchange="updateManualValue()" ${isChecked("manual", "0.125")}> 10랭크 (0.125)</label>
+                <label><input type="checkbox" class="manual-helper-chk" value="0.107" onchange="updateManualValue()" ${isChecked("manual", "0.107")}> 11랭크 (0.107)</label>
+                <label><input type="checkbox" class="manual-helper-chk" value="0.094" onchange="updateManualValue()" ${isChecked("manual", "0.094")}> 12랭크 (0.094)</label>
+            </div>
+            <p style="margin-top: 10px; font-size: 0.8em; color: #d32f2f;">* 선택한 랭크 중 가장 낮은 가치가 적용됩니다.</p>
+        </div>` : '';
+
         return `
             <div class="row" style="flex-wrap: wrap;">
                 <div class="item-info">
@@ -254,6 +277,7 @@ function renderSettings() {
                 </div>
                 ${pElifHelper}
                 ${kcandyHelper}
+		${manualHelper}
             </div>`;
     };
 
@@ -439,6 +463,7 @@ function loadAll() {
         // 2. 설정 도우미 체크 상태 복구 (추가)
         config.paidElifCriteria = parsed.paidElifCriteria || [];
         config.kcandyCriteria = parsed.kcandyCriteria || [];
+	config.manualCriteria = parsed.manualCriteria || [];
     }
 }
 
@@ -796,5 +821,25 @@ function updateKcandyValue() {
             input.value = val;
             saveSettings();
         }
+    }
+}
+
+function updateManualValue() {
+    const checkboxes = document.querySelectorAll('.manual-helper-chk');
+    const checkedValues = Array.from(checkboxes)
+        .filter(chk => chk.checked)
+        .map(chk => chk.value);
+
+    config.manualCriteria = checkedValues;
+
+    if (checkedValues.length > 0) {
+        const minValue = Math.min(...checkedValues.map(v => parseFloat(v)));
+        const input = document.getElementById('val-manual');
+        if (input) {
+            input.value = minValue.toFixed(3); // 소수점 3자리 고정
+            saveSettings(); 
+        }
+    } else {
+        saveSettings();
     }
 }
