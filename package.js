@@ -139,4 +139,5 @@ const dbPackages = [
 { name: "2.5주년 피날레 패키지", price: 99000, releasedApostle: "헤일리(멀쩡)", contents: { halo_select: 1, f_elif: 5000, t_apostle: 100, excellent_token: 10 } },
 { name: "2.5주년 불꽃놀이 패키지", price: 25000, releasedApostle: "헤일리(멀쩡)", contents: { t_apostle: 50, t_card: 25, nuru: 25 } },
 { name: "2.5주년 파티 패키지", price: 2500, releasedApostle: "헤일리(멀쩡)", contents: { scandy: 250, kcandy: 250, manual: 2500, light_box: 2500 } },
+{ name: "사복 패스(클로에)", price: 29500, releasedApostle: "헤일리(멀쩡)", contents: { "p_elif": 900, "f_elif": 2400, "t_apostle": 20, "t_card": 20, "crayon_highest": 8 } },
  ];
