@@ -53,6 +53,7 @@ const apostleDB = [
     { id: "아네트", name: "아네트", role: "서포터", type: "광기", isEldain: false },
     { id: "아멜리아", name: "아멜리아", role: "서포터", type: "냉정", isEldain: false },
     { id: "아멜리아(R41)", name: "아멜리아(R41)", role: "서포터", type: "우울", isEldain: false },
+    { id: "아라그니아", name:"아라그니아", role: "서포터", type: "냉정", isEldain: false },
     { id: "아르코", name: "아르코", role: "딜러", type: "활발", isEldain: false },
     { id: "아사나", name: "아사나", role: "탱커", type: "우울", isEldain: false },
     { id: "아야", name: "아야", role: "딜러", type: "냉정", isEldain: true },

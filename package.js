@@ -140,4 +140,13 @@ const dbPackages = [
 { name: "2.5주년 불꽃놀이 패키지", price: 25000, releasedApostle: "헤일리(멀쩡)", contents: { t_apostle: 50, t_card: 25, nuru: 25 } },
 { name: "2.5주년 파티 패키지", price: 2500, releasedApostle: "헤일리(멀쩡)", contents: { scandy: 250, kcandy: 250, manual: 2500, light_box: 2500 } },
 { name: "사복 패스(클로에)", price: 29500, releasedApostle: "헤일리(멀쩡)", contents: { "p_elif": 900, "f_elif": 2400, "t_apostle": 20, "t_card": 20, "crayon_highest": 8 } },
+{ name: "아라그니아의 공물 패키지", price: 3300, releasedApostle: "아라그니아", contents: { p_elif: 100, kcandy: 200, manual: 800, nuru: 3, food_blue: 5 } },
+{ name: "아라그니아의 보호 패키지", price: 3300, releasedApostle: "아라그니아", contents: { p_elif: 100, scandy: 100, light_box: 200, nuru: 3, food_blue: 5 } },
+{ name: "아라그니아의 멋짐 패키지", price: 9900, releasedApostle: "아라그니아", contents: { p_elif: 300, t_apostle: 10, t_card: 10 } },
+{ name: "아라그니아의 임명 패키지", price: 9900, releasedApostle: "아라그니아", contents: { p_elif: 300, f_elif: 300, chip: 50, rare_church_box: 20 } },
+{ name: "아라그니아의 자랑 패키지", price: 9900, releasedApostle: "아라그니아", contents: { p_elif: 300, t_card: 10, high_arti_box: 1, high_spell_box: 1, rare_arti_box: 1, rare_spell_box: 1 } },
+{ name: "아라그니아의 특별함 패키지", price: 29500, releasedApostle: "아라그니아", contents: { p_elif: 900, f_elif: 900, crayon_highest: 4 } },
+{ name: "아라그니아의 다정 패키지", price: 49500, releasedApostle: "아라그니아", contents: { p_elif: 1500, f_elif: 1500, cert: 400, thumbs: 100 } },
+{ name: "아라그니아의 등장 패키지", price: 99000, releasedApostle: "아라그니아", contents: { t_apostle: 100, attr_냉정: 3 } },
+{ name: "아라그니아의 보석함", price: 5500, releasedApostle: "아라그니아" , contents: { p_elif: 170, thumbs: 50, kcandy: 800, scandy: 420 } },
  ];
