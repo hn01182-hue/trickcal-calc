@@ -149,4 +149,9 @@ const dbPackages = [
 { name: "아라그니아의 다정 패키지", price: 49500, releasedApostle: "아라그니아", contents: { p_elif: 1500, f_elif: 1500, cert: 400, thumbs: 100 } },
 { name: "아라그니아의 등장 패키지", price: 99000, releasedApostle: "아라그니아", contents: { t_apostle: 100, attr_냉정: 3 } },
 { name: "아라그니아의 보석함", price: 5500, releasedApostle: "아라그니아" , contents: { p_elif: 170, thumbs: 50, kcandy: 800, scandy: 420 } },
+{ name: "사도 성장 패키지", price: 6600, releasedApostle: "아이시움(~26.5.7.)", contents: { p_elif: 200, f_elif: 200, t_apostle: 5, nuru: 5, mileage: 7 } },
+{ name: "달콤! 사탕 가득 패키지", price: 9900, releasedApostle: "아이시움(~26.5.7.)", contents: { p_elif: 300, kcandy: 300, scandy: 300, thumbs: 20, food_purple: 10, mileage: 10 } },
+{ name: "아이시움 사도 모집 패키지", price: 19800, releasedApostle: "아이시움(~26.5.7.)", contents: { p_elif: 600, t_apostle: 20, thumbs: 40, mileage: 20 } },
+{ name: "반짝반짝 황금빛 패키지", price: 49500, releasedApostle: "아이시움(~26.5.7.)", contents: { p_elif: 1500, crayon_highest: 6, gold: 300, mileage: 50 } },
+{ name: "아이시움 티켓 가득 패키지", price: 99000, releasedApostle: "아이시움(~26.5.7.)", contents: { t_apostle: 100, t_card: 50, mileage: 100 } },
  ];
