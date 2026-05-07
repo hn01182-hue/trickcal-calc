@@ -12,6 +12,7 @@ const apostleDB = [
     { id: "디아나(왕년)", name: "디아나(왕년)", role: "딜러", type: "냉정", isEldain: true },
     { id: "라이카", name: "라이카", role: "딜러", type: "순수", isEldain: false },
     { id: "란", name: "란", role: "딜러", type: "순수", isEldain: true },
+    { id: "레비(졸업)", name: "레비(졸업)", role: "탱커", type: "활발", isEldain: false },
     { id: "로네(시장)", name: "로네(시장)", role: "딜러", type: "우울", isEldain: false },
     { id: "롤렛", name: "롤렛", role: "서포터", type: "광기", isEldain: false },
     { id: "루드", name: "루드", role: "탱커", type: "활발", isEldain: false },
