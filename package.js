@@ -183,4 +183,12 @@ const dbPackages = [
 { name: "사탕사탕 사도 모집 패키지", price: 49500, releasedApostle: "아이시움(~26.5.21.)", contents: { t_apostle: 50, kcandy: 500, scandy: 500, mileage: 50 } },
 { name: "아이시움 종합 교단 패키지", price: 49500, releasedApostle: "아이시움(~26.5.21.)", contents: { p_elif: 1500, cert: 400, gold: 350, thumbs: 100, food_purple: 25, mileage: 50 } },
 { name: "레비(졸업)의 졸업논문", price: 5500, releasedApostle: "레비(졸업)", contents: { "p_elif": 170, "t_apostle": 8, "t_card": 7, "kcandy": 200, "scandy": 300 } },
+{ name: "레비의 자신감 패키지", price: 49500, releasedApostle: "레비(졸업)", contents: { p_elif: 1500, f_elif: 1500, t_apostle: 30 } },
+{ name: "레비의 희망 패키지", price: 49500, releasedApostle: "레비(졸업)", contents: { p_elif: 1500, cert: 500, thumbs: 100 } },
+{ name: "레비의 고찰 패키지", price: 19800, releasedApostle: "레비(졸업)", contents: { p_elif: 600, f_elif: 600, t_apostle: 20, gold: 150 } },
+{ name: "레비의 미련 패키지", price: 9900, releasedApostle: "레비(졸업)", contents: { p_elif: 300, f_elif: 300, crayon_highest: 1, thumbs: 20 } },
+{ name: "레비의 경험 패키지", price: 6600, releasedApostle: "레비(졸업)", contents: { p_elif: 200, f_elif: 200, t_apostle: 5, nuru: 5 } },
+{ name: "레비의 성장 패키지", price: 3300, releasedApostle: "레비(졸업)", contents: { p_elif: 100, kcandy: 100, scandy: 100, manual: 500, light_box: 200 } },
+{ name: "백사당의 란 패키지", price: 99000, releasedApostle: "레비(졸업)", contents: { p_elif: 3000, elch_ticket: 1, attr_순수: 3 }, note: "란 증명서 20 = 엘다인 선택권 1장 가치로 산정" },
+{ name: "사복 패스(란)", price: 29500, releasedApostle: "레비(졸업)", contents: { "p_elif": 900, "f_elif": 2400, "t_apostle": 20, "t_card": 20, "crayon_highest": 8 } },
  ];
