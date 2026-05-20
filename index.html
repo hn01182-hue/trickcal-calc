@@ -506,6 +506,10 @@
     object-fit: contain;
     vertical-align: middle;
 }
+/* 저장 완료 토스트 애니메이션 */
+#toast {
+    pointer-events: none; /* 클릭 방해 금지 */
+}
   </style>
 </head>
 
@@ -531,21 +535,26 @@
             <canvas id="releasedChart"></canvas>
           </div>
         </div>
-        <div style="display: flex; gap: 8px;">
-          <input type="text" id="pkg-search" class="search-input" placeholder="패키지 또는 사도 검색..." oninput="filterReleased()">
-          <select id="apostle-select" class="apostle-select" onchange="filterReleased()">
-            <option value="all">전체 사도</option>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <input type="text" id="pkg-search" class="search-input" placeholder="패키지 또는 사도 검색..." oninput="debounceSearch()" style="width: 100%;">
+          
+          <div style="display: flex; gap: 8px; width: 100%;">
+            <select id="pkg-type-select" class="apostle-select" onchange="onPkgTypeChange()" style="flex: 1; padding: 8px;">
+            <option value="apostle" selected>사도 패키지</option> <option value="isium">아이시움 라운지 패키지</option>
           </select>
-        </div>
-        <div style="display: flex; gap: 8px; align-items: center;">
-          <select id="sort-type" class="apostle-select" onchange="filterReleased()" style="flex: 1;">
-            <option value="price">가격 기준</option>
-            <option value="score">효율 점수 기준</option>
-          </select>
-          <select id="sort-order" class="apostle-select" onchange="filterReleased()" style="flex: 1;">
-            <option value="asc">오름차순 (낮은순)</option>
-            <option value="desc" selected>내림차순 (높은순)</option>
-          </select>
+            <select id="apostle-select" class="apostle-select" onchange="filterReleased()" style="flex: 1; padding: 8px;">
+              <option value="all">모든 패키지</option> </select>
+          </div>
+          
+          <div style="display: flex; gap: 8px; width: 100%; align-items: center;">
+            <select id="sort-type" class="apostle-select" onchange="filterReleased()" style="flex: 1; padding: 8px;">
+              <option value="price">가격 기준</option>
+              <option value="score" selected>효율 점수 기준</option> </select>
+            <select id="sort-order" class="apostle-select" onchange="filterReleased()" style="flex: 1; padding: 8px;">
+              <option value="asc">오름차순 (낮은순)</option>
+              <option value="desc" selected>내림차순 (높은순)</option>
+            </select>
+          </div>
         </div>
       </div>
       <div id="released-list"></div>
@@ -697,6 +706,11 @@
       }
     };
   </script>
+<div id="toast" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
+     background: rgba(0, 0, 0, 0.8); color: white; padding: 12px 20px; border-radius: 8px; 
+     display: none; opacity: 0; transition: opacity 0.3s; z-index: 1000; font-weight: bold;">
+     설정 저장 완료!
+</div>
 </body>
 
 </html>

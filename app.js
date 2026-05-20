@@ -1,37 +1,93 @@
-      function filterReleased() {
+// 💡 추가: 검색 디바운스를 위한 타이머 변수
+let searchTimeout;
+
+// 💡 추가: 타이핑을 0.3초간 멈추면 filterReleased()를 실행하는 함수
+function debounceSearch() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        filterReleased();
+    }, 300); // 0.3초 딜레이
+}
+
+function filterReleased() {
     const query = document.getElementById('pkg-search').value.toLowerCase();
+    const pkgType = document.getElementById('pkg-type-select').value;
     const apostle = document.getElementById('apostle-select').value;
     const type = document.getElementById('sort-type').value;
     const order = document.getElementById('sort-order').value;
 
     let filtered = dbPackages.filter(p => {
-        return (p.name.toLowerCase().includes(query) || p.releasedApostle.toLowerCase().includes(query)) && 
-               (apostle === "all" || p.releasedApostle === apostle);
+        // 1. 이름 및 출시사도 검색어 매칭
+        const matchesQuery = p.name.toLowerCase().includes(query) || p.releasedApostle.toLowerCase().includes(query);
+        
+       // 2. 패키지 대분류 필터 (사도 패키지 vs 아이시움 라운지 패키지)
+        const isIsium = p.releasedApostle.startsWith("아이시움");
+        let matchesPkgType = (pkgType === "isium") ? isIsium : !isIsium;
+
+        // 3. 사도 소분류 필터링
+        let matchesApostle = (apostle === "all") || (p.releasedApostle === apostle);
+        
+        return matchesQuery && matchesPkgType && matchesApostle;
     });
 
-    // 정렬 로직 (기존 유지)
+    // 정렬 로직 (내부 계산은 소수점까지 정밀하게 비교하여 순서 결정)
     filtered.sort((a, b) => {
         let vA = (type === 'price') ? a.price : calculateScore(a.contents, a.price);
         let vB = (type === 'price') ? b.price : calculateScore(b.contents, b.price);
         return (order === 'asc') ? vA - vB : vB - vA;
     });
 
-    // 1. 리스트를 먼저 그립니다 (체크박스 상태 포함됨)
+    // 1. 리스트 그리기 (💡 이제 대분류가 전체일 때도 리스트 카드는 정상 작동합니다!)
     renderPackageList('released-list', filtered); 
     
-    // 2. 그래프를 그립니다 (drawReleasedChart 내부의 visibleData 필터가 작동함)
+    // 2. 그래프 그리기
     drawReleasedChart(filtered);
 }
 
- function calculateScore(contents, price) {
-        if (!price || price <= 0) return 0;
-        let total = 0;
-        Object.entries(contents).forEach(([id, count]) => {
-            const item = config.items.find(i => i.id === id);
-            if (item) total += count * item.val;
-        });
-        return (total / price) * 1000;
-    }
+function onPkgTypeChange() {
+    updateApostleSelectOptions();
+    filterReleased();
+}
+
+function updateApostleSelectOptions() {
+    const pkgType = document.getElementById('pkg-type-select').value;
+    const select = document.getElementById('apostle-select');
+    if (!select) return;
+
+    const prevSelected = select.value;
+    select.innerHTML = '<option value="all">모든 패키지</option>'; // 💡 3번 반영 완료
+    const apostleSet = new Set();
+
+    dbPackages.forEach(p => {
+        const name = p.releasedApostle || "기타";
+        const isIsium = name.startsWith("아이시움");
+
+        // 대분류 선택에 맞춰 사도 목록 추출 구문을 명확하게 단순화
+        if (pkgType === "isium" && isIsium) {
+            apostleSet.add(name);
+        } else if (pkgType === "apostle" && !isIsium) {
+            apostleSet.add(name);
+        }
+    });
+
+    Array.from(apostleSet).sort().forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.innerText = name;
+        if (name === prevSelected) opt.selected = true;
+        select.appendChild(opt);
+    });
+}
+
+function calculateScore(contents, price) {
+    if (!price || price <= 0) return 0;
+    let total = 0;
+    Object.entries(contents).forEach(([id, count]) => {
+        const item = config.items.find(i => i.id === id);
+        if (item) total += count * item.val; 
+    });
+    return (total / price) * 1000;
+}
 
 function renderPackageList(containerId, list = []) {
     const div = document.getElementById(containerId);
@@ -40,21 +96,20 @@ function renderPackageList(containerId, list = []) {
     const safeList = Array.isArray(list) ? list : [];
 
     div.innerHTML = safeList.map(pkg => {
-        const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
+        const score = Math.round(calculateScore(pkg.contents, pkg.price));
         const noteHtml = pkg.note ? `<div class="pkg-note">📝 ${pkg.note}</div>` : "";
         const isVisible = !pkg.hidden;
 
         const summary = Object.entries(pkg.contents).map(([id, count]) => {
-    const item = (config && config.items) ? config.items.find(i => i.id === id) : null;
-    const iconPath = item ? item.icon : 'images/default.png'; // 아이콘 경로 가져오기
-    return `
-        <span class="content-item" style="display: inline-flex; align-items: center; gap: 4px; margin-right: 8px;">
-            <img src="${iconPath}" style="width: 18px; height: 18px; object-fit: contain;">
-            ${item ? item.name : id} x${count}
-        </span>`;
-}).join(''); // join(', ') 대신 빈 문자열로 합칩니다.
+            const item = (config && config.items) ? config.items.find(i => i.id === id) : null;
+            const iconPath = item ? item.icon : 'images/default.png';
+            return `
+                <span class="content-item" style="display: inline-flex; align-items: center; gap: 4px; margin-right: 8px;">
+                    <img src="${iconPath}" style="width: 18px; height: 18px; object-fit: contain;">
+                    ${item ? item.name : id} x${count}
+                </span>`;
+        }).join('');
         
-        // [수정] id="pkg-released-${pkg.name}" 추가 (공백이나 특수문자 대응을 위해 name 사용)
         return `
             <div class="pkg-card ${!isVisible ? 'is-hidden' : ''}" id="pkg-released-${pkg.name}" style="position: relative;">
                 <div style="display: flex; align-items: flex-start; gap: 8px;">
@@ -78,11 +133,10 @@ function renderPackageList(containerId, list = []) {
     }).join('');
 }
 
-    function applyPackageData(sourceId, pkgIdentifier) {
-    // 💡 수정된 부분: released-list일 때 id 대신 name으로 찾도록 변경
+function applyPackageData(sourceId, pkgIdentifier) {
     const pkg = (sourceId === 'released-list') 
-        ? dbPackages.find(p => p.name === pkgIdentifier) // 👈 p.id 대신 p.name
-        : constantPackages[pkgIdentifier]; // 상시는 기존 인덱스 방식 유지
+        ? dbPackages.find(p => p.name === pkgIdentifier)
+        : constantPackages[pkgIdentifier];
 
     if(!pkg) {
         console.error("패키지를 찾을 수 없습니다:", pkgIdentifier);
@@ -99,30 +153,26 @@ function renderPackageList(containerId, list = []) {
 }
 
 function openTab(id) {
-    // 모든 탭과 카드에서 active 클래스 제거
     document.querySelectorAll('.tab, .card').forEach(el => el.classList.remove('active'));
     
-    // 클릭한 탭과 해당 카드에 active 클래스 추가
     const targetTab = document.querySelector(`.tab[onclick="openTab('${id}')"]`);
     if (targetTab) targetTab.classList.add('active');
     
     const targetCard = document.getElementById(id);
     if (targetCard) targetCard.classList.add('active');
 
-    // ✅ 각 탭에 맞는 초기화/렌더링 함수 실행
     if (id === 'calc') renderCalc();
     if (id === 'settings') renderSettings();
     if (id === 'constant') renderConstantPackages();
     
-    // ⭐ [추가] 사도 도감 탭을 누르면 전체 리스트를 즉시 렌더링
     if (id === 'apostle-list') {
         if (typeof renderApostleList === 'function') {
-            renderApostleList(); // 인자 없이 호출하면 apostleDB 전체를 그립니다.
+            renderApostleList();
         }
     }
 }
 
-  function renderCalc() {
+function renderCalc() {
     const priceInput = document.getElementById('pkg-price');
     const inputContainer = document.getElementById('item-inputs');
     if (!priceInput || !inputContainer) return;
@@ -130,11 +180,10 @@ function openTab(id) {
     priceInput.value = config.price;
     const items = config.items;
 
-    // [수정] 필터 조건에 !i.id.startsWith('marsh_') 추가
     const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_'));
     const attrItems = items.filter(i => i.id.startsWith('attr_'));
     const posItems = items.filter(i => i.id.startsWith('pos_'));
-    const marshItems = items.filter(i => i.id.startsWith('marsh_')); // [추가] 마시멜로 전용 변수
+    const marshItems = items.filter(i => i.id.startsWith('marsh_'));
 
     const renderRow = (item) => `
         <div class="row">
@@ -150,7 +199,6 @@ function openTab(id) {
     let html = "";
     html += normalItems.map(item => renderRow(item)).join('');
 
-    // 속성/포지션 그룹 로직 (기존과 동일)
     if (attrItems.length > 0) {
         html += `<details style="margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; background: #fff;">
             <summary style="padding: 12px; cursor: pointer; background: #f1f1f1; font-weight: bold; font-size: 0.9em; border-radius: 4px;">📂 속성별 모집권 (클릭)</summary>
@@ -163,8 +211,6 @@ function openTab(id) {
             <div style="padding: 5px 0;">${posItems.map(item => renderRow(item)).join('')}</div>
         </details>`;
     }
-
-    // [추가] 마시멜로 그룹 UI
     if (marshItems.length > 0) {
         html += `<details style="margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; background: #fff;">
             <summary style="padding: 12px; cursor: pointer; background: #f1f1f1; font-weight: bold; font-size: 0.9em; border-radius: 4px;">📂 마시멜로 종류별 (클릭)</summary>
@@ -175,27 +221,29 @@ function openTab(id) {
     inputContainer.innerHTML = html;
 }
 
-    function calculate() {
-        const price = parseFloat(document.getElementById('pkg-price').value);
-        if(!price) return;
-        let total = 0;
-        config.items.forEach(item => {
-            const count = parseFloat(document.getElementById(`cnt-${item.id}`).value) || 0;
-            total += count * item.val;
-        });
-        const rate = (total / price) * 1000;
-        document.getElementById('result').style.display = 'block';
-        document.getElementById('res-rate').innerText = `${rate.toFixed(1)}개`;
-        document.getElementById('res-total').innerText = `(환산: ${total.toLocaleString()}개)`;
-    }
+function calculate() {
+    const price = parseFloat(document.getElementById('pkg-price').value);
+    if(!price) return;
+    let total = 0;
+    config.items.forEach(item => {
+        const count = parseFloat(document.getElementById(`cnt-${item.id}`).value) || 0;
+        total += count * item.val;
+    });
+    
+    const rate = Math.round((total / price) * 1000);
+    const displayTotal = Math.round(total);
+    
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('res-rate').innerText = `${rate}개`;
+    document.getElementById('res-total').innerText = `(환산: ${displayTotal.toLocaleString()}개)`;
+}
 
-    function saveInputs() { config.items.forEach(item => { const input = document.getElementById(`cnt-${item.id}`); if(input) item.count = input.value; }); }
-    function saveCurrentPrice() { config.price = document.getElementById('pkg-price').value; }
+function saveInputs() { config.items.forEach(item => { const input = document.getElementById(`cnt-${item.id}`); if(input) item.count = input.value; }); }
+function saveCurrentPrice() { config.price = document.getElementById('pkg-price').value; }
 
 function renderSettings() {
     const items = config.items;
     
-    // 아이템 필터링 로직
     const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_'));
     const attrItems = items.filter(i => i.id.startsWith('attr_'));
     const posItems = items.filter(i => i.id.startsWith('pos_'));
@@ -204,20 +252,19 @@ function renderSettings() {
     const renderRow = (item) => {
         const isPaidElif = item.id === 'p_elif';
         const isKcandy = item.id === 'kcandy';
-	const isManual = item.id === 'manual';
+        const isManual = item.id === 'manual';
         
-       const helperBtn = (isPaidElif || isKcandy || isManual) ? 
-        `<button class="helper-btn" onclick="toggleSettingHelper('${item.id}')">설정 도우미</button>` : '';
+        const helperBtn = (isPaidElif || isKcandy || isManual) ? 
+            `<button class="helper-btn" onclick="toggleSettingHelper('${item.id}')">설정 도우미</button>` : '';
     
-    const isChecked = (type, val) => {
-        let criteria = [];
-        if (type === 'p_elif') criteria = config.paidElifCriteria;
-        else if (type === 'kcandy') criteria = config.kcandyCriteria;
-        else if (type === 'manual') criteria = config.manualCriteria; // 👈 복구 로직 추가
-        return (criteria && criteria.includes(val)) ? 'checked' : '';
-    };
+        const isChecked = (type, val) => {
+            let criteria = [];
+            if (type === 'p_elif') criteria = config.paidElifCriteria;
+            else if (type === 'kcandy') criteria = config.kcandyCriteria;
+            else if (type === 'manual') criteria = config.manualCriteria;
+            return (criteria && criteria.includes(val)) ? 'checked' : '';
+        };
 
-        // 1. 유료 엘리프 도우미 (체크박스/복수 선택)
         const pElifHelper = isPaidElif ? `
             <div id="p_elif-helper" class="helper-box">
                 <strong style="display:block; margin-bottom:8px;">유료 엘리프 주요 소모처 (복수 선택)</strong>
@@ -225,13 +272,12 @@ function renderSettings() {
                     <label><input type="checkbox" class="elif-helper-chk" value="3.0" onchange="updatePaidElifValue()" ${isChecked("p_elif", "3.0")}> 사도랑 왕사탕 패키지</label>
                     <label><input type="checkbox" class="elif-helper-chk" value="4.8" onchange="updatePaidElifValue()" ${isChecked("p_elif", "4.8")}> 카드랑 별사탕 패키지</label>
                     <label><input type="checkbox" class="elif-helper-chk" value="2.8" onchange="updatePaidElifValue()" ${isChecked("p_elif", "2.8")}> 새콤 교단 증명서 패키지</label>
-                    <label><input type="checkbox" class="elif-helper-chk" value="3.3" onchange="updatePaidElifValue()" ${isChecked("p_elif", "3.3")}> 1일 1회 모집 뽑기(일일뽑)</label>
+                    <label><input type="checkbox" class="elif-helper-chk" value="3.3" onchange="updatePaidElifValue()" ${isChecked("p_elif", "3.3")}> 1일 1회 모집 (일일뽑)</label>
                     <label><input type="checkbox" class="elif-helper-chk" value="2.7" onchange="updatePaidElifValue()" ${isChecked("p_elif", "2.7")}> 엘리프 교체 패키지</label>
                 </div>
                 <p style="margin-top: 10px; font-size: 0.8em; color: #d32f2f;">* 선택한 항목 중 가장 낮은 효율이 기준값으로 적용됩니다.</p>
             </div>` : '';
 
-        // 2. 왕사탕 도우미 (라디오/단일 선택)
         const kcandyHelper = isKcandy ? `
             <div id="kcandy-helper" class="helper-box">
                 <strong style="display:block; margin-bottom:8px;">🍬 왕사탕 충전 기준 (택 1)</strong>
@@ -244,25 +290,24 @@ function renderSettings() {
                 <p style="margin-top: 10px; font-size: 0.8em; color: #666;">* 본인의 일일 평균 충전 횟수를 선택해 주세요.</p>
             </div>` : '';
 
-	// 장비의 정석 도우미 박스 (최신 경험치 반영)
-    const manualHelper = isManual ? `
-        <div id="manual-helper" class="helper-box">
-            <strong style="display:block; margin-bottom:8px;">🛠️ 장비의 정석 소모처(장비 랭크)</strong>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
-                <label><input type="checkbox" class="manual-helper-chk" value="0.900" onchange="updateManualValue()" ${isChecked("manual", "0.900")}> 2랭크 (0.900)</label>
-                <label><input type="checkbox" class="manual-helper-chk" value="0.750" onchange="updateManualValue()" ${isChecked("manual", "0.750")}> 3랭크 (0.750)</label>
-                <label><input type="checkbox" class="manual-helper-chk" value="0.450" onchange="updateManualValue()" ${isChecked("manual", "0.450")}> 4랭크 (0.450)</label>
-                <label><input type="checkbox" class="manual-helper-chk" value="0.375" onchange="updateManualValue()" ${isChecked("manual", "0.375")}> 5랭크 (0.375)</label>
-                <label><input type="checkbox" class="manual-helper-chk" value="0.321" onchange="updateManualValue()" ${isChecked("manual", "0.321")}> 6랭크 (0.321)</label>
-                <label><input type="checkbox" class="manual-helper-chk" value="0.205" onchange="updateManualValue()" ${isChecked("manual", "0.205")}> 7랭크 (0.205)</label>
-                <label><input type="checkbox" class="manual-helper-chk" value="0.188" onchange="updateManualValue()" ${isChecked("manual", "0.188")}> 8랭크 (0.188)</label>
-                <label><input type="checkbox" class="manual-helper-chk" value="0.150" onchange="updateManualValue()" ${isChecked("manual", "0.150")}> 9랭크 (0.150)</label>
-                <label><input type="checkbox" class="manual-helper-chk" value="0.125" onchange="updateManualValue()" ${isChecked("manual", "0.125")}> 10랭크 (0.125)</label>
-                <label><input type="checkbox" class="manual-helper-chk" value="0.107" onchange="updateManualValue()" ${isChecked("manual", "0.107")}> 11랭크 (0.107)</label>
-                <label><input type="checkbox" class="manual-helper-chk" value="0.094" onchange="updateManualValue()" ${isChecked("manual", "0.094")}> 12랭크 (0.094)</label>
-            </div>
-            <p style="margin-top: 10px; font-size: 0.8em; color: #d32f2f;">* 선택한 랭크 중 가장 낮은 가치가 적용됩니다.</p>
-        </div>` : '';
+        const manualHelper = isManual ? `
+            <div id="manual-helper" class="helper-box">
+                <strong style="display:block; margin-bottom:8px;">🛠️ 장비의 정석 소모처(장비 랭크)</strong>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                    <label><input type="checkbox" class="manual-helper-chk" value="0.900" onchange="updateManualValue()" ${isChecked("manual", "0.900")}> 2랭크 (0.900)</label>
+                    <label><input type="checkbox" class="manual-helper-chk" value="0.750" onchange="updateManualValue()" ${isChecked("manual", "0.750")}> 3랭크 (0.750)</label>
+                    <label><input type="checkbox" class="manual-helper-chk" value="0.450" onchange="updateManualValue()" ${isChecked("manual", "0.450")}> 4랭크 (0.450)</label>
+                    <label><input type="checkbox" class="manual-helper-chk" value="0.375" onchange="updateManualValue()" ${isChecked("manual", "0.375")}> 5랭크 (0.375)</label>
+                    <label><input type="checkbox" class="manual-helper-chk" value="0.321" onchange="updateManualValue()" ${isChecked("manual", "0.321")}> 6랭크 (0.321)</label>
+                    <label><input type="checkbox" class="manual-helper-chk" value="0.205" onchange="updateManualValue()" ${isChecked("manual", "0.205")}> 7랭크 (0.205)</label>
+                    <label><input type="checkbox" class="manual-helper-chk" value="0.188" onchange="updateManualValue()" ${isChecked("manual", "0.188")}> 8랭크 (0.188)</label>
+                    <label><input type="checkbox" class="manual-helper-chk" value="0.150" onchange="updateManualValue()" ${isChecked("manual", "0.150")}> 9랭크 (0.150)</label>
+                    <label><input type="checkbox" class="manual-helper-chk" value="0.125" onchange="updateManualValue()" ${isChecked("manual", "0.125")}> 10랭크 (0.125)</label>
+                    <label><input type="checkbox" class="manual-helper-chk" value="0.107" onchange="updateManualValue()" ${isChecked("manual", "0.107")}> 11랭크 (0.107)</label>
+                    <label><input type="checkbox" class="manual-helper-chk" value="0.094" onchange="updateManualValue()" ${isChecked("manual", "0.094")}> 12랭크 (0.094)</label>
+                </div>
+                <p style="margin-top: 10px; font-size: 0.8em; color: #d32f2f;">* 선택한 랭크 중 가장 낮은 가치가 적용됩니다.</p>
+            </div>` : '';
 
         return `
             <div class="row" style="flex-wrap: wrap;">
@@ -277,15 +322,13 @@ function renderSettings() {
                 </div>
                 ${pElifHelper}
                 ${kcandyHelper}
-		${manualHelper}
+                ${manualHelper}
             </div>`;
     };
 
     let html = "";
-    // 일반 아이템 출력
     html += normalItems.map(item => renderRow(item)).join('');
 
-    // 속성별 모집권 그룹
     if (attrItems.length > 0) {
         html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
             <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 속성별 모집권 (클릭)</summary>
@@ -293,7 +336,6 @@ function renderSettings() {
         </details>`;
     }
 
-    // 포지션별 모집권 그룹
     if (posItems.length > 0) {
         html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
             <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 포지션별 모집권 (클릭)</summary>
@@ -301,7 +343,6 @@ function renderSettings() {
         </details>`;
     }
 
-    // 마시멜로 종류별 그룹
     if (marshItems.length > 0) {
         html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
             <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 마시멜로 종류별 (클릭)</summary>
@@ -309,19 +350,15 @@ function renderSettings() {
         </details>`;
     }
 
-    // 최종 결과 적용
     const settingsList = document.getElementById('settings-list');
     if (settingsList) settingsList.innerHTML = html;
 }
 
-
-// 설정 도우미 토글
 function toggleSettingHelper(id) {
     const helper = document.getElementById(`${id}-helper`);
     if (helper) helper.classList.toggle('active');
 }
 
-// 선택된 항목 중 최저 가치를 계산하여 적용
 function updatePaidElifValue() {
     const checkboxes = document.querySelectorAll('.elif-helper-chk');
     const checkedValues = Array.from(checkboxes)
@@ -342,20 +379,20 @@ function updatePaidElifValue() {
     }
 }
 
-    function saveSettings() {
-        config.items.forEach(item => { 
-            const input = document.getElementById(`val-${item.id}`); 
-            if(input) item.val = parseFloat(input.value) || 0; 
-        });
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-        
-        // 1. 출시/상시 패키지 리스트의 효율 점수 갱신
-        filterReleased(); 
-        renderConstantPackages();
-        
-        // 2. [추가] 현재 분석 탭의 계산 결과도 즉시 갱신
-        calculate(); 
-    }
+function saveSettings() {
+    config.items.forEach(item => { 
+        const input = document.getElementById(`val-${item.id}`); 
+        if(input) item.val = parseFloat(input.value) || 0; 
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+    
+    // 💡 아래 줄을 추가했습니다!
+    showToast("✅ 설정이 저장되었습니다!"); 
+    
+    filterReleased(); 
+    renderConstantPackages();
+    calculate(); 
+}
 
 function renderConstantPackages() {
     const listDiv = document.getElementById('constant-list');
@@ -366,13 +403,11 @@ function renderConstantPackages() {
     
     if (!listDiv || !categorySelect) return;
 
-    // 1. 현재 선택된 값 저장
     const selectedCategory = categorySelect.value || "all";
     const query = (searchInput.value || "").toLowerCase().trim();
     const sortType = sortTypeSelect ? sortTypeSelect.value : 'score';
     const sortOrder = sortOrderSelect ? sortOrderSelect.value : 'desc';
 
-    // 2. 카테고리 목록 자동 갱신 (중복 방지)
     const categoriesFromData = [...new Set(constantPackages.map(pkg => pkg.category))]
         .filter(cat => cat && cat !== "판매중" && cat !== "미판매")
         .sort();
@@ -387,7 +422,6 @@ function renderConstantPackages() {
     });
     categorySelect.innerHTML = selectHtml;
 
-    // 3. 필터링 로직 (isExpired 대신 category: "미판매" 기준으로 수정)
     let filtered = constantPackages.filter(pkg => {
         const matchesSearch = pkg.name.toLowerCase().includes(query);
         let matchesCategory = false;
@@ -396,10 +430,8 @@ function renderConstantPackages() {
         if (selectedCategory === "all") {
             matchesCategory = true;
         } else if (selectedCategory === "판매중") {
-            // 카테고리가 "미판매"가 아닌 것들을 판매중으로 간주
             matchesCategory = (pkgCat !== "미판매");
         } else if (selectedCategory === "미판매") {
-            // 카테고리가 "미판매"인 것들만 필터링
             matchesCategory = (pkgCat === "미판매");
         } else {
             matchesCategory = (pkgCat === selectedCategory);
@@ -408,27 +440,25 @@ function renderConstantPackages() {
         return matchesSearch && matchesCategory;
     });
 
-    // 4. 정렬 로직 (기존 유지)
     filtered.sort((a, b) => {
         let vA = (sortType === 'price') ? a.price : calculateScore(a.contents, a.price);
         let vB = (sortType === 'price') ? b.price : calculateScore(b.contents, b.price);
         return (sortOrder === 'asc') ? vA - vB : vB - vA;
     });
 
-    // 5. 리스트 렌더링 (스크롤용 ID 포함)
     listDiv.innerHTML = filtered.map((pkg) => {
         const originalIndex = constantPackages.indexOf(pkg);
-        const score = calculateScore(pkg.contents, pkg.price).toFixed(1);
+        const score = Math.round(calculateScore(pkg.contents, pkg.price));
         const noteHtml = pkg.note ? `<div class="pkg-note">📝 ${pkg.note}</div>` : "";
-       const summary = Object.entries(pkg.contents).map(([id, count]) => {
-    const item = config.items.find(i => i.id === id);
-    const iconPath = item ? item.icon : 'images/default.png';
-    return `
-        <span class="content-item" style="display: inline-flex; align-items: center; gap: 4px; margin-right: 8px;">
-            <img src="${iconPath}" style="width: 18px; height: 18px; object-fit: contain;">
-            ${item ? item.name : id} x${count}
-        </span>`;
-}).join('');
+        const summary = Object.entries(pkg.contents).map(([id, count]) => {
+            const item = config.items.find(i => i.id === id);
+            const iconPath = item ? item.icon : 'images/default.png';
+            return `
+                <span class="content-item" style="display: inline-flex; align-items: center; gap: 4px; margin-right: 8px;">
+                    <img src="${iconPath}" style="width: 18px; height: 18px; object-fit: contain;">
+                    ${item ? item.name : id} x${count}
+                </span>`;
+        }).join('');
 
         return `
             <div class="pkg-card" id="pkg-constant-${originalIndex}">
@@ -441,7 +471,6 @@ function renderConstantPackages() {
             </div>`;
     }).join('');
 
-    // 6. 그래프 업데이트
     if (typeof drawConstantChart === 'function') {
         drawConstantChart(filtered);
     }
@@ -452,7 +481,6 @@ function loadAll() {
     if(saved) {
         const parsed = JSON.parse(saved);
         
-        // 1. 기존 아이템 가치(val) 복구 로직
         if (parsed.items) {
             config.items = config.items.map(item => {
                 const s = parsed.items.find(si => si.id === item.id);
@@ -460,37 +488,36 @@ function loadAll() {
             });
         }
         
-        // 2. 설정 도우미 체크 상태 복구 (추가)
         config.paidElifCriteria = parsed.paidElifCriteria || [];
         config.kcandyCriteria = parsed.kcandyCriteria || [];
-	config.manualCriteria = parsed.manualCriteria || [];
+        config.manualCriteria = parsed.manualCriteria || [];
     }
 }
 
-    function applyRandomBackground() {
-        const bgs = [
-            'images/배경1.webp', 
-            'images/배경2.webp',
-            'images/배경3.webp',
-            'images/배경4.webp'
-        ];
-        document.body.style.backgroundImage = `url('${bgs[Math.floor(Math.random()*bgs.length)]}')`;
-    }
+function applyRandomBackground() {
+    const bgs = [
+        'images/배경1.webp', 
+        'images/배경2.webp',
+        'images/배경3.webp',
+        'images/배경4.webp'
+    ];
+    document.body.style.backgroundImage = `url('${bgs[Math.floor(Math.random()*bgs.length)]}')`;
+}
 
-    function resetConfig() { if(confirm("기본 설정으로 초기화 하시겠습니까?")) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
-    function copyShareLink() {
-          const essentialData = {};
-            config.items.forEach(item => {
-            essentialData[item.id] = item.val;
-          });
+function resetConfig() { if(confirm("기본 설정으로 초기화 하시겠습니까?")) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
+function copyShareLink() {
+      const essentialData = {};
+        config.items.forEach(item => {
+        essentialData[item.id] = item.val;
+      });
 
-          const encodedData = btoa(encodeURIComponent(JSON.stringify(essentialData)));
-          const url = `${window.location.origin}${window.location.pathname}?s=${encodedData}`;
+      const encodedData = btoa(encodeURIComponent(JSON.stringify(essentialData)));
+      const url = `${window.location.origin}${window.location.pathname}?s=${encodedData}`;
 
-          navigator.clipboard.writeText(url).then(() => {
-             alert("설정 링크 복사 완료!");
-          });
-    }
+      navigator.clipboard.writeText(url).then(() => {
+         alert("설정 링크 복사 완료!");
+      });
+}
 
 function drawReleasedChart(filteredData) {
     const canvas = document.getElementById('releasedChart');
@@ -500,6 +527,7 @@ function drawReleasedChart(filteredData) {
 
     const visibleData = filteredData.filter(p => !p.hidden);
 
+    // 💡 전체보기 상태("all")일 때는 그래프 컴포넌트만 숨기되, 리스트 카드는 정상 보존됨!
     if (selectedApostle === "all" || visibleData.length === 0) {
         if(container) container.style.display = 'none';
         return;
@@ -550,7 +578,6 @@ function drawReleasedChart(filteredData) {
             indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
-            // ⭐ [클릭 이벤트 추가]
             onClick: (event, elements) => {
                 if (elements.length > 0) {
                     const index = elements[0].index;
@@ -559,7 +586,6 @@ function drawReleasedChart(filteredData) {
                     
                     if (targetElement) {
                         targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        // 강조 효과
                         targetElement.style.transition = 'background-color 0.3s';
                         targetElement.style.backgroundColor = '#fff9c4';
                         setTimeout(() => {
@@ -576,7 +602,7 @@ function drawReleasedChart(filteredData) {
                     ticks: { 
                         callback: function(val) {
                             if (val >= 1000) return '1,000+';
-                            return Number(val).toFixed(1); 
+                            return Math.round(val); 
                         }
                     }
                 },
@@ -586,7 +612,7 @@ function drawReleasedChart(filteredData) {
                 legend: { display: false },
                 tooltip: {
                     callbacks: {
-                        label: (context) => `효율 점수: ${context.raw.toFixed(1)}`
+                        label: (context) => `효율 점수: ${Math.round(context.raw)}`
                     }
                 }
             }
@@ -605,8 +631,8 @@ function drawReleasedChart(filteredData) {
                         ctx.clearRect(posX - 5, posY - height/2, 10, height);
                         ctx.beginPath();
                         ctx.lineWidth = 2;
-                        ctx.strokeStyle = bar.options.borderColor;
-                        ctx.fillStyle = bar.options.backgroundColor;
+                        ctx.strokeStyle = '#e91e63';
+                        ctx.fillStyle = 'rgba(233, 30, 99, 0.7)';
                         let startY = posY - height/2;
                         ctx.moveTo(posX, startY);
                         for (let step = 1; step <= 4; step++) {
@@ -636,7 +662,7 @@ function drawReleasedChart(filteredData) {
                     ctx.font = 'bold 11px Arial';
                     ctx.textAlign = 'left';
 
-                    const label = graceScore.toFixed(1);
+                    const label = Math.round(graceScore);
                     ctx.fillText(label, xPos + 5, top + 12);
                     ctx.restore();
                 }
@@ -644,13 +670,13 @@ function drawReleasedChart(filteredData) {
         }]
     });
 }
+
 window.togglePackageVisibility = function(pkgName) {
     const targetPkg = dbPackages.find(p => p.name === pkgName);
 
     if (targetPkg) {
         targetPkg.hidden = !targetPkg.hidden;
 
-        // 💾 1. 현재 숨겨진 패키지들의 이름만 추출해서 저장
         const hiddenNames = dbPackages
             .filter(p => p.hidden)
             .map(p => p.name);
@@ -663,7 +689,6 @@ window.togglePackageVisibility = function(pkgName) {
 function setupLocalPackages() {
     console.log("로컬 데이터 세팅 및 숨김 목록 복구 시작...");
 
-    // 💾 2. 저장된 숨김 목록 불러오기 및 적용
     const savedHidden = localStorage.getItem('trickcal_hidden_list');
     if (savedHidden && typeof dbPackages !== 'undefined') {
         try {
@@ -678,28 +703,12 @@ function setupLocalPackages() {
         }
     }
 
-    // --- 기존 로직 (사도 Select 박스 생성 등) ---
-    const apostleSet = new Set();
     if (typeof dbPackages !== 'undefined' && dbPackages.length > 0) {
-        dbPackages.forEach(data => {
-            apostleSet.add(data.releasedApostle || "기타");
-        });
-
-        const select = document.getElementById('apostle-select');
-        if (select) {
-            select.innerHTML = '<option value="all">전체 사도</option>';
-            Array.from(apostleSet).sort().forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.innerText = name;
-                select.appendChild(opt);
-            });
-        }
-
-        // 3. 필터링 및 그래프 그리기 (이제 hidden이 적용된 채로 그려짐)
-        filterReleased();
+        // 💡 페이지 로드 시 대분류 세팅을 기반으로 소분류 생성 연동 후, 즉시 첫 렌더링 호출!
+        updateApostleSelectOptions();
+        filterReleased(); // 💡 1번 버그 해결부 (초기 구동 시 패키지 리스트 강제 호출)
     }
-};
+}
 
 let constantChartObj = null;
 
@@ -752,7 +761,6 @@ function drawConstantChart(filteredData) {
             indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
-            // ⭐ [클릭 이벤트 추가]
             onClick: (event, elements) => {
                 if (elements.length > 0) {
                     const index = elements[0].index;
@@ -762,7 +770,6 @@ function drawConstantChart(filteredData) {
                     
                     if (targetElement) {
                         targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        // 강조 효과 추가
                         targetElement.style.transition = 'background-color 0.3s';
                         targetElement.style.backgroundColor = '#fff9c4';
                         setTimeout(() => {
@@ -775,14 +782,20 @@ function drawConstantChart(filteredData) {
                 x: { 
                     beginAtZero: true, 
                     max: xAxisMax,
-                    grid: { display: false } 
+                    grid: { display: false },
+                    ticks: {
+                        callback: function(val) {
+                            if (val >= 1000) return '1,000+';
+                            return Math.round(val);
+                        }
+                    }
                 },
                 y: { grid: { display: false } }
             },
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    callbacks: { label: (context) => `효율 점수: ${context.raw.toFixed(1)}` }
+                    callbacks: { label: (context) => `효율 점수: ${Math.round(context.raw)}` }
                 }
             }
         },
@@ -803,7 +816,7 @@ function drawConstantChart(filteredData) {
 
                     ctx.fillStyle = '#666';
                     ctx.font = 'bold 11px Arial';
-                    ctx.fillText(graceScore.toFixed(1), xPos + 5, top + 12);
+                    ctx.fillText(Math.round(graceScore), xPos + 5, top + 12);
                     ctx.restore();
                 }
             }
@@ -836,10 +849,25 @@ function updateManualValue() {
         const minValue = Math.min(...checkedValues.map(v => parseFloat(v)));
         const input = document.getElementById('val-manual');
         if (input) {
-            input.value = minValue.toFixed(3); // 소수점 3자리 고정
+            input.value = minValue.toFixed(3); 
             saveSettings(); 
         }
     } else {
         saveSettings();
     }
+}
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.innerText = message;
+    toast.style.display = "block";
+    
+    // 부드러운 페이드 인
+    setTimeout(() => { toast.style.opacity = "1"; }, 10);
+    
+    // 2초 뒤 페이드 아웃
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        setTimeout(() => { toast.style.display = "none"; }, 300);
+    }, 2000);
 }
