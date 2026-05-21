@@ -911,7 +911,7 @@ function renderModalList() {
     const listDiv = document.getElementById('modal-list');
     const pkgType = document.getElementById('pkg-type-select').value;
     
-    const apostleNames = [...new Set(dbPackages.map(p => p.releasedApostle))];
+    const apostleNames = [...new Set(dbPackages.map(p => p.releasedApostle))].reverse();
     
     const filtered = apostleNames.filter(name => {
         const isIsium = name.startsWith("아이시움");
