@@ -144,6 +144,7 @@ const dbPackages = [
     { name: "2.5주년 불꽃놀이 패키지", price: 25000, releasedApostle: "헤일리(멀쩡)", contents: { t_apostle: 50, t_card: 25, nuru: 25 } },
     { name: "2.5주년 파티 패키지", price: 2500, releasedApostle: "헤일리(멀쩡)", contents: { scandy: 250, kcandy: 250, manual: 2500, light_box: 2500 } },
     { name: "사복 패스(클로에)", price: 29500, releasedApostle: "헤일리(멀쩡)", contents: { "p_elif": 900, "f_elif": 2400, "t_apostle": 20, "t_card": 20, "crayon_highest": 8 } , note: "사복 포함"},
+
     { name: "아라그니아의 공물 패키지", price: 3300, releasedApostle: "아라그니아", contents: { p_elif: 100, kcandy: 200, manual: 800, nuru: 3, food_blue: 5 } },
     { name: "아라그니아의 보호 패키지", price: 3300, releasedApostle: "아라그니아", contents: { p_elif: 100, scandy: 100, light_box: 200, nuru: 3, food_blue: 5 } },
     { name: "아라그니아의 멋짐 패키지", price: 9900, releasedApostle: "아라그니아", contents: { p_elif: 300, t_apostle: 10, t_card: 10 } },
@@ -175,6 +176,7 @@ const dbPackages = [
     { name: "하늘 위의 요리사 오팔 패키지", price: 29500, releasedApostle: "아라그니아", contents: { p_elif: 900, t_apostle: 10, cert: 300, attr_순수: 1 }, note: "오팔 증명서 20 -> 증명서 300" },
     { name: "환상적인 비행 시간 로비 패키지", price: 29500, releasedApostle: "아라그니아", contents: { p_elif: 900, f_elif: 900, t_apostle: 10, thumbs: 60 }, note: "로비 포함" },
     { name: "아라그니아의 일출 패키지", price: 49500, releasedApostle: "아라그니아", contents: { t_apostle: 50, gold: 350 } },
+
     { name: "레비의 발전 패키지", price: 99000, releasedApostle: "레비(졸업)", contents: { t_apostle: 100, attr_활발: 3 } },
     { name: "레비의 노력 패키지", price: 49500, releasedApostle: "레비(졸업)", contents: { p_elif: 1500, f_elif: 1500, select_ticket: 1, thumbs: 100 } },
     { name: "레비의 논문 패키지", price: 29500, releasedApostle: "레비(졸업)", contents: { p_elif: 900, crayon_high: 12, crayon_highest: 3 } },
@@ -199,11 +201,21 @@ const dbPackages = [
     { name: "레비의 성장 패키지", price: 3300, releasedApostle: "레비(졸업)", contents: { p_elif: 100, kcandy: 100, scandy: 100, manual: 500, light_box: 200 } },
     { name: "백사당의 란 패키지", price: 99000, releasedApostle: "레비(졸업)", contents: { p_elif: 3000, elch_ticket: 1, attr_순수: 3 }, note: "란 증명서 20 = 엘다인 선택권 1장 가치로 산정" },
     { name: "사복 패스(란)", price: 29500, releasedApostle: "레비(졸업)", contents: { "p_elif": 900, "f_elif": 2400, "t_apostle": 20, "t_card": 20, "crayon_highest": 8 } , note: "사복 포함" },
-{ name: "이드의 배드 드림 패키지", price: 3300, releasedApostle: "이드(재활)", contents: { "p_elif": 100, "f_elif": 100, "scandy": 100, "light_box": 200, "food_purple": 3 } },
+
+    { name: "이드의 배드 드림 패키지", price: 3300, releasedApostle: "이드(재활)", contents: { "p_elif": 100, "f_elif": 100, "scandy": 100, "light_box": 200, "food_purple": 3 } },
     { name: "이드의 그리움 패키지", price: 3300, releasedApostle: "이드(재활)", contents: { "p_elif": 100, "f_elif": 100, "kcandy": 200, "manual": 500, "food_purple": 3 } },
     { name: "이드의 힘세고 강한 아침 패키지", price: 9900, releasedApostle: "이드(재활)", contents: { "p_elif": 300, "kcandy": 300, "scandy": 300, "thumbs": 20, "food_purple": 10 } },
     { name: "이드의 간절함 패키지", price: 9900, releasedApostle: "이드(재활)", contents: { "p_elif": 300, "t_apostle": 10, "t_card": 10 } },
     { name: "이드의 꿈속 패키지", price: 29500, releasedApostle: "이드(재활)", contents: { "p_elif": 900, "f_elif": 900, "crayon_highest": 4 } },
     { name: "이드의 기억 패키지", price: 49500, releasedApostle: "이드(재활)", contents: { "p_elif": 1500, "f_elif": 1500, "cert": 400, "thumbs": 100 } },
     { name: "이드의 애정 패키지", price: 99000, releasedApostle: "이드(재활)", contents: { "t_apostle": 100, "t_card": 50 } },
+    { name: "이드(재활)의 꿈 일기", price: 5500, releasedApostle: "이드(재활)" , contents: { p_elif: 170, thumbs: 50, kcandy: 800, scandy: 420 } },
+
+
+    { name: "아이시움 종합 티켓 패키지", price: 9900, releasedApostle: "아이시움(~26.06.04.)", contents: { "p_elif": 300, "t_apostle": 5, "t_card": 5, "nuru": 5, "crayon_highest": 1, "mileage": 10 } },
+    { name: "아이시움 달콤한 골드 패키지", price: 19800, releasedApostle: "아이시움(~26.06.04.)", contents: { "p_elif": 600, "kcandy": 600, "scandy": 600, "thumbs": 40, "gold": 150, "mileage": 20 } },
+    { name: "아이시움 엘리프 가득 패키지", price: 49500, releasedApostle: "아이시움(~26.06.04.)", contents: { "p_elif": 1500, "f_elif": 1500, "t_apostle": 30, "mileage": 50 } },
+    { name: "아이시움 참 잘했어요 패키지", price: 49500, releasedApostle: "아이시움(~26.06.04.)", contents: { "p_elif": 1500, "select_ticket": 1, "attr_순수": 1, "thumbs": 100, "mileage": 50 } },
+    { name: "아이시움 반짝반짝 뽑기 패키지", price: 99000, releasedApostle: "아이시움(~26.06.04.)", contents: { "p_elif": 3000, "t_apostle": 50, "t_card": 50, "crayon_highest": 10, "mileage": 100 } },    
+
 ];
