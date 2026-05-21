@@ -241,24 +241,48 @@
     }
 
     .search-input {
-      flex: 2;
-      padding: 10px;
-      border: 1.5px solid var(--primary);
-      border-radius: 8px;
-      outline: none;
-      font-size: 14px;
-    }
+    width: 100%;       /* 부모 요소의 너비를 100% 채움 */
+    padding: 10px;     /* 입력하기 편하게 패딩 약간 추가 */
+    border: 1.5px solid var(--primary);
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    /* margin: 0 auto; 와 max-width: 250px;를 삭제했습니다 */
+}
 
-    .apostle-select {
-      flex: 1;
-      min-width: 0;
-      border: 1.5px solid #ddd;
-      border-radius: 8px;
-      padding: 5px;
-      font-size: 0.85em;
-      cursor: pointer;
-    }
+.apostle-select {
+    flex: 1;
+    height: 40px; /* 높이 고정 */
+    padding: 0 10px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: border 0.2s;
+}
+.apostle-select:hover {
+    border-color: var(--primary);
+}
 
+/* 사도 선택 버튼 전용 스타일 */
+.btn-apostle-selector {
+    flex: 1;
+    height: 40px; /* select와 높이 동일하게 고정 */
+    padding: 0 10px;
+    background-color: white;
+    border: 2px solid var(--primary);
+    border-radius: 10px;
+    color: var(--primary);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.btn-apostle-selector:hover {
+    background-color: var(--primary);
+    color: #fff;
+}
     /* 패키지 카드 */
     .pkg-card {
       border: 1px solid #eee;
@@ -536,15 +560,21 @@
           </div>
         </div>
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          <input type="text" id="pkg-search" class="search-input" placeholder="패키지 또는 사도 검색..." oninput="debounceSearch()" style="width: 100%;">
+          <input type="text" id="pkg-search" class="search-input" placeholder="패키지 검색.." oninput="debounceSearch()" style="width: 100%;">
           
-          <div style="display: flex; gap: 8px; width: 100%;">
+         <div style="display: flex; gap: 8px; width: 100%;">
             <select id="pkg-type-select" class="apostle-select" onchange="onPkgTypeChange()" style="flex: 1; padding: 8px;">
             <option value="apostle" selected>사도 패키지</option> <option value="isium">아이시움 라운지 패키지</option>
           </select>
-            <select id="apostle-select" class="apostle-select" onchange="filterReleased()" style="flex: 1; padding: 8px;">
-              <option value="all">모든 패키지</option> </select>
-          </div>
+           <button id="apostle-selector" class="apostle-select" onclick="openApostleModal()">
+    		전체 패키지
+		</button>
+		<input type="hidden" id="selected-apostle-val" value="all">
+    		
+
+	</button>
+	<input type="hidden" id="selected-apostle-val" value="all">
+        </div>
           
           <div style="display: flex; gap: 8px; width: 100%; align-items: center;">
             <select id="sort-type" class="apostle-select" onchange="filterReleased()" style="flex: 1; padding: 8px;">
@@ -710,6 +740,17 @@
      background: rgba(0, 0, 0, 0.8); color: white; padding: 12px 20px; border-radius: 8px; 
      display: none; opacity: 0; transition: opacity 0.3s; z-index: 1000; font-weight: bold;">
      설정 저장 완료!
+</div>
+<div id="apostle-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; padding:20px;">
+    <div style="background:white; width:100%; max-width:400px; margin:auto; border-radius:12px; padding:20px; height:80vh; display:flex; flex-direction:column;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+            <strong>사도 선택</strong>
+            <button onclick="closeApostleModal()">닫기</button>
+        </div>
+        <input type="text" id="modal-search" class="search-input" placeholder="사도 이름 검색..." oninput="renderModalList()" style="padding:10px; margin-bottom:10px;">
+        <div id="modal-list" style="flex:1; overflow-y:auto; border-top:1px solid #ddd; padding-top:10px;">
+            </div>
+    </div>
 </div>
 </body>
 

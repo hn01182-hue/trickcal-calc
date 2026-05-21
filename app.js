@@ -1,6 +1,5 @@
 // 💡 추가: 검색 디바운스를 위한 타이머 변수
 let searchTimeout;
-
 // 💡 추가: 타이핑을 0.3초간 멈추면 filterReleased()를 실행하는 함수
 function debounceSearch() {
     clearTimeout(searchTimeout);
@@ -12,7 +11,7 @@ function debounceSearch() {
 function filterReleased() {
     const query = document.getElementById('pkg-search').value.toLowerCase();
     const pkgType = document.getElementById('pkg-type-select').value;
-    const apostle = document.getElementById('apostle-select').value;
+    const apostle = document.getElementById('selected-apostle-val').value;
     const type = document.getElementById('sort-type').value;
     const order = document.getElementById('sort-order').value;
 
@@ -45,6 +44,21 @@ function filterReleased() {
 }
 
 function onPkgTypeChange() {
+    // 💡 1. 사도 필터 초기화 (핵심: 대분류를 바꾸면 사도 필터도 '전체'로 복귀)
+    document.getElementById('selected-apostle-val').value = "all";
+    document.getElementById('apostle-selector').innerText = "전체 패키지";
+
+    // 💡 2. 검색창 안내 문구 변경
+    const pkgType = document.getElementById('pkg-type-select').value;
+    const searchInput = document.getElementById('modal-search');
+    if (searchInput) {
+        if (pkgType === "isium") {
+            searchInput.placeholder = "검색...";
+        } else {
+            searchInput.placeholder = "사도 이름 검색...";
+        }
+    }
+
     updateApostleSelectOptions();
     filterReleased();
 }
@@ -523,7 +537,7 @@ function drawReleasedChart(filteredData) {
     const canvas = document.getElementById('releasedChart');
     const container = document.getElementById('chart-container');
     const wrapper = document.getElementById('chart-wrapper');
-    const selectedApostle = document.getElementById('apostle-select').value;
+    const selectedApostle = document.getElementById('selected-apostle-val').value;
 
     const visibleData = filteredData.filter(p => !p.hidden);
 
@@ -571,7 +585,7 @@ function drawReleasedChart(filteredData) {
                 backgroundColor: scores.map(s => s >= graceScore ? 'rgba(125, 178, 73, 0.7)' : 'rgba(233, 30, 99, 0.7)'),
                 borderColor: scores.map(s => s >= graceScore ? '#7db249' : '#e91e63'),
                 borderWidth: 1,
-                borderRadius: 5
+                borderRadius: 4
             }]
         },
         options: {
@@ -754,7 +768,7 @@ function drawConstantChart(filteredData) {
                 backgroundColor: scores.map(s => s >= graceScore ? 'rgba(125, 178, 73, 0.7)' : 'rgba(233, 30, 99, 0.7)'),
                 borderColor: scores.map(s => s >= graceScore ? '#7db249' : '#e91e63'),
                 borderWidth: 1,
-                borderRadius: 5
+                borderRadius: 4,
             }]
         },
         options: {
@@ -870,4 +884,68 @@ function showToast(message) {
         toast.style.opacity = "0";
         setTimeout(() => { toast.style.display = "none"; }, 300);
     }, 2000);
+}
+
+function openApostleModal() {
+    document.getElementById('apostle-modal').style.display = 'flex';
+    
+    // 💡 추가: 모달이 열릴 때 패키지 타입에 따라 검색창 문구 변경
+    const pkgType = document.getElementById('pkg-type-select').value;
+    const modalSearchInput = document.getElementById('modal-search');
+    
+    if (pkgType === "isium") {
+        modalSearchInput.placeholder = "검색...";
+    } else {
+        modalSearchInput.placeholder = "사도 이름 검색...";
+    }
+    
+    renderModalList();
+}
+
+function closeApostleModal() {
+    document.getElementById('apostle-modal').style.display = 'none';
+}
+
+function renderModalList() {
+    const query = document.getElementById('modal-search').value.toLowerCase();
+    const listDiv = document.getElementById('modal-list');
+    const pkgType = document.getElementById('pkg-type-select').value;
+    
+    const apostleNames = [...new Set(dbPackages.map(p => p.releasedApostle))];
+    
+    const filtered = apostleNames.filter(name => {
+        const isIsium = name.startsWith("아이시움");
+        const matchesType = (pkgType === "isium") ? isIsium : !isIsium;
+        return matchesType && name.toLowerCase().includes(query);
+    });
+
+    listDiv.innerHTML = filtered.map(name => {
+        const isIsium = name.startsWith("아이시움");
+        let imgHtml = '';
+        
+        // 아이시움이 아닐 때만 이미지 생성
+        if (!isIsium) {
+            // &로 구분하여 각각의 이미지 URL 생성
+            const names = name.split('&');
+            imgHtml = names.map(n => `
+                <img src="images/${n.trim()}.webp" 
+                     onerror="this.src='images/default.png'" 
+                     style="width:30px; height:30px; border-radius:50%; margin-right:2px; object-fit:cover;">
+            `).join('');
+        }
+        
+        return `
+            <div onclick="selectApostle('${name}')" style="display:flex; align-items:center; padding:10px; border-bottom:1px solid #eee; cursor:pointer;">
+                ${imgHtml}
+                <span style="margin-left:8px;">${name}</span>
+            </div>
+        `;
+    }).join('');
+}
+
+function selectApostle(name) {
+    document.getElementById('selected-apostle-val').value = name;
+    document.getElementById('apostle-selector').innerText = name;
+    closeApostleModal();
+    filterReleased(); // 패키지 리스트 갱신
 }
