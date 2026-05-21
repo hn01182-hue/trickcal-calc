@@ -199,4 +199,11 @@ const dbPackages = [
     { name: "레비의 성장 패키지", price: 3300, releasedApostle: "레비(졸업)", contents: { p_elif: 100, kcandy: 100, scandy: 100, manual: 500, light_box: 200 } },
     { name: "백사당의 란 패키지", price: 99000, releasedApostle: "레비(졸업)", contents: { p_elif: 3000, elch_ticket: 1, attr_순수: 3 }, note: "란 증명서 20 = 엘다인 선택권 1장 가치로 산정" },
     { name: "사복 패스(란)", price: 29500, releasedApostle: "레비(졸업)", contents: { "p_elif": 900, "f_elif": 2400, "t_apostle": 20, "t_card": 20, "crayon_highest": 8 } , note: "사복 포함" },
+{ name: "이드의 배드 드림 패키지", price: 3300, releasedApostle: "이드(재활)", contents: { "p_elif": 100, "f_elif": 100, "scandy": 100, "light_box": 200, "food_purple": 3 } },
+    { name: "이드의 그리움 패키지", price: 3300, releasedApostle: "이드(재활)", contents: { "p_elif": 100, "f_elif": 100, "kcandy": 200, "manual": 500, "food_purple": 3 } },
+    { name: "이드의 힘세고 강한 아침 패키지", price: 9900, releasedApostle: "이드(재활)", contents: { "p_elif": 300, "kcandy": 300, "scandy": 300, "thumbs": 20, "food_purple": 10 } },
+    { name: "이드의 간절함 패키지", price: 9900, releasedApostle: "이드(재활)", contents: { "p_elif": 300, "t_apostle": 10, "t_card": 10 } },
+    { name: "이드의 꿈속 패키지", price: 29500, releasedApostle: "이드(재활)", contents: { "p_elif": 900, "f_elif": 900, "crayon_highest": 4 } },
+    { name: "이드의 기억 패키지", price: 49500, releasedApostle: "이드(재활)", contents: { "p_elif": 1500, "f_elif": 1500, "cert": 400, "thumbs": 100 } },
+    { name: "이드의 애정 패키지", price: 99000, releasedApostle: "이드(재활)", contents: { "t_apostle": 100, "t_card": 50 } },
 ];
