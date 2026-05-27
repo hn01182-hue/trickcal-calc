@@ -210,6 +210,7 @@ const dbPackages = [
     { name: "이드의 기억 패키지", price: 49500, releasedApostle: "이드(재활)", contents: { "p_elif": 1500, "f_elif": 1500, "cert": 400, "thumbs": 100 } },
     { name: "이드의 애정 패키지", price: 99000, releasedApostle: "이드(재활)", contents: { "t_apostle": 100, "t_card": 50 } },
     { name: "이드(재활)의 꿈 일기", price: 5500, releasedApostle: "이드(재활)" , contents: { p_elif: 170, thumbs: 50, kcandy: 800, scandy: 420 } },
+    { name: "함께 걸어나가는 꿈 피규어 패키지", price: 29500, releasedApostle: "이드(재활)", contents: { "p_elif": 900, "f_elif": 1800, "thumbs": 60 }, note: "피규어 포함" },
 
 
     { name: "아이시움 종합 티켓 패키지", price: 9900, releasedApostle: "아이시움(~26.06.04.)", contents: { "p_elif": 300, "t_apostle": 5, "t_card": 5, "nuru": 5, "crayon_highest": 1, "mileage": 10 } },
