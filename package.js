@@ -211,6 +211,15 @@ const dbPackages = [
     { name: "이드의 애정 패키지", price: 99000, releasedApostle: "이드(재활)", contents: { "t_apostle": 100, "t_card": 50 } },
     { name: "이드(재활)의 꿈 일기", price: 5500, releasedApostle: "이드(재활)" , contents: { p_elif: 170, thumbs: 50, kcandy: 800, scandy: 420 } },
     { name: "함께 걸어나가는 꿈 피규어 패키지", price: 29500, releasedApostle: "이드(재활)", contents: { "p_elif": 900, "f_elif": 1800, "thumbs": 60 }, note: "피규어 포함" },
+    { name: "이드의 사과 패키지", price: 6600, releasedApostle: "이드(재활)", contents: { "p_elif": 200, "f_elif": 200, "t_apostle": 5, "manual": 1000 }, note: "" },
+    { name: "화염의 파이어 아일라 패키지", price: 29500, releasedApostle: "이드(재활)", contents: { "p_elif": 900, "t_apostle": 10, "cert": 300, "attr_순수": 1 }, note: "아일라 증명서 20 -> 증명서 300" },
+    { name: "전기톱의 체인소 베니(베니) 패키지", price: 29500, releasedApostle: "이드(재활)", contents: { "p_elif": 900, "t_apostle": 10, "cert": 300, "attr_냉정": 1 }, note: "베니(베니) 증명서 20 -> 증명서 300" },
+    { name: "크라켄의 텐탁클 앨리스 패키지", price: 29500, releasedApostle: "이드(재활)", contents: { "p_elif": 900, "t_apostle": 10, "cert": 300, "attr_광기": 1 }, note: "앨리스 증명서 20 -> 증명서 300" },
+    { name: "속박의 커스 칸나 패키지", price: 29500, releasedApostle: "이드(재활)", contents: { "p_elif": 900, "t_apostle": 10, "cert": 300, "attr_활발": 1 }, note: "칸나 증명서 20 -> 증명서 300" },
+    { name: "맹독의 베놈 포셔 패키지", price: 29500, releasedApostle: "이드(재활)", contents: { "p_elif": 900, "t_apostle": 10, "cert": 300, "attr_우울": 1 }, note: "포셔 증명서 20 -> 증명서 300" },
+    { name: "이드의 두려움 패키지", price: 49500, releasedApostle: "이드(재활)", contents: { "t_apostle": 50, "gold": 350 }, note: "" },
+    { name: "악독! 잔혹! 빌런의 시간 로비 패키지", price: 29500, releasedApostle: "이드(재활)", contents: { "p_elif": 900, "t_apostle": 10, "t_card": 10, "nuru": 10, "scandy": 300 }, note: "로비 포함" },
+    { name: "이드의 감사 패키지", price: 3300, releasedApostle: "이드(재활)", contents: { "p_elif": 100, "f_elif": 100, "kcandy": 100, "scandy": 100, "food_blue": 10 }, note: "" },
 
 
     { name: "아이시움 종합 티켓 패키지", price: 9900, releasedApostle: "아이시움(~26.06.04.)", contents: { "p_elif": 300, "t_apostle": 5, "t_card": 5, "nuru": 5, "crayon_highest": 1, "mileage": 10 } },
