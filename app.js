@@ -267,8 +267,11 @@ function renderSettings() {
         const isPaidElif = item.id === 'p_elif';
         const isKcandy = item.id === 'kcandy';
         const isManual = item.id === 'manual';
+        const isCheerStick = item.id === 'cheer_stick';     // 💡 떡상 응원봉 판정 추가
+        const isElCheerStick = item.id === 'el_cheer_stick'; // 💡 엘다인 응원봉 판정 추가
         
-        const helperBtn = (isPaidElif || isKcandy || isManual) ? 
+        // 💡 응원봉 2종도 버튼이 뜨도록 조건 추가
+        const helperBtn = (isPaidElif || isKcandy || isManual || isCheerStick || isElCheerStick) ? 
             `<button class="helper-btn" onclick="toggleSettingHelper('${item.id}')">설정 도우미</button>` : '';
     
         const isChecked = (type, val) => {
@@ -276,6 +279,8 @@ function renderSettings() {
             if (type === 'p_elif') criteria = config.paidElifCriteria;
             else if (type === 'kcandy') criteria = config.kcandyCriteria;
             else if (type === 'manual') criteria = config.manualCriteria;
+            else if (type === 'cheer_stick') criteria = config.cheerStickCriteria;       // 💡 데이터 바인딩 추가
+            else if (type === 'el_cheer_stick') criteria = config.elCheerStickCriteria; // 💡 데이터 바인딩 추가
             return (criteria && criteria.includes(val)) ? 'checked' : '';
         };
 
@@ -323,6 +328,26 @@ function renderSettings() {
                 <p style="margin-top: 10px; font-size: 0.8em; color: #d32f2f;">* 선택한 랭크 중 가장 낮은 가치가 적용됩니다.</p>
             </div>` : '';
 
+      // 💡 떡상 응원봉 도우미 박스 수정
+        const cheerStickHelper = isCheerStick ? `
+            <div id="cheer_stick-helper" class="helper-box">
+                <strong style="display:block; margin-bottom:8px;">📣 업그레이드할 A3(어사이드 3단계) 일반 사도 보유 여부</strong>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label><input type="radio" name="cheer_stick-group" class="cheer_stick-helper-radio" value="yes" onchange="updateCheerStickValue()" ${isChecked("cheer_stick", "yes")}> 예 (가치 = 증명서 * 150)</label>
+                    <label><input type="radio" name="cheer_stick-group" class="cheer_stick-helper-radio" value="no" onchange="updateCheerStickValue()" ${isChecked("cheer_stick", "no")}> 아니오 (가치 = 0)</label>
+                </div>
+            </div>` : '';
+
+        // 💡 엘다인 떡상 응원봉 도우미 박스 수정
+        const elCheerStickHelper = isElCheerStick ? `
+            <div id="el_cheer_stick-helper" class="helper-box">
+                <strong style="display:block; margin-bottom:8px;">🌟 업그레이드할 A3(어사이드 3단계) 엘다인 사도 보유 여부</strong>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label><input type="radio" name="el_cheer_stick-group" class="el_cheer_stick-helper-radio" value="yes" onchange="updateElCheerStickValue()" ${isChecked("el_cheer_stick", "yes")}> 예 (가치 = 증명서 * 400)</label>
+                    <label><input type="radio" name="el_cheer_stick-group" class="el_cheer_stick-helper-radio" value="no" onchange="updateElCheerStickValue()" ${isChecked("el_cheer_stick", "no")}> 아니오 (가치 = 0)</label>
+                </div>
+            </div>` : '';
+
         return `
             <div class="row" style="flex-wrap: wrap;">
                 <div class="item-info">
@@ -337,6 +362,8 @@ function renderSettings() {
                 ${pElifHelper}
                 ${kcandyHelper}
                 ${manualHelper}
+                ${cheerStickHelper}   <!-- 💡 삽입 -->
+                ${elCheerStickHelper} <!-- 💡 삽입 -->
             </div>`;
     };
 
@@ -367,7 +394,6 @@ function renderSettings() {
     const settingsList = document.getElementById('settings-list');
     if (settingsList) settingsList.innerHTML = html;
 }
-
 function toggleSettingHelper(id) {
     const helper = document.getElementById(`${id}-helper`);
     if (helper) helper.classList.toggle('active');
@@ -948,4 +974,50 @@ function selectApostle(name) {
     document.getElementById('apostle-selector').innerText = name;
     closeApostleModal();
     filterReleased(); // 패키지 리스트 갱신
+}
+
+// 💡 일반 떡상 응원봉 가치 계산 함수
+function updateCheerStickValue() {
+    const selected = document.querySelector('.cheer_stick-helper-radio:checked');
+    if (selected) {
+        const val = selected.value;
+        config.cheerStickCriteria = [val];
+        
+        let targetVal = 0;
+        if (val === 'yes') {
+            const certInput = document.getElementById('val-cert');
+            const certVal = certInput ? parseFloat(certInput.value) : (config.items.find(i => i.id === 'cert')?.val || 8.5);
+            targetVal = certVal * 150;
+        }
+        
+        const input = document.getElementById('val-cheer_stick');
+        if (input) {
+            // 💡 소수점 이하가 0이면 정수로, 있으면 소수점 첫째짜리까지만
+            input.value = Math.round(targetVal * 10) / 10; 
+            saveSettings();
+        }
+    }
+}
+
+// 💡 엘다인 떡상 응원봉 가치 계산 함수
+function updateElCheerStickValue() {
+    const selected = document.querySelector('.el_cheer_stick-helper-radio:checked');
+    if (selected) {
+        const val = selected.value;
+        config.elCheerStickCriteria = [val];
+        
+        let targetVal = 0;
+        if (val === 'yes') {
+            const certInput = document.getElementById('val-cert');
+            const certVal = certInput ? parseFloat(certInput.value) : (config.items.find(i => i.id === 'cert')?.val || 8.5);
+            targetVal = certVal * 400;
+        }
+        
+        const input = document.getElementById('val-el_cheer_stick');
+        if (input) {
+            // 💡 소수점 이하가 0이면 정수로, 있으면 소수점 첫째짜리까지만
+            input.value = Math.round(targetVal * 10) / 10; 
+            saveSettings();
+        }
+    }
 }
