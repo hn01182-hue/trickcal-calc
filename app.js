@@ -1049,7 +1049,7 @@ function updateWildcardValue() {
             // 설정창 인풋의 엘다인 선택권(elch_ticket) 가치를 실시간으로 긁어옴 (없으면 기본값 10700)
             const elchInput = document.getElementById('val-elch_ticket');
             const elchVal = elchInput ? parseFloat(elchInput.value) : (config.items.find(i => i.id === 'elch_ticket')?.val || 10700);
-            targetVal = elchVal * (25 / 300);
+            targetVal = elchVal * (25 / 400);
         }
         
         const input = document.getElementById('val-wildcard');
