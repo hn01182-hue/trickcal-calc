@@ -267,11 +267,12 @@ function renderSettings() {
         const isPaidElif = item.id === 'p_elif';
         const isKcandy = item.id === 'kcandy';
         const isManual = item.id === 'manual';
-        const isCheerStick = item.id === 'cheer_stick';     // 💡 떡상 응원봉 판정 추가
-        const isElCheerStick = item.id === 'el_cheer_stick'; // 💡 엘다인 응원봉 판정 추가
+        const isCheerStick = item.id === 'cheer_stick';
+        const isElCheerStick = item.id === 'el_cheer_stick';
+        const isWildcard = item.id === 'wildcard'; // 💡 전설 와일드 카드 판정 추가
         
-        // 💡 응원봉 2종도 버튼이 뜨도록 조건 추가
-        const helperBtn = (isPaidElif || isKcandy || isManual || isCheerStick || isElCheerStick) ? 
+        // 💡 설정 도우미 버튼 조건에 isWildcard 추가
+        const helperBtn = (isPaidElif || isKcandy || isManual || isCheerStick || isElCheerStick || isWildcard) ? 
             `<button class="helper-btn" onclick="toggleSettingHelper('${item.id}')">설정 도우미</button>` : '';
     
         const isChecked = (type, val) => {
@@ -279,8 +280,9 @@ function renderSettings() {
             if (type === 'p_elif') criteria = config.paidElifCriteria;
             else if (type === 'kcandy') criteria = config.kcandyCriteria;
             else if (type === 'manual') criteria = config.manualCriteria;
-            else if (type === 'cheer_stick') criteria = config.cheerStickCriteria;       // 💡 데이터 바인딩 추가
-            else if (type === 'el_cheer_stick') criteria = config.elCheerStickCriteria; // 💡 데이터 바인딩 추가
+            else if (type === 'cheer_stick') criteria = config.cheerStickCriteria;
+            else if (type === 'el_cheer_stick') criteria = config.elCheerStickCriteria;
+            else if (type === 'wildcard') criteria = config.wildcardCriteria; // 💡 추가
             return (criteria && criteria.includes(val)) ? 'checked' : '';
         };
 
@@ -348,6 +350,16 @@ function renderSettings() {
                 </div>
             </div>` : '';
 
+        // 💡 추가: 전설 와일드 카드 도우미 박스
+        const wildcardHelper = isWildcard ? `
+            <div id="wildcard-helper" class="helper-box">
+                <strong style="display:block; margin-bottom:8px;">🃏 카드 레벨 업에 투자 여부</strong>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label><input type="radio" name="wildcard-group" class="wildcard-helper-radio" value="yes" onchange="updateWildcardValue()" ${isChecked("wildcard", "yes")}> 예 (가치 = 엘다인 선택권 * 25/300)</label>
+                    <label><input type="radio" name="wildcard-group" class="wildcard-helper-radio" value="no" onchange="updateWildcardValue()" ${isChecked("wildcard", "no")}> 아니오 (가치 = 0)</label>
+                </div>
+            </div>` : '';
+
         return `
             <div class="row" style="flex-wrap: wrap;">
                 <div class="item-info">
@@ -362,9 +374,9 @@ function renderSettings() {
                 ${pElifHelper}
                 ${kcandyHelper}
                 ${manualHelper}
-                ${cheerStickHelper}   <!-- 💡 삽입 -->
-                ${elCheerStickHelper} <!-- 💡 삽입 -->
-            </div>`;
+                ${cheerStickHelper}
+                ${elCheerStickHelper}
+                ${wildcardHelper} </div>`;
     };
 
     let html = "";
@@ -531,6 +543,9 @@ function loadAll() {
         config.paidElifCriteria = parsed.paidElifCriteria || [];
         config.kcandyCriteria = parsed.kcandyCriteria || [];
         config.manualCriteria = parsed.manualCriteria || [];
+        config.cheerStickCriteria = parsed.cheerStickCriteria || [];
+        config.elCheerStickCriteria = parsed.elCheerStickCriteria || [];
+        config.wildcardCriteria = parsed.wildcardCriteria || []; // 💡 추가
     }
 }
 
@@ -1017,6 +1032,30 @@ function updateElCheerStickValue() {
         if (input) {
             // 💡 소수점 이하가 0이면 정수로, 있으면 소수점 첫째짜리까지만
             input.value = Math.round(targetVal * 10) / 10; 
+            saveSettings();
+        }
+    }
+}
+
+// 💡 추가: 전설 와일드 카드 가치 계산 함수
+function updateWildcardValue() {
+    const selected = document.querySelector('.wildcard-helper-radio:checked');
+    if (selected) {
+        const val = selected.value;
+        config.wildcardCriteria = [val];
+        
+        let targetVal = 0;
+        if (val === 'yes') {
+            // 설정창 인풋의 엘다인 선택권(elch_ticket) 가치를 실시간으로 긁어옴 (없으면 기본값 10700)
+            const elchInput = document.getElementById('val-elch_ticket');
+            const elchVal = elchInput ? parseFloat(elchInput.value) : (config.items.find(i => i.id === 'elch_ticket')?.val || 10700);
+            targetVal = elchVal * (25 / 300);
+        }
+        
+        const input = document.getElementById('val-wildcard');
+        if (input) {
+            // .0 패딩 없이 정수 혹은 소수점 첫째자리까지만 깔끔하게 노출
+            input.value = Math.round(targetVal * 10) / 10;
             saveSettings();
         }
     }
