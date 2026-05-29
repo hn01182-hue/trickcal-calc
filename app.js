@@ -1054,8 +1054,8 @@ function updateWildcardValue() {
         
         const input = document.getElementById('val-wildcard');
         if (input) {
-            // .0 패딩 없이 정수 혹은 소수점 첫째자리까지만 깔끔하게 노출
-            input.value = Math.round(targetVal * 10) / 10;
+            // 정수 까지만 깔끔하게 노출
+            input.value = Math.round(targetVal);
             saveSettings();
         }
     }
