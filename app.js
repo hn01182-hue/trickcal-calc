@@ -355,8 +355,8 @@ function renderSettings() {
             <div id="wildcard-helper" class="helper-box">
                 <strong style="display:block; margin-bottom:8px;">🃏 카드 레벨 업에 투자 여부</strong>
                 <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label><input type="radio" name="wildcard-group" class="wildcard-helper-radio" value="yes" onchange="updateWildcardValue()" ${isChecked("wildcard", "yes")}> 예 (가치 = 엘다인 선택권 * 25/300)</label>
-                    <label><input type="radio" name="wildcard-group" class="wildcard-helper-radio" value="no" onchange="updateWildcardValue()" ${isChecked("wildcard", "no")}> 아니오 (가치 = 0)</label>
+                    <label><input type="radio" name="wildcard-group" class="wildcard-helper-radio" value="yes" onchange="updateWildcardValue()" ${isChecked("wildcard", "yes")}> 예</label>
+                    <label><input type="radio" name="wildcard-group" class="wildcard-helper-radio" value="no" onchange="updateWildcardValue()" ${isChecked("wildcard", "no")}> 아니오</label>
                 </div>
             </div>` : '';
 
