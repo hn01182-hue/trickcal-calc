@@ -94,7 +94,7 @@ const defaultConfig = {
 		    { id: 'wildcard', name: '전설 와일드 카드', val: 0, icon : 'images/전설 와일드 카드.webp', count:""},
 		    { id: 'l_card_select', name: '보유 전설 카드 선택 상자', val: 0, icon : 'images/보유 전설 카드 선택 상자.webp', count:""},
 		    { id: 'excellent_token', name: '우수 증표', val: 300, icon: 'images/우수 증표.webp', count: "" },
-			{ id: 'chip', name: '무심칩', val: 0, icon: 'images/무심칩.webp', count: "" },
+			{ id: 'chip', name: 'MUSIM칩', val: 0, icon: 'images/무심칩.webp', count: "" },
 			{ id: 'rare_church_box', name: '희귀 교단 재료 선택 상자', val: 0, icon: 'images/희귀교단재료상자.webp', count: "" },
 			{ id: 'high_arti_box', name: '고급 아티팩트 선택 상자', val: 0, icon: 'images/고급아티팩트상자.webp', count: "" },
 			{ id: 'high_spell_box', name: '고급 스펠카드 선택 상자', val: 0, icon: 'images/고급스펠상자.webp', count: "" },
