@@ -238,4 +238,10 @@ const dbPackages = [
     { name: "키샤의 흥미 패키지", price: 3300, releasedApostle: "키샤", contents: { "p_elif": 100, "kcandy": 100, "manual": 500, "food_purple": 10, "digest": 3 } },
     { name: "키샤의 무대", price: 5500, releasedApostle: "키샤", contents: {"p_elif": 170, "kcandy":300, "gold":350 }, note: "장식품 포함" },
 
+    { name: "아이시움 사탕 냠냠 패키지", price: 9900, releasedApostle: "아이시움(~26.06.18.)", contents: { "p_elif": 300, "kcandy": 300, "scandy": 300, "rare_church_box": 5, "rare_church_box2": 5, "mileage": 10 } },
+    { name: "아이시움 티켓 모아 패키지", price: 19800, releasedApostle: "아이시움(~26.06.18.)", contents: { "p_elif": 600, "attr_우울": 1, "t_apostle": 10, "nuru": 10, "food_yellow": 3, "mileage": 20 } },
+    { name: "아이시움 전설 카드 티켓 패키지", price: 49500, releasedApostle: "아이시움(~26.06.18.)", contents: { "t_card": 50, "l_spell_box": 1, "l_arti_box": 1, "mileage": 50 } },
+    { name: "아이시움 골드 많이 패키지", price: 49500, releasedApostle: "아이시움(~26.06.18.)", contents: { "t_apostle": 50, "gold": 350, "mileage": 50 } },
+    { name: "아이시움 수령권 좋아 패키지", price: 99000, releasedApostle: "아이시움(~26.06.18.)", contents: { "t_apostle": 100, "nuru": 50, "mileage": 100 } },
+
 ];
