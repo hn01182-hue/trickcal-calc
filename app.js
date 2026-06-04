@@ -194,10 +194,11 @@ function renderCalc() {
     priceInput.value = config.price;
     const items = config.items;
 
-    const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_'));
-    const attrItems = items.filter(i => i.id.startsWith('attr_'));
-    const posItems = items.filter(i => i.id.startsWith('pos_'));
-    const marshItems = items.filter(i => i.id.startsWith('marsh_'));
+    const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_') && !i.id.startsWith('food_'));
+const attrItems = items.filter(i => i.id.startsWith('attr_'));
+const posItems = items.filter(i => i.id.startsWith('pos_'));
+const marshItems = items.filter(i => i.id.startsWith('marsh_'));
+const foodItems = items.filter(i => i.id.startsWith('food_'));
 
     const renderRow = (item) => `
         <div class="row">
@@ -231,6 +232,12 @@ function renderCalc() {
             <div style="padding: 5px 0;">${marshItems.map(item => renderRow(item)).join('')}</div>
         </details>`;
     }
+   if (foodItems.length > 0) {
+        html += `<details style="margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; background: #fff;">
+        <summary style="padding: 12px; cursor: pointer; background: #f1f1f1; font-weight: bold; font-size: 0.9em; border-radius: 4px;">📂 각종 요리 (클릭)</summary>
+        <div style="padding: 5px 0;">${foodItems.map(item => renderRow(item)).join('')}</div>
+        </details>`;
+   }
 
     inputContainer.innerHTML = html;
 }
@@ -258,10 +265,11 @@ function saveCurrentPrice() { config.price = document.getElementById('pkg-price'
 function renderSettings() {
     const items = config.items;
     
-    const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_'));
-    const attrItems = items.filter(i => i.id.startsWith('attr_'));
-    const posItems = items.filter(i => i.id.startsWith('pos_'));
-    const marshItems = items.filter(i => i.id.startsWith('marsh_'));
+    const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_') && !i.id.startsWith('food_'));
+const attrItems = items.filter(i => i.id.startsWith('attr_'));
+const posItems = items.filter(i => i.id.startsWith('pos_'));
+const marshItems = items.filter(i => i.id.startsWith('marsh_'));
+const foodItems = items.filter(i => i.id.startsWith('food_'));
 
     const renderRow = (item) => {
         const isPaidElif = item.id === 'p_elif';
@@ -402,6 +410,13 @@ function renderSettings() {
             <div style="background: #fff; padding-top: 5px;">${marshItems.map(item => renderRow(item)).join('')}</div>
         </details>`;
     }
+
+   if (foodItems.length > 0) {
+        html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
+        <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 각종 요리 (클릭)</summary>
+        <div style="background: #fff; padding-top: 5px;">${foodItems.map(item => renderRow(item)).join('')}</div>
+        </details>`;
+   } 
 
     const settingsList = document.getElementById('settings-list');
     if (settingsList) settingsList.innerHTML = html;
