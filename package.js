@@ -226,6 +226,16 @@ const dbPackages = [
     { name: "아이시움 달콤한 골드 패키지", price: 19800, releasedApostle: "아이시움(~26.06.04.)", contents: { "p_elif": 600, "kcandy": 600, "scandy": 600, "thumbs": 40, "gold": 150, "mileage": 20 } },
     { name: "아이시움 엘리프 가득 패키지", price: 49500, releasedApostle: "아이시움(~26.06.04.)", contents: { "p_elif": 1500, "f_elif": 1500, "t_apostle": 30, "mileage": 50 } },
     { name: "아이시움 참 잘했어요 패키지", price: 49500, releasedApostle: "아이시움(~26.06.04.)", contents: { "p_elif": 1500, "select_ticket": 1, "attr_순수": 1, "thumbs": 100, "mileage": 50 } },
-    { name: "아이시움 반짝반짝 뽑기 패키지", price: 99000, releasedApostle: "아이시움(~26.06.04.)", contents: { "p_elif": 3000, "t_apostle": 50, "t_card": 50, "crayon_highest": 10, "mileage": 100 } },    
+    { name: "아이시움 반짝반짝 뽑기 패키지", price: 99000, releasedApostle: "아이시움(~26.06.04.)", contents: { "p_elif": 3000, "t_apostle": 50, "t_card": 50, "crayon_highest": 10, "mileage": 100 } },
+
+    { name: "키샤의 아이돌 패키지", price: 99000, releasedApostle: "키샤", contents: { "t_apostle": 100, "thumbs": 200 } },
+    { name: "키샤의 숙제 싫어 패키지", price: 49500, releasedApostle: "키샤", contents: { "p_elif": 1500, "adv_ticket": 1, "crayon_highest": 6 } },
+    { name: "키샤의 골드 수급 패키지", price: 29500, releasedApostle: "키샤", contents: { "p_elif": 900, "cert": 300, "gold": 150 } },
+    { name: "키샤의 행복 패키지", price: 9900, releasedApostle: "키샤", contents: { "p_elif": 300, "t_card": 10, "nuru": 10 } },
+    { name: "키샤의 장난 패키지", price: 9900, releasedApostle: "키샤", contents: { "p_elif": 300, "t_apostle": 10, "nuru": 10 } },
+    { name: "키샤의 파워업 패키지", price: 6600, releasedApostle: "키샤", contents: { "p_elif": 200, "f_elif": 400, "food_purple": 20, "food_secom": 10, "food_yamyam": 10, "food_yellow": 3 } },
+    { name: "키샤의 포부 패키지", price: 3300, releasedApostle: "키샤", contents: { "p_elif": 100, "scandy": 100, "food_purple": 10, "light_box": 300, "digest": 3 } },
+    { name: "키샤의 흥미 패키지", price: 3300, releasedApostle: "키샤", contents: { "p_elif": 100, "kcandy": 100, "manual": 500, "food_purple": 10, "digest": 3 } },
+    { name: "키샤의 무대", price: 5500, releasedApostle: "키샤", contents: {"p_elif": 170, "kcandy":300, "gold":350 }, note: "장식품 포함" },
 
 ];
