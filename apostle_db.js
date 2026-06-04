@@ -81,6 +81,7 @@ const apostleDB = [
     { id: "캬롯", name: "캬롯", role: "서포터", type: "순수", isEldain: false },
     { id: "코미", name: "코미", role: "탱커", type: "우울", isEldain: false },
     { id: "코미(수영복)", name: "코미(수영복)", role: "서포터", type: "냉정", isEldain: false },
+    { id: "키샤", name: "키샤", role: "서포터", type: "우울", isEldain: false },
     { id: "클로에", name: "클로에", role: "탱커", type: "광기", isEldain: true },
     { id: "키디언", name: "키디언", role: "딜러", type: "우울", isEldain: false },
     { id: "티그", name: "티그", role: "딜러", type: "활발", isEldain: false },
