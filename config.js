@@ -65,6 +65,7 @@ const defaultConfig = {
             { id: 'food_blue', name: '새콤비타F', val: 0, icon: 'images/새콤비타F.webp', count: "" },
             { id: 'food_purple', name: '얌얌비타C', val: 0, icon: 'images/얌얌비타C.webp', count: "" },
 			{ id: 'food_yellow', name: '킹짱비타K', val: 0, icon: 'images/킹짱비타K.webp', count: "" },
+	    	{ id: 'digest', name: '소화제', val: 0, icon: 'images/소화제.webp', count: "" },	
             { id: 't_apostle', name: '사도뽑기권', val: 100, icon: 'images/사도뽑기.png', count: "" },
             { id: 't_card', name: '카드뽑기권', val: 40, icon: 'images/카드뽑기.png', count: "" },
             { id: 'nuru', name: '누루링', val: 40, icon: 'images/누루링.png', count: "" },
