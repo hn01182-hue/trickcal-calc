@@ -243,6 +243,7 @@ const dbPackages = [
     { name: "키샤의 인기 비결 패키지", price: 9900, releasedApostle: "키샤", contents: { "p_elif": 300, "f_elif": 300, "crayon_highest": 1, "thumbs": 20 } },
     { name: "키샤의 자부심 패키지", price: 49500, releasedApostle: "키샤", contents: { "p_elif": 1500, "f_elif": 3000, "select_ticket": 1 } },
     { name: "정령산의 설녀 아야 패키지", price: 99000, releasedApostle: "키샤", contents: { p_elif: 3000, elch_ticket: 1, attr_냉정: 3 }, note: "아야 증명서 20 = 엘다인 선택권 1장 가치로 산정" },
+    { name: "사복 패스(아야)", price: 29500, releasedApostle: "키샤", contents: { "p_elif": 900, "f_elif": 2400, "t_apostle": 20, "t_card": 20, "crayon_highest": 8 } , note: "사복 포함" },
 
     { name: "아이시움 사탕 냠냠 패키지", price: 9900, releasedApostle: "아이시움(~26.06.18.)", contents: { "p_elif": 300, "kcandy": 300, "scandy": 300, "rare_church_box": 5, "rare_church_box2": 5, "mileage": 10 } },
     { name: "아이시움 티켓 모아 패키지", price: 19800, releasedApostle: "아이시움(~26.06.18.)", contents: { "p_elif": 600, "attr_우울": 1, "t_apostle": 10, "nuru": 10, "food_yellow": 3, "mileage": 20 } },
