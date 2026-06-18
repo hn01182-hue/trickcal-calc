@@ -194,11 +194,13 @@ function renderCalc() {
     priceInput.value = config.price;
     const items = config.items;
 
-    const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_') && !i.id.startsWith('food_'));
-const attrItems = items.filter(i => i.id.startsWith('attr_'));
-const posItems = items.filter(i => i.id.startsWith('pos_'));
-const marshItems = items.filter(i => i.id.startsWith('marsh_'));
-const foodItems = items.filter(i => i.id.startsWith('food_'));
+    // 💡 capsule_ 제외 조건 및 capsuleItems 필터 추가
+    const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_') && !i.id.startsWith('food_') && !i.id.startsWith('capsule_'));
+    const attrItems = items.filter(i => i.id.startsWith('attr_'));
+    const posItems = items.filter(i => i.id.startsWith('pos_'));
+    const marshItems = items.filter(i => i.id.startsWith('marsh_'));
+    const foodItems = items.filter(i => i.id.startsWith('food_'));
+    const capsuleItems = items.filter(i => i.id.startsWith('capsule_')); // 💡 추가
 
     const renderRow = (item) => `
         <div class="row">
@@ -232,12 +234,19 @@ const foodItems = items.filter(i => i.id.startsWith('food_'));
             <div style="padding: 5px 0;">${marshItems.map(item => renderRow(item)).join('')}</div>
         </details>`;
     }
-   if (foodItems.length > 0) {
+    if (foodItems.length > 0) {
         html += `<details style="margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; background: #fff;">
         <summary style="padding: 12px; cursor: pointer; background: #f1f1f1; font-weight: bold; font-size: 0.9em; border-radius: 4px;">📂 각종 요리 (클릭)</summary>
         <div style="padding: 5px 0;">${foodItems.map(item => renderRow(item)).join('')}</div>
         </details>`;
-   }
+    }
+    // 💡 캡슐 뽑기 티켓 details 레이아웃 추가
+    if (capsuleItems.length > 0) {
+        html += `<details style="margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; background: #fff;">
+        <summary style="padding: 12px; cursor: pointer; background: #f1f1f1; font-weight: bold; font-size: 0.9em; border-radius: 4px;">📂 캡슐 뽑기 티켓 (클릭)</summary>
+        <div style="padding: 5px 0;">${capsuleItems.map(item => renderRow(item)).join('')}</div>
+        </details>`;
+    }
 
     inputContainer.innerHTML = html;
 }
@@ -265,11 +274,13 @@ function saveCurrentPrice() { config.price = document.getElementById('pkg-price'
 function renderSettings() {
     const items = config.items;
     
-    const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_') && !i.id.startsWith('food_'));
-const attrItems = items.filter(i => i.id.startsWith('attr_'));
-const posItems = items.filter(i => i.id.startsWith('pos_'));
-const marshItems = items.filter(i => i.id.startsWith('marsh_'));
-const foodItems = items.filter(i => i.id.startsWith('food_'));
+    // 💡 capsule_ 제외 조건 및 capsuleItems 필터 추가
+    const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_') && !i.id.startsWith('food_') && !i.id.startsWith('capsule_'));
+    const attrItems = items.filter(i => i.id.startsWith('attr_'));
+    const posItems = items.filter(i => i.id.startsWith('pos_'));
+    const marshItems = items.filter(i => i.id.startsWith('marsh_'));
+    const foodItems = items.filter(i => i.id.startsWith('food_'));
+    const capsuleItems = items.filter(i => i.id.startsWith('capsule_')); // 💡 추가
 
     const renderRow = (item) => {
         const isPaidElif = item.id === 'p_elif';
@@ -277,9 +288,8 @@ const foodItems = items.filter(i => i.id.startsWith('food_'));
         const isManual = item.id === 'manual';
         const isCheerStick = item.id === 'cheer_stick';
         const isElCheerStick = item.id === 'el_cheer_stick';
-        const isWildcard = item.id === 'wildcard'; // 💡 전설 와일드 카드 판정 추가
+        const isWildcard = item.id === 'wildcard';
         
-        // 💡 설정 도우미 버튼 조건에 isWildcard 추가
         const helperBtn = (isPaidElif || isKcandy || isManual || isCheerStick || isElCheerStick || isWildcard) ? 
             `<button class="helper-btn" onclick="toggleSettingHelper('${item.id}')">설정 도우미</button>` : '';
     
@@ -290,7 +300,7 @@ const foodItems = items.filter(i => i.id.startsWith('food_'));
             else if (type === 'manual') criteria = config.manualCriteria;
             else if (type === 'cheer_stick') criteria = config.cheerStickCriteria;
             else if (type === 'el_cheer_stick') criteria = config.elCheerStickCriteria;
-            else if (type === 'wildcard') criteria = config.wildcardCriteria; // 💡 추가
+            else if (type === 'wildcard') criteria = config.wildcardCriteria;
             return (criteria && criteria.includes(val)) ? 'checked' : '';
         };
 
@@ -338,7 +348,6 @@ const foodItems = items.filter(i => i.id.startsWith('food_'));
                 <p style="margin-top: 10px; font-size: 0.8em; color: #d32f2f;">* 선택한 랭크 중 가장 낮은 가치가 적용됩니다.</p>
             </div>` : '';
 
-      // 💡 떡상 응원봉 도우미 박스 수정
         const cheerStickHelper = isCheerStick ? `
             <div id="cheer_stick-helper" class="helper-box">
                 <strong style="display:block; margin-bottom:8px;">📣 업그레이드할 A3(어사이드 3단계) 일반 사도 보유 여부</strong>
@@ -348,7 +357,6 @@ const foodItems = items.filter(i => i.id.startsWith('food_'));
                 </div>
             </div>` : '';
 
-        // 💡 엘다인 떡상 응원봉 도우미 박스 수정
         const elCheerStickHelper = isElCheerStick ? `
             <div id="el_cheer_stick-helper" class="helper-box">
                 <strong style="display:block; margin-bottom:8px;">🌟 업그레이드할 A3(어사이드 3단계) 엘다인 사도 보유 여부</strong>
@@ -358,7 +366,6 @@ const foodItems = items.filter(i => i.id.startsWith('food_'));
                 </div>
             </div>` : '';
 
-        // 💡 추가: 전설 와일드 카드 도우미 박스
         const wildcardHelper = isWildcard ? `
             <div id="wildcard-helper" class="helper-box">
                 <strong style="display:block; margin-bottom:8px;">🃏 카드 레벨 업에 투자 여부</strong>
@@ -396,54 +403,34 @@ const foodItems = items.filter(i => i.id.startsWith('food_'));
             <div style="background: #fff; padding-top: 5px;">${attrItems.map(item => renderRow(item)).join('')}</div>
         </details>`;
     }
-
     if (posItems.length > 0) {
         html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
             <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 포지션별 모집권 (클릭)</summary>
             <div style="background: #fff; padding-top: 5px;">${posItems.map(item => renderRow(item)).join('')}</div>
         </details>`;
     }
-
     if (marshItems.length > 0) {
         html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
             <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 마시멜로 종류별 (클릭)</summary>
             <div style="background: #fff; padding-top: 5px;">${marshItems.map(item => renderRow(item)).join('')}</div>
         </details>`;
     }
-
-   if (foodItems.length > 0) {
+    if (foodItems.length > 0) {
         html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
         <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 각종 요리 (클릭)</summary>
         <div style="background: #fff; padding-top: 5px;">${foodItems.map(item => renderRow(item)).join('')}</div>
         </details>`;
-   } 
+    }
+    // 💡 설정 창에도 캡슐 뽑기 티켓 details 레이아웃 추가
+    if (capsuleItems.length > 0) {
+        html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
+        <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 캡슐 뽑기 티켓 (클릭)</summary>
+        <div style="background: #fff; padding-top: 5px;">${capsuleItems.map(item => renderRow(item)).join('')}</div>
+        </details>`;
+    }
 
     const settingsList = document.getElementById('settings-list');
     if (settingsList) settingsList.innerHTML = html;
-}
-function toggleSettingHelper(id) {
-    const helper = document.getElementById(`${id}-helper`);
-    if (helper) helper.classList.toggle('active');
-}
-
-function updatePaidElifValue() {
-    const checkboxes = document.querySelectorAll('.elif-helper-chk');
-    const checkedValues = Array.from(checkboxes)
-        .filter(chk => chk.checked)
-        .map(chk => chk.value);
-
-    config.paidElifCriteria = checkedValues;
-
-    if (checkedValues.length > 0) {
-        const minValue = Math.min(...checkedValues.map(v => parseFloat(v)));
-        const input = document.getElementById('val-p_elif');
-        if (input) {
-            input.value = minValue;
-            saveSettings(); 
-        }
-    } else {
-        saveSettings();
-    }
 }
 
 function saveSettings() {
