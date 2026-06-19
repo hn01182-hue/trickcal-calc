@@ -263,7 +263,7 @@ const dbPackages = [
   { name: "실비아의 운명 패키지", price: 9900, releasedApostle: "실비아", contents: { "p_elif": 300, "t_apostle": 10, "thumbs": 20 } },
   { name: "실비아의 퓨전사극 패키지", price: 9900, releasedApostle: "실비아", contents: { "p_elif": 300, "t_apostle": 10, "thumbs": 20 } },
   { name: "실비아의 모험 패키지", price: 29500, releasedApostle: "실비아", contents: { "p_elif": 900, "crayon_highest": 4, "capsule_fest_coupon": 3 } },
-  { name: "실비아의 조언 패키지", price: 49500, releasedApostle: "실비아", contents: { "p_elif": 1500, "t_apostle": 50, "cheer_stick": 1, "el_cheer_stick": 1 } },
+  { name: "실비아의 조언 패키지", price: 49500, releasedApostle: "실비아", contents: { "p_elif": 1500, "nuru": 50, "cheer_stick": 1, "el_cheer_stick": 1 } },
   { name: "실비아의 감기조심 패키지", price: 49500, releasedApostle: "실비아", contents: { "p_elif": 1500, "cert": 500, "select_ticket": 1 } },
   { name: "실비아의 진실 패키지", price: 99000, releasedApostle: "실비아", contents: { "p_elif": 3750, "f_elif": 7500 } },
   { name: "실비아의 성격 모집 패키지", price: 99000, releasedApostle: "실비아", contents: { "t_apostle": 100, "thumbs": 200 } },
