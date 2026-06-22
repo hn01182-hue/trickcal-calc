@@ -111,6 +111,8 @@ const defaultConfig = {
 		{ id: 'food_ricotta_rare', name: '희귀한 리코타의 요리 교환권', val: 0, icon: 'images/기타_희귀한 리코타의 요리 교환권.webp', count: "" },
 		{ id: 'food_ricotta_legend', name: '전설적인 리코타의 요리 교환권', val: 0, icon: 'images/기타_전설적인 리코타의 요리 교환권.webp', count: "" },
 		{ id: 'food_ricotta_awesome', name: '개쩌는 리코타의 요리 교환권', val: 0, icon: 'images/기타_개쩌는 리코타의 요리 교환권.webp', count: "" },
+		{ id: 'event_Joanne', name: '깔깔호호 사제님 유머집', fixed: true, val: 1000, icon: 'images/깔깔호호 사제님 유머집.webp', count: "" },
+		{ id: 'event_Ner', name: '두근두근♡ 너는 교단의 꽃잎', fixed: true, val: 500, icon: 'images/두근두근♡ 너는 교단의 꽃잎.webp', count: "" },
         ]    
     };
 let config = JSON.parse(JSON.stringify(defaultConfig));
