@@ -289,8 +289,10 @@ function renderSettings() {
         const isCheerStick = item.id === 'cheer_stick';
         const isElCheerStick = item.id === 'el_cheer_stick';
         const isWildcard = item.id === 'wildcard';
+        const isMileage = item.id === 'mileage'; // 💡 마일리지 체크 추가
         
-        const helperBtn = (isPaidElif || isKcandy || isManual || isCheerStick || isElCheerStick || isWildcard) ? 
+        // 💡 마일리지 버튼 활성화 조건 추가
+        const helperBtn = (isPaidElif || isKcandy || isManual || isCheerStick || isElCheerStick || isWildcard || isMileage) ? 
             `<button class="helper-btn" onclick="toggleSettingHelper('${item.id}')">설정 도우미</button>` : '';
     
         const isChecked = (type, val) => {
@@ -301,6 +303,7 @@ function renderSettings() {
             else if (type === 'cheer_stick') criteria = config.cheerStickCriteria;
             else if (type === 'el_cheer_stick') criteria = config.elCheerStickCriteria;
             else if (type === 'wildcard') criteria = config.wildcardCriteria;
+            else if (type === 'mileage') criteria = config.mileageCriteria; // 💡 마일리지 체크 추가
             return (criteria && criteria.includes(val)) ? 'checked' : '';
         };
 
@@ -370,8 +373,18 @@ function renderSettings() {
             <div id="wildcard-helper" class="helper-box">
                 <strong style="display:block; margin-bottom:8px;">🃏 카드 레벨 업에 투자 여부</strong>
                 <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label><input type="radio" name="wildcard-group" class="wildcard-helper-radio" value="yes" onchange="updateWildcardValue()" ${isChecked("wildcard", "yes")}> 예</label>
+                    <label><input type="radio" name="wildcard-group" class="wildcard-helper-radio" value="yes" onchange="updateWildcardValue()" ${isChecked("wildcard", "yes")}> 예[(엘다인의 가치)*25/400]</label>
                     <label><input type="radio" name="wildcard-group" class="wildcard-helper-radio" value="no" onchange="updateWildcardValue()" ${isChecked("wildcard", "no")}> 아니오</label>
+                </div>
+            </div>` : '';
+
+        // 💡 마일리지 헬퍼 HTML 템플릿 생성 (라디오 그룹)
+        const mileageHelper = isMileage ? `
+            <div id="mileage-helper" class="helper-box">
+                <strong style="display:block; margin-bottom:8px;">🪙 마일리지 소모처 (택 1)</strong>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label><input type="radio" name="mileage-group" class="mileage-helper-radio" value="wildcard" onchange="updateMileageValue()" ${isChecked("mileage", "wildcard")}> 와일드 카드 [(와일드카드의 가치)/50]</label>
+                    <label><input type="radio" name="mileage-group" class="mileage-helper-radio" value="other" onchange="updateMileageValue()" ${isChecked("mileage", "other")}> 그 외 [10]</label>
                 </div>
             </div>` : '';
 
@@ -391,7 +404,8 @@ function renderSettings() {
                 ${manualHelper}
                 ${cheerStickHelper}
                 ${elCheerStickHelper}
-                ${wildcardHelper} </div>`;
+                ${wildcardHelper}
+                ${mileageHelper} </div>`; // 💡 마일리지 헬퍼 추가
     };
 
     let html = "";
@@ -421,7 +435,6 @@ function renderSettings() {
         <div style="background: #fff; padding-top: 5px;">${foodItems.map(item => renderRow(item)).join('')}</div>
         </details>`;
     }
-    // 💡 설정 창에도 캡슐 뽑기 티켓 details 레이아웃 추가
     if (capsuleItems.length > 0) {
         html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
         <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 캡슐 뽑기 티켓 (클릭)</summary>
@@ -432,6 +445,7 @@ function renderSettings() {
     const settingsList = document.getElementById('settings-list');
     if (settingsList) settingsList.innerHTML = html;
 }
+
 
 function saveSettings() {
     config.items.forEach(item => { 
@@ -1062,6 +1076,48 @@ function updateWildcardValue() {
         const input = document.getElementById('val-wildcard');
         if (input) {
             // 정수 까지만 깔끔하게 노출
+            input.value = Math.round(targetVal);
+            saveSettings();
+        }
+    }
+}
+
+//  설정 도우미 상자를 열고 닫는 함수
+function toggleSettingHelper(id) {
+    const helper = document.getElementById(`${id}-helper`);
+    if (helper) {
+        // CSS 파일 따로 안 건드려도 작동하도록 display 스타일 직접 제어
+        const isHidden = window.getComputedStyle(helper).display === 'none';
+        
+        if (isHidden) {
+            helper.style.display = 'block';      // 도우미 상자 보이기
+            helper.style.width = '100%';         // 가득 차게 배치
+            helper.classList.add('active');
+        } else {
+            helper.style.display = 'none';       // 도우미 상자 숨기기
+            helper.classList.remove('active');
+        }
+    }
+}
+
+//  추가: 마일리지 가치 계산 함수 (라디오 토글)
+function updateMileageValue() {
+    const selected = document.querySelector('.mileage-helper-radio:checked');
+    if (selected) {
+        const val = selected.value;
+        config.mileageCriteria = [val];
+        
+        let targetVal = 10; // 기본값 (그 외)
+        if (val === 'wildcard') {
+            // 설정창 인풋의 와일드카드(wildcard) 가치를 실시간으로 긁어옴 (없으면 기본값 0)
+            const wildcardInput = document.getElementById('val-wildcard');
+            const wildcardVal = wildcardInput ? parseFloat(wildcardInput.value) : (config.items.find(i => i.id === 'wildcard')?.val || 0);
+            targetVal = wildcardVal / 50;
+        }
+        
+        const input = document.getElementById('val-mileage');
+        if (input) {
+            // 소수점 이하 둘째 자리까지 깔끔하게 반올림 노출
             input.value = Math.round(targetVal);
             saveSettings();
         }
