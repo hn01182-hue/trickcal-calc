@@ -178,7 +178,7 @@ function applyPackageData(sourceId, pkgIdentifier) {
 
     // 🎮 3. 구글 플레이 포인트 계산
     if (!isIcium) {
-        const tierRates = { bronze: 1.0, silver: 1.1, gold: 1.3, platinum: 1.5, diamond: 2.0 };
+        const tierRates = { bronze: 1.0, silver: 1.1, gold: 1.3, platinum: 1.6, diamond: 2.0 };
         const baseMultiplier = tierRates[config.playPointTier || 'bronze'] || 1.0;
         const extraMultiplier = parseFloat(config.playPointExtraEvent) || 0;
         const totalMultiplier = baseMultiplier + extraMultiplier;
@@ -518,7 +518,7 @@ function renderSettings() {
                             <option value="bronze" ${config.playPointTier === 'bronze' ? 'selected' : ''}>브론즈 (기본 1.0)</option>
                             <option value="silver" ${config.playPointTier === 'silver' ? 'selected' : ''}>실버 (기본 1.1)</option>
                             <option value="gold" ${config.playPointTier === 'gold' ? 'selected' : ''}>골드 (기본 1.3)</option>
-                            <option value="platinum" ${config.playPointTier === 'platinum' ? 'selected' : ''}>플래티넘 (기본 1.5)</option>
+                            <option value="platinum" ${config.playPointTier === 'platinum' ? 'selected' : ''}>플래티넘 (기본 1.6)</option>
                             <option value="diamond" ${config.playPointTier === 'diamond' ? 'selected' : ''}>다이아몬드 (기본 2.0)</option>
                         </select>
                     </div>
