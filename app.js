@@ -527,7 +527,7 @@ function renderSettings() {
     			<input type="number" id="settings-giftcard-discount-percent" value="${config.giftCardDiscountPercent || 0}" placeholder="예: 10" 				min="0" max="99" oninput="saveGoogleSettings()" style="width: 100%; padding: 4px; border-radius: 4px; border: 1px solid #cbd5e1; font-			size: 0.85em; box-sizing: border-box;">
 		    </div>
                     <div>
-                        <label style="font-size: 0.85em; font-weight: bold; color: #d32f2f; display: block; margin-bottom: 4px; text-align: left;">🔥 플포 추가 배수 이벤트</label>
+                        <label style="font-size: 0.85em; font-weight: bold; color: #d32f2f; display: block; margin-bottom: 4px; text-align: left;">🔥 플포 추가 배수 이벤트(기본 0배수)</label>
                         <input type="number" id="settings-playpoint-extra-event" value="${config.playPointExtraEvent || 0}" placeholder="기본 0" oninput="saveGoogleSettings()" style="width: 100%; padding: 4px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.85em; font-weight: bold; color: #d32f2f; box-sizing: border-box;">
                     </div>
                 </div>
