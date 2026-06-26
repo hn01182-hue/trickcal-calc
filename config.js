@@ -38,6 +38,7 @@ const defaultConfig = {
     wildcardCriteria: [],
         items: [
             { id: 'p_elif', name: '유료 엘리프', val: 2.7, icon: 'images/엘리프.png', count: "" },
+	    { id: "playpoint", name: "구글 플레이 포인트", val: 2.5, icon: "images/구글.png" },
             { id: 'f_elif', name: '무료 엘리프', val: 1, fixed: true, icon: 'images/엘리프.png', count: "" },
             { id: 'thumbs', name: '따봉', val: 20, icon: 'images/따봉.png', count: "" },
             { id: 'kcandy', name: '왕사탕', val: 0.5, icon: 'images/왕사탕.png', count: "" },

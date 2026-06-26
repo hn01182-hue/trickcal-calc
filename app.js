@@ -158,14 +158,46 @@ function applyPackageData(sourceId, pkgIdentifier) {
     }
 
     document.body.style.backgroundImage = "url('images/쌀이드.gif')";
-    config.price = pkg.price;
+    
+    // 🌐 1. 아이시움 패키지(웹상점) 여부 검사
+    const isIcium = pkg.name.includes("아이시움");
+    
+    // 💡 [핵심 버그 수정] 계산기가 인식할 수 있도록 config에 패키지 이름을 주입해 줌!
+    config.name = pkg.name; 
+
+    // 💳 2. 가격 판정 및 주입 (원래 가격 기준으로 깊카 할인율 적용)
+    let finalPrice = pkg.price;
+    if (!isIcium) {
+        const discountPercent = config.giftCardDiscountPercent || 0;
+        finalPrice = pkg.price * (1 - discountPercent / 100);
+    }
+    config.price = Math.round(finalPrice); 
+
+    // 임시 구성품 데이터 복사본 생성
+    const updatedContents = { ...pkg.contents };
+
+    // 🎮 3. 구글 플레이 포인트 계산
+    if (!isIcium) {
+        const tierRates = { bronze: 1.0, silver: 1.1, gold: 1.3, platinum: 1.5, diamond: 2.0 };
+        const baseMultiplier = tierRates[config.playPointTier || 'bronze'] || 1.0;
+        const extraMultiplier = parseFloat(config.playPointExtraEvent) || 0;
+        const totalMultiplier = baseMultiplier + extraMultiplier;
+        
+        const earnedPoints = Math.round((pkg.price / 1000) * totalMultiplier);
+        updatedContents['playpoint'] = (updatedContents['playpoint'] || 0) + earnedPoints;
+    } else {
+        updatedContents['playpoint'] = 0;
+    }
+
+    // 🔄 4. 계산기 탭 내부 입력 데이터 동기화
     config.items.forEach(item => { 
-        item.count = pkg.contents[item.id] || ""; 
+        item.count = updatedContents[item.id] !== undefined ? updatedContents[item.id] : 0; 
     });
+
+    // 🖥️ 5. 탭 이동 및 계산기 렌더링 호출
     openTab('calc'); 
     calculate();
 }
-
 function openTab(id) {
     document.querySelectorAll('.tab, .card').forEach(el => el.classList.remove('active'));
     
@@ -254,33 +286,90 @@ function renderCalc() {
 function calculate() {
     const price = parseFloat(document.getElementById('pkg-price').value);
     if(!price) return;
+    
     let total = 0;
     config.items.forEach(item => {
         const count = parseFloat(document.getElementById(`cnt-${item.id}`).value) || 0;
         total += count * item.val;
     });
+
+    // 🌐 1단계: 아이시움 패키지(웹상점) 여부 확인
+    const pkgNameEl = document.getElementById('pkg-name');
+    const pkgName = pkgNameEl ? (pkgNameEl.innerText || pkgNameEl.value) : (config.name || "");
+    const isIciumWebShop = pkgName.includes("아이시움");
+
+    // 💡 2단계: 기본 점수 출력을 위한 구글 버프 역산(Rollback) 세팅
+    const discountPercent = isIciumWebShop ? 0 : (config.giftCardDiscountPercent || 0);
     
-    const rate = Math.round((total / price) * 1000);
+    // 할인율이 적용된 가격을 원래 원가 가격으로 복원 (100% 할인 예외처리 포함)
+    const originalPrice = isIciumWebShop ? price : (discountPercent >= 100 ? price : Math.round(price / (1 - discountPercent / 100)));
+
+    // 현재 입력창에 주입되어 있는 구글 플레이 포인트 수량 및 가치 긁어오기
+    const ppInput = document.getElementById('cnt-playpoint');
+    const ppCount = ppInput ? (parseFloat(ppInput.value) || 0) : 0;
+    const ppItem = config.items.find(i => i.id === 'playpoint');
+    const ppVal = ppItem ? ppItem.val : 0;
+    const ppTotalValue = ppCount * ppVal;
+
+    // 입력창 총 가치에서 플포 가치를 제외한 '순수 패키지 구성품 가치' 추출
+    const rawItemTotal = total - ppTotalValue;
+
+    // 📊 3단계: 정밀 효율 점수 분리 산정
+    // 기본 점수 = (순수 구성품 가치 / 할인 전 원래 가격) -> 패키지 원래 효율
+    const baseRate = Math.round((rawItemTotal / originalPrice) * 1000); 
+    
+    // 실제 효율 = (플포가 포함된 현재 총 가치 / 할인된 현재 입력창 가격) -> 💡 실제 지출액 대비 가성비!
+    const actualRate = Math.round((total / price) * 1000);
     const displayTotal = Math.round(total);
     
+    // 🖥️ 4단계: 화면 레이아웃 출력
     document.getElementById('result').style.display = 'block';
-    document.getElementById('res-rate').innerText = `${rate}개`;
-    document.getElementById('res-total').innerText = `(환산: ${displayTotal.toLocaleString()}개)`;
+    
+    if (isIciumWebShop) {
+        // 🌐 웹상점 전용 패키지 노출
+        document.getElementById('res-rate').innerHTML = `기본 점수: ${baseRate}개`;
+        document.getElementById('res-total').innerHTML = `
+            (환산: ${displayTotal.toLocaleString()}개)<br>
+            <span style="font-size: 0.82em; color: #ef4444; font-weight: bold; display: block; margin-top: 4px;">🌐 웹상점 상품 (구글 결제 혜택 제외)</span>
+        `;
+    } else {
+        // 🛒 일반 구글스토어 패키지 노출 
+            document.getElementById('res-rate').innerHTML = `
+            기본 점수: ${baseRate}개<br>
+            <span style="color: #10b981; font-weight: bold;">실제 효율: ${actualRate}개</span>
+        `;
+        document.getElementById('res-total').innerHTML = `
+            (환산: ${displayTotal.toLocaleString()}개)<br>
+            <span style="font-size: 0.8em; color: #64748b; display: block; margin-top: 4px; line-height: 1.4;">
+                💸 실제 현금 지출: <strong>${Math.round(price).toLocaleString()}원</strong><br>
+                🎁 포인트 적립: +${Math.round(ppCount).toLocaleString()}pt (+${Math.round(ppTotalValue).toLocaleString()} 무엘 상당)
+            </span>
+        `;
+    }
 }
 
 function saveInputs() { config.items.forEach(item => { const input = document.getElementById(`cnt-${item.id}`); if(input) item.count = input.value; }); }
 function saveCurrentPrice() { config.price = document.getElementById('pkg-price').value; }
 
+// 💡 은총 패키지 효율을 정수로 계산해오는 내부 헬퍼 함수
+function getGracePackageScore() {
+    const gracePkg = constantPackages.find(p => p.name === "은총 패키지") || {
+        price: 99000, 
+        contents: { p_elif: 6000, crayon_highest: 10, scandy: 500, kcandy: 500 } 
+    };
+    return Math.round(calculateScore(gracePkg.contents, gracePkg.price));
+}
+
 function renderSettings() {
     const items = config.items;
     
-    // 💡 capsule_ 제외 조건 및 capsuleItems 필터 추가
+    // capsule_ 제외 조건 및 capsuleItems 필터 추가
     const normalItems = items.filter(i => !i.id.startsWith('attr_') && !i.id.startsWith('pos_') && !i.id.startsWith('marsh_') && !i.id.startsWith('food_') && !i.id.startsWith('capsule_'));
     const attrItems = items.filter(i => i.id.startsWith('attr_'));
     const posItems = items.filter(i => i.id.startsWith('pos_'));
     const marshItems = items.filter(i => i.id.startsWith('marsh_'));
     const foodItems = items.filter(i => i.id.startsWith('food_'));
-    const capsuleItems = items.filter(i => i.id.startsWith('capsule_')); // 💡 추가
+    const capsuleItems = items.filter(i => i.id.startsWith('capsule_')); // 추가
 
     const renderRow = (item) => {
         const isPaidElif = item.id === 'p_elif';
@@ -289,10 +378,11 @@ function renderSettings() {
         const isCheerStick = item.id === 'cheer_stick';
         const isElCheerStick = item.id === 'el_cheer_stick';
         const isWildcard = item.id === 'wildcard';
-        const isMileage = item.id === 'mileage'; // 💡 마일리지 체크 추가
+        const isMileage = item.id === 'mileage';
+        const isPlaypoint = item.id === 'playpoint'; // 💡 플레이 포인트 체크 추가
         
-        // 💡 마일리지 버튼 활성화 조건 추가
-        const helperBtn = (isPaidElif || isKcandy || isManual || isCheerStick || isElCheerStick || isWildcard || isMileage) ? 
+        // 도우미 버튼 활성화 조건에 playpoint 추가
+        const helperBtn = (isPaidElif || isKcandy || isManual || isCheerStick || isElCheerStick || isWildcard || isMileage || isPlaypoint) ? 
             `<button class="helper-btn" onclick="toggleSettingHelper('${item.id}')">설정 도우미</button>` : '';
     
         const isChecked = (type, val) => {
@@ -303,7 +393,8 @@ function renderSettings() {
             else if (type === 'cheer_stick') criteria = config.cheerStickCriteria;
             else if (type === 'el_cheer_stick') criteria = config.elCheerStickCriteria;
             else if (type === 'wildcard') criteria = config.wildcardCriteria;
-            else if (type === 'mileage') criteria = config.mileageCriteria; // 💡 마일리지 체크 추가
+            else if (type === 'mileage') criteria = config.mileageCriteria;
+            else if (type === 'playpoint') criteria = config.playpointCriteria; // 💡 플레이 포인트 체크 추가
             return (criteria && criteria.includes(val)) ? 'checked' : '';
         };
 
@@ -373,12 +464,11 @@ function renderSettings() {
             <div id="wildcard-helper" class="helper-box">
                 <strong style="display:block; margin-bottom:8px;">🃏 카드 레벨 업에 투자 여부</strong>
                 <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label><input type="radio" name="wildcard-group" class="wildcard-helper-radio" value="yes" onchange="updateWildcardValue()" ${isChecked("wildcard", "yes")}> 예[(엘다인의 가치)*25/400]</label>
+                    <label><input type="radio" name="wildcard-group" class="wildcard-helper-radio" value="yes" onchange="updateWildcardValue()" ${isChecked("wildcard", "yes")}> 예</label>
                     <label><input type="radio" name="wildcard-group" class="wildcard-helper-radio" value="no" onchange="updateWildcardValue()" ${isChecked("wildcard", "no")}> 아니오</label>
                 </div>
             </div>` : '';
 
-        // 💡 마일리지 헬퍼 HTML 템플릿 생성 (라디오 그룹)
         const mileageHelper = isMileage ? `
             <div id="mileage-helper" class="helper-box">
                 <strong style="display:block; margin-bottom:8px;">🪙 마일리지 소모처 (택 1)</strong>
@@ -386,6 +476,66 @@ function renderSettings() {
                     <label><input type="radio" name="mileage-group" class="mileage-helper-radio" value="wildcard" onchange="updateMileageValue()" ${isChecked("mileage", "wildcard")}> 와일드 카드 [(와일드카드의 가치)/50]</label>
                     <label><input type="radio" name="mileage-group" class="mileage-helper-radio" value="other" onchange="updateMileageValue()" ${isChecked("mileage", "other")}> 그 외 [10]</label>
                 </div>
+            </div>` : '';
+
+        // 💡 기존 구조를 유지하되, 내부를 하나의 큰 구글 플레이스토어 그룹 박스로 통합
+        const playpointHelper = isPlaypoint ? `
+            <div id="playpoint-helper" class="helper-box" style="text-align: left; width: 100%; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; margin-top: 10px; box-sizing: border-box;">
+                <strong style="display:block; margin-bottom:12px; font-size: 1.05em; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; text-align: left;">🛒 구글 플레이스토어 관련 설정(이 구성으로 분석하기 클릭 시 적용)</strong>
+                
+                <!-- 1. 플레이 포인트 교환처 선택 영역 -->
+                <div style="margin-bottom: 15px; text-align: left;">
+                    <span style="display:block; font-weight: bold; margin-bottom: 6px; font-size: 0.9em; color: #4a5568; text-align: left;">🔄 플레이 포인트 교환처 (택 1)</span>
+                    <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px; width: 100%;">
+                        <label style="display: flex; align-items: center; gap: 4px; width: 100%; text-align: left; font-size: 0.9em;">
+                            <input type="radio" name="playpoint-group" class="playpoint-helper-radio" value="free_elif" onchange="updatePlaypointValue()" ${isChecked("playpoint", "free_elif")}> 무료 엘리프 (가치 : 1.67)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 4px; width: 100%; text-align: left; font-size: 0.9em;">
+                            <input type="radio" name="playpoint-group" class="playpoint-helper-radio" value="ticket" onchange="updatePlaypointValue()" ${isChecked("playpoint", "ticket")}> 사도 모집 티켓 (가치 : 사도뽑기권/50)
+                        </label>
+                        <label style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; margin-top: 2px; width: 100%; text-align: left; font-size: 0.9em;">
+                            <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                <input type="radio" name="playpoint-group" class="playpoint-helper-radio" value="credit" onchange="updatePlaypointValue()" ${isChecked("playpoint", "credit")}> 구글 플레이 크레딧 (1포인트당 10원 반영)
+                            </span>
+                            <div id="credit-sub-helper" style="padding-left: 22px; margin-top: 4px; display: ${isChecked("playpoint", "credit") ? 'block' : 'none'}; text-align: left; width: 100%;">
+                                <div style="display: flex; align-items: center; justify-content: flex-start; gap: 6px; width: 100%;">
+                                    <span style="font-size: 0.85em; color: #4a5568;">목표 효율 :</span>
+                                    <input type="number" id="playpoint-target-eff" value="${config.playpointTargetEff || getGracePackageScore()}" oninput="updatePlaypointValue()" style="width: 75px; padding: 2px 5px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.85em;">
+                                </div>
+                                <span style="font-size: 0.78em; color: #718096; display: block; margin-top: 4px; letter-spacing: -0.5px; text-align: left;">
+                                    * [참고] 은총 패키지 효율 : <strong>${getGracePackageScore()}</strong>
+                                </span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 2. 환경 변수 세팅 영역 (오른쪽 무엘 입력칸을 따로 만들지 않고 내부에 안착) -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; background: #fff; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0; width: 100%; box-sizing: border-box; text-align: left;">
+                    <div>
+                        <label style="font-size: 0.85em; font-weight: bold; color: #4a5568; display: block; margin-bottom: 4px; text-align: left;">🎮 구글 등급</label>
+                        <select id="settings-playpoint-tier" onchange="saveGoogleSettings()" style="width: 100%; padding: 4px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.85em;">
+                            <option value="bronze" ${config.playPointTier === 'bronze' ? 'selected' : ''}>브론즈 (기본 1.0)</option>
+                            <option value="silver" ${config.playPointTier === 'silver' ? 'selected' : ''}>실버 (기본 1.1)</option>
+                            <option value="gold" ${config.playPointTier === 'gold' ? 'selected' : ''}>골드 (기본 1.3)</option>
+                            <option value="platinum" ${config.playPointTier === 'platinum' ? 'selected' : ''}>플래티넘 (기본 1.5)</option>
+                            <option value="diamond" ${config.playPointTier === 'diamond' ? 'selected' : ''}>다이아몬드 (기본 2.0)</option>
+                        </select>
+                    </div>
+                    <div>
+    			<label style="font-size: 0.85em; font-weight: bold; color: #4a5568; display: block; margin-bottom: 4px; text-align: left;">💳 깊카 할인율 (%)[*전액 깊카로 구매]			</label>
+    			<input type="number" id="settings-giftcard-discount-percent" value="${config.giftCardDiscountPercent || 0}" placeholder="예: 10" 				min="0" max="99" oninput="saveGoogleSettings()" style="width: 100%; padding: 4px; border-radius: 4px; border: 1px solid #cbd5e1; font-			size: 0.85em; box-sizing: border-box;">
+		    </div>
+                    <div>
+                        <label style="font-size: 0.85em; font-weight: bold; color: #d32f2f; display: block; margin-bottom: 4px; text-align: left;">🔥 플포 추가 배수 이벤트</label>
+                        <input type="number" id="settings-playpoint-extra-event" value="${config.playPointExtraEvent || 0}" placeholder="기본 0" oninput="saveGoogleSettings()" style="width: 100%; padding: 4px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.85em; font-weight: bold; color: #d32f2f; box-sizing: border-box;">
+                    </div>
+                </div>
+			<p style="font-size: 0.8em; color: #ef4444; margin-top: 12px; margin-bottom: 0; text-align: left; font-weight: bold; letter-spacing: -0.3px; line-			height: 1.4;">
+                ※  계산 하고 싶은 패키지에서 '이 구성으로 분석하기'를 클릭하면 적용됩니다. <br>
+		깊카 할인은 패키지 가격 전액에 적용되는걸로 계산합니다(이외의 경우는 직접 패키지 가격에서 할인되는 가격을 빼야 합니다). <br>
+		'아이시움' 패키지는 공식 웹상점 전용 상품이므로, 위 구글 플레이스토어 관련 설정(할인율 및 포인트 페이백)이 계산에 반영되지 않습니다.<br>
+                </p>
             </div>` : '';
 
         return `
@@ -405,47 +555,22 @@ function renderSettings() {
                 ${cheerStickHelper}
                 ${elCheerStickHelper}
                 ${wildcardHelper}
-                ${mileageHelper} </div>`; // 💡 마일리지 헬퍼 추가
+                ${mileageHelper}
+                ${playpointHelper} </div>`; // 💡 플레이포인트 헬퍼 돔 추가
     };
 
     let html = "";
     html += normalItems.map(item => renderRow(item)).join('');
 
-    if (attrItems.length > 0) {
-        html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
-            <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 속성별 모집권 (클릭)</summary>
-            <div style="background: #fff; padding-top: 5px;">${attrItems.map(item => renderRow(item)).join('')}</div>
-        </details>`;
-    }
-    if (posItems.length > 0) {
-        html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
-            <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 포지션별 모집권 (클릭)</summary>
-            <div style="background: #fff; padding-top: 5px;">${posItems.map(item => renderRow(item)).join('')}</div>
-        </details>`;
-    }
-    if (marshItems.length > 0) {
-        html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
-            <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 마시멜로 종류별 (클릭)</summary>
-            <div style="background: #fff; padding-top: 5px;">${marshItems.map(item => renderRow(item)).join('')}</div>
-        </details>`;
-    }
-    if (foodItems.length > 0) {
-        html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
-        <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 각종 요리 (클릭)</summary>
-        <div style="background: #fff; padding-top: 5px;">${foodItems.map(item => renderRow(item)).join('')}</div>
-        </details>`;
-    }
-    if (capsuleItems.length > 0) {
-        html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;">
-        <summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 캡슐 뽑기 티켓 (클릭)</summary>
-        <div style="background: #fff; padding-top: 5px;">${capsuleItems.map(item => renderRow(item)).join('')}</div>
-        </details>`;
-    }
+    if (attrItems.length > 0) { html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;"><summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 속성별 모집권 (클릭)</summary><div style="background: #fff; padding-top: 5px;">${attrItems.map(item => renderRow(item)).join('')}</div></details>`; }
+    if (posItems.length > 0) { html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;"><summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 포지션별 모집권 (클릭)</summary><div style="background: #fff; padding-top: 5px;">${posItems.map(item => renderRow(item)).join('')}</div></details>`; }
+    if (marshItems.length > 0) { html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;"><summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 마시멜로 종류별 (클릭)</summary><div style="background: #fff; padding-top: 5px;">${marshItems.map(item => renderRow(item)).join('')}</div></details>`; }
+    if (foodItems.length > 0) { html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;"><summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 각종 요리 (클릭)</summary><div style="background: #fff; padding-top: 5px;">${foodItems.map(item => renderRow(item)).join('')}</div></details>`; }
+    if (capsuleItems.length > 0) { html += `<details style="margin: 5px 0; border: 1px solid #ddd; border-radius: 4px;"><summary style="padding: 10px; cursor: pointer; background: #eee; font-weight: bold; font-size: 0.9em;">📂 캡슐 뽑기 티켓 (클릭)</summary><div style="background: #fff; padding-top: 5px;">${capsuleItems.map(item => renderRow(item)).join('')}</div></details>`; }
 
     const settingsList = document.getElementById('settings-list');
     if (settingsList) settingsList.innerHTML = html;
 }
-
 
 function saveSettings() {
     config.items.forEach(item => { 
@@ -561,7 +686,21 @@ function loadAll() {
         config.manualCriteria = parsed.manualCriteria || [];
         config.cheerStickCriteria = parsed.cheerStickCriteria || [];
         config.elCheerStickCriteria = parsed.elCheerStickCriteria || [];
-        config.wildcardCriteria = parsed.wildcardCriteria || []; // 💡 추가
+        config.wildcardCriteria = parsed.wildcardCriteria || [];
+        config.mileageCriteria = parsed.mileageCriteria || [];
+        
+        // 💡 플레이포인트 세이브 기준값 분기 스토리지 연동 추가
+        config.playpointCriteria = parsed.playpointCriteria || [];
+        config.playpointTargetEff = parsed.playpointTargetEff || 250;
+
+
+	config.playPointTier = parsed.playPointTier || "bronze";
+	config.giftCardDiscountPercent = parsed.giftCardDiscountPercent || 0; 
+	config.playPointExtraEvent = parsed.playPointExtraEvent || 0;
+        
+        config.playPointTier = parsed.playPointTier || "bronze";
+        config.playPointEvent = parsed.playPointEvent || 1;
+        config.giftCardDiscount = parsed.giftCardDiscount || 0;
     }
 }
 
@@ -1122,4 +1261,52 @@ function updateMileageValue() {
             saveSettings();
         }
     }
+}
+
+// 💡 추가: 플레이 포인트 및 구글 크레딧 이중 설정 도우미 가치 계산 함수
+function updatePlaypointValue() {
+    const selected = document.querySelector('.playpoint-helper-radio:checked');
+    const subHelper = document.getElementById('credit-sub-helper');
+    
+    if (selected) {
+        const valType = selected.value;
+        config.playpointCriteria = [valType];
+        
+        // 💳 구글 플레이 크레딧인 경우에만 하위 입력창 모듈 노출
+        if (subHelper) {
+            subHelper.style.display = (valType === 'credit') ? 'block' : 'none';
+        }
+        
+        let targetVal = 0;
+        if (valType === 'free_elif') {
+            targetVal = 20 / 12; 
+        } else if (valType === 'ticket') {
+            // 사도 모집 티켓(t_apostle) 가치 불러와서 50으로 나눔
+            const ticketInput = document.getElementById('val-t_apostle');
+            const ticketVal = ticketInput ? parseFloat(ticketInput.value) : (config.items.find(i => i.id === 't_apostle')?.val || 150);
+            targetVal = ticketVal / 50;
+        } else if (valType === 'credit') {
+            // 목표 효율 인풋값 긁어오기 (없으면 기본값 250)
+            const targetEffInput = document.getElementById('playpoint-target-eff');
+            const targetEff = targetEffInput ? parseFloat(targetEffInput.value) : 250;
+            config.playpointTargetEff = targetEff; // 목표 효율 수치 저장 슬롯 세팅
+            
+            targetVal = targetEff / 100; // 🎯 250효율일 때 10원 = 2.5엘리프 변환 수식
+        }
+        
+        const input = document.getElementById('val-playpoint');
+        if (input) {
+            // 소수점 이하 둘째 자리까지 반올림해서 저장 인풋에 대입
+            input.value = Math.round(targetVal * 100) / 100;
+            saveSettings();
+        }
+    }
+}
+
+function saveGoogleSettings() {
+    config.playPointTier = document.getElementById('settings-playpoint-tier').value;
+    config.giftCardDiscountPercent = parseFloat(document.getElementById('settings-giftcard-discount-percent').value) || 0; 
+    config.playPointExtraEvent = parseFloat(document.getElementById('settings-playpoint-extra-event').value) || 0;
+    
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
 }
