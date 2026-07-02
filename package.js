@@ -315,4 +315,5 @@ const dbPackages = [
     { name: "여름맞이 특별 모집 패키지", price: 49500, releasedApostle: "스키아", contents: { "halo_select": 1, "t_apostle": 60, "kcandy": 500, "scandy": 500 } },
     { name: "여름맞이 특별 피규어 패키지", price: 29500, releasedApostle: "스키아", contents: { "p_elif": 900, "t_apostle": 20, "capsule_fest_coupon": 3, "food_yellow": 10, "food_ricotta_awesome": 40 }, note: "피규어 포함, 각 음식 요리교환권으로 대체(40)" },
     { name: "여름맞이 특별 와구와구 패키지", price: 3300, releasedApostle: "스키아", contents: { "p_elif": 100, "f_elif": 100, "t_apostle": 6, "t_card": 3, "food_secom": 3, "food_yamyam": 3, "food_ricotta_awesome": 9 }, note: "각 음식 요리교환권으로 대체(9)" },
+    { name: "스키아의 나아갈 길", price: 5500, releasedApostle: "스키아" , contents: { p_elif: 170, thumbs: 50, kcandy: 800, scandy: 420 } },
 ];
