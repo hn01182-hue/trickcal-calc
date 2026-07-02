@@ -136,7 +136,7 @@ if (special7List.length > 0) {
         haloEV += (1 / special7List.length) * getApostleValue(a, false);
     });
 }
-results.halo_select = haloEV; // 👈 ID와 일치시킴
+results.halo_select = haloEV; //  ID와 일치시킴
 
 window.lastCalcResults = results;
 displayResults(results);
