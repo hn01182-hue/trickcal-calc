@@ -705,18 +705,11 @@ function loadAll() {
 }
 
 function applyRandomBackground() {
-        /*
-    const bgs = [
-        'images/배경1.webp', 
-        'images/배경2.webp',
-        'images/배경3.webp',
-        'images/배경4.webp'
-    ];
-    document.body.style.backgroundImage = `url('${bgs[Math.floor(Math.random()*bgs.length)]}')`;
-    */
+//배경 추가할때마다 숫자 수정할 것
+   const TOTAL_BACKGROUNDS = 2;
+   const randomNum = Math.floor(Math.random() * TOTAL_BACKGROUNDS) + 1;
+   document.body.style.backgroundImage = `url('images/배경${randomNum}.webp')`;
 
-    // 배경 1로 고정 적용
-    document.body.style.backgroundImage = "url('images/배경1.webp')";
 }
 
 function resetConfig() { if(confirm("기본 설정으로 초기화 하시겠습니까?")) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }

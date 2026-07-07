@@ -214,8 +214,9 @@
 
     /* 카드 공통 */
     .card {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(5px);
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       padding: 20px;
       border-radius: 0 0 15px 15px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -534,6 +535,24 @@
 #toast {
     pointer-events: none; /* 클릭 방해 금지 */
 }
+/* 기타 탭 링크 버튼 공통 디자인 */
+.etc-link-btn {
+  display: block;
+  padding: 14px 16px;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.95em;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+/* 마우스를 올렸을 때 살짝 어두워지면서 강조되는 효과 */
+.etc-link-btn:hover {
+  filter: brightness(0.95);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
   </style>
 </head>
 
@@ -541,11 +560,12 @@
 
   <div class="container">
     <div class="tabs-container"><div class="tabs">
-      <div class="tab active" onclick="openTab('preset')">🎁 주간 패키지</div>
-      <div class="tab" onclick="openTab('constant')">🏛️ 데일리/패스/은총</div>
-      <div class="tab" onclick="openTab('calc')">📊 분석</div>
-      <div class="tab" onclick="openTab('apostle-list')">👤 뽑기권 계산용</div>
-      <div class="tab" onclick="openTab('settings')">⚙️ 설정</div>
+      <div class="tab active" onclick="openTab('preset')">주간 패키지</div>
+      <div class="tab" onclick="openTab('constant')">데일리/패스/은총</div>
+      <div class="tab" onclick="openTab('calc')">분석</div>
+      <div class="tab" onclick="openTab('apostle-list')"> 뽑기권 계산용</div>
+      <div class="tab" onclick="openTab('settings')"> 설정</div>
+      <div class="tab" onclick="openTab('etc')">유용한 링크</div> 
     </div>
     </div>
 
@@ -702,8 +722,22 @@
 
       <div id="apostle-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px;">
       </div>
+    </div> <div id="etc" class="card">
+      <div style="background:#f5f5f5; padding:12px; border-radius:8px; margin-bottom:15px; font-size:0.9em; color:#333; font-weight:bold;">
+        🔗 유용한 외부 링크 목록
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        
+        <a href="https://shop.trickcal.com/" target="_blank" class="etc-link-btn" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; display: flex; align-items: center; gap: 8px;">
+  	      <img src="images/아이시아.webp" style="width: 22px; height: 22px; object-fit: contain; position: relative; top: 1px;" alt="Isium Icon">
+  		<span>아이시움 라운지 바로가기 →</span>
+	</a>
+	 <a href="https://note.trickcal.com/" target="_blank" class="etc-link-btn" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; display: flex; align-items: center; gap: 8px;">
+  	      <img src="images/아멜리아(R41).webp" style="width: 22px; height: 22px; object-fit: contain; position: relative; top: 1px;" alt="Isium Icon">
+  		<span>트릭컬 노트 바로가기 →</span>
+	</a>
+      </div>
     </div>
-  </div>
 
   <script src="config.js?v=1.14"></script>
   <script src="package.js?v=1.14"></script>
@@ -751,6 +785,7 @@
         <div id="modal-list" style="flex:1; overflow-y:auto; border-top:1px solid #ddd; padding-top:10px;">
             </div>
     </div>
+
 </div>
 </body>
 
