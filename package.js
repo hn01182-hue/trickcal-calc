@@ -316,4 +316,12 @@ const dbPackages = [
     { name: "여름맞이 특별 피규어 패키지", price: 29500, releasedApostle: "스키아", contents: { "p_elif": 900, "t_apostle": 20, "capsule_fest_coupon": 3, "food_yellow": 10, "food_ricotta_awesome": 40 }, note: "피규어 포함, 각 음식 요리교환권으로 대체(40)" },
     { name: "여름맞이 특별 와구와구 패키지", price: 3300, releasedApostle: "스키아", contents: { "p_elif": 100, "f_elif": 100, "t_apostle": 6, "t_card": 3, "food_secom": 3, "food_yamyam": 3, "food_ricotta_awesome": 9 }, note: "각 음식 요리교환권으로 대체(9)" },
     { name: "스키아의 나아갈 길", price: 5500, releasedApostle: "스키아" , contents: { p_elif: 170, thumbs: 50, kcandy: 800, scandy: 420 } },
+{ name: "저 너머의 행복 우이 패키지", price: 99000, releasedApostle: "스키아", contents: { p_elif: 3000, elch_ticket: 1, attr_활발: 3 } },
+{ name: "스키아의 희망 패키지", price: 49500, releasedApostle: "스키아", contents: { p_elif: 1500, f_elif: 1500, t_apostle: 30 } },
+{ name: "스키아의 산책 패키지", price: 49500, releasedApostle: "스키아", contents: { t_apostle: 50, thumbs: 100 } },
+{ name: "스키아의 안내 패키지", price: 49500, releasedApostle: "스키아", contents: { p_elif: 1500, f_elif: 1500, cert: 400, capsule_fest_coupon: 5 } },
+{ name: "스키아의 말랑볼 패키지", price: 19800, releasedApostle: "스키아", contents: { p_elif: 600, f_elif: 600, t_apostle: 10, t_card: 10, attr_광기: 1 } },
+{ name: "스키아의 독백 패키지", price: 9900, releasedApostle: "스키아", contents: { p_elif: 300, f_elif: 300, crayon_highest: 1, capsule_fest_coupon: 1 } },
+{ name: "스키아의 수행 패키지", price: 3300, releasedApostle: "스키아", contents: { p_elif: 100, kcandy: 100, scandy: 100, nuru: 3, food_yamyam: 3 } },    
+{ name: "사복 패스(우이)", price: 29500, releasedApostle: "스키아", contents: { "p_elif": 900, "f_elif": 2400, "t_apostle": 20, "t_card": 20, "crayon_highest": 8 } , note: "사복 포함" },
 ];

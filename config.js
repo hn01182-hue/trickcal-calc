@@ -71,7 +71,7 @@ const defaultConfig = {
 	    	{ id: 'digest', name: '소화제', val: 0, icon: 'images/소화제.webp', count: "" },	
             { id: 't_apostle', name: '사도뽑기권', val: 100, icon: 'images/사도뽑기.png', count: "" },
             { id: 't_card', name: '카드뽑기권', val: 40, icon: 'images/카드뽑기.png', count: "" },
-            { id: 'nuru', name: '누루링', val: 40, icon: 'images/누루링.png', count: "" },
+            { id: 'nuru', name: '누루링 수렵 면허권', val: 40, icon: 'images/누루링.png', count: "" },
             { id: 'manual', name: '장비의 정석', val: 0.125, icon: 'images/장비의 정석.png', count: "" },
             { id: 'r_low', name: '하급 제련석', val: 3, icon: 'images/하급제련석.png', count: "" },
             { id: 'r_mid', name: '중급 제련석', val: 6, icon: 'images/중급제련석.png', count: "" },
