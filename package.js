@@ -340,5 +340,6 @@ const dbPackages = [
 { name: "니콜의 행복 패키지", price: 9900, releasedApostle: "니콜", contents: { p_elif: 300, t_apostle: 10, manual: 1500 } },
 { name: "니콜의 정중한 요청 패키지", price: 3300, releasedApostle: "니콜", contents: { p_elif: 100, scandy: 100, t_card: 3, collect_box: 20, food_yamyam: 3 } },
 { name: "니콜의 계획 패키지", price: 3300, releasedApostle: "니콜", contents: { p_elif: 100, kcandy: 200, light_box: 300, research_box: 20, food_yamyam: 3 } },
+{ name: "니콜의 소재 노트", price: 5500, releasedApostle: "니콜", contents: { "p_elif": 170, "t_apostle": 8, "t_card": 7, "kcandy": 200, "scandy": 300 } },
 ];
 
