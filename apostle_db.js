@@ -5,6 +5,7 @@ const apostleDB = [
     { id: "네르", name: "네르", role: "서포터", type: "광기", isEldain: false },
     { id: "네르(빡침)", name: "네르(빡침)", role: "딜러", type: "활발", isEldain: true },
     { id: "네티", name: "네티", role: "탱커", type: "광기", isEldain: false },
+    { id: "니콜", name: "니콜", role: "딜러", type: "냉정", isEldain: false },
     { id: "다야", name: "다야", role: "딜러", type: "순수", isEldain: false },
     { id: "다야(퓨어샤인)", name: "다야(퓨어샤인)", role: "서포터", type: "광기", isEldain: false },
     { id: "델리아", name: "델리아", role: "딜러", type: "순수", isEldain: false },

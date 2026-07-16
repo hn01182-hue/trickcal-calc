@@ -324,4 +324,21 @@ const dbPackages = [
 { name: "스키아의 독백 패키지", price: 9900, releasedApostle: "스키아", contents: { p_elif: 300, f_elif: 300, crayon_highest: 1, capsule_fest_coupon: 1 } },
 { name: "스키아의 수행 패키지", price: 3300, releasedApostle: "스키아", contents: { p_elif: 100, kcandy: 100, scandy: 100, nuru: 3, food_yamyam: 3 } },    
 { name: "사복 패스(우이)", price: 29500, releasedApostle: "스키아", contents: { "p_elif": 900, "f_elif": 2400, "t_apostle": 20, "t_card": 20, "crayon_highest": 8 } , note: "사복 포함" },
+
+{ name: "아이시움 남남 사탕 패키지", price: 6600, releasedApostle: "아이시움(~26.07.30.)", contents: { p_elif: 200, f_elif: 200, kcandy: 200, scandy: 200, food_yellow: 3, mileage: 7 } },
+{ name: "아이시움 뽑기 모아 패키지", price: 9900, releasedApostle: "아이시움(~26.07.30.)", contents: { p_elif: 300, t_apostle: 5, t_card: 5, nuru: 5, crayon_highest: 1, mileage: 10 } },
+{ name: "아이시움 사도와 함께 패키지", price: 19800, releasedApostle: "아이시움(~26.07.30.)", contents: { p_elif: 600, t_apostle: 20, thumbs: 40, mileage: 20 } },
+{ name: "아이시움 크레파스 가득 패키지", price: 49500, releasedApostle: "아이시움(~26.07.30.)", contents: { p_elif: 1500, crayon_high: 20, crayon_highest: 6, mileage: 50 } },
+{ name: "아이시움 냉정! 교단 패키지", price: 49500, releasedApostle: "아이시움(~26.07.30.)", contents: { p_elif: 1500, f_elif: 1500, cert: 400, attr_냉정: 1, mileage: 50 } },
+{ name: "아이시움 가득 모집 패키지", price: 99000, releasedApostle: "아이시움(~26.07.30.)", contents: { t_apostle: 100, t_card: 50, mileage: 100 } },
+
+{ name: "니콜의 철저함 패키지", price: 99000, releasedApostle: "니콜", contents: { t_apostle: 100, attr_냉정: 3 } },
+{ name: "니콜의 열정 패키지", price: 49500, releasedApostle: "니콜", contents: { p_elif: 1500, f_elif: 1500, crayon_highest: 6 } },
+{ name: "니콜의 대박 패키지", price: 19800, releasedApostle: "니콜", contents: { p_elif: 600, kcandy: 600, scandy: 600, thumbs: 40, gold: 120 } },
+{ name: "니콜의 명언 패키지", price: 9900, releasedApostle: "니콜", contents: { p_elif: 300, f_elif: 300, chip: 50, rare_church_box: 10, rare_church_box2: 10 } },
+{ name: "니콜의 단단함 패키지", price: 9900, releasedApostle: "니콜", contents: { p_elif: 300, t_card: 10, l_card_ticket: 1 } },
+{ name: "니콜의 행복 패키지", price: 9900, releasedApostle: "니콜", contents: { p_elif: 300, t_apostle: 10, manual: 1500 } },
+{ name: "니콜의 정중한 요청 패키지", price: 3300, releasedApostle: "니콜", contents: { p_elif: 100, scandy: 100, t_card: 3, collect_box: 20, food_yamyam: 3 } },
+{ name: "니콜의 계획 패키지", price: 3300, releasedApostle: "니콜", contents: { p_elif: 100, kcandy: 200, light_box: 300, research_box: 20, food_yamyam: 3 } },
 ];
+

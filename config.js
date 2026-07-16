@@ -91,7 +91,8 @@ const defaultConfig = {
 		    { id: 'deco_box', name: '방 꾸미기 상자', val: 0, icon: 'images/꾸미기상자.png', count: "" },
 		    { id: 'growth_box', name: '교단 성장 상자', val: 0, icon: 'images/교단성장재료상자.png', count: "" },
 		    { id: 'l_spell_box', name: '전설 스펠 선택 상자', val: 6000, icon: 'images/전설스펠상자.webp', count: "" },
-		    { id: 'l_arti_box', name: '전설 아티팩트 선택 상자', val: 6000, icon: 'images/전설아티팩트상자.webp', count: "" },
+		    { id: 'l_arti_box', name: '전설 아티팩트 선택 상자', val: 6000, icon: 'images/전설아티팩트상자.webp', count: "" },		
+		{ id: 'l_card_ticket', name: '전설 카드 뽑기권', val: 0, icon: 'images/전설 카드 뽑기권.webp', count: "" },
 		    { id: 'halo_select', name: '교주의 빛무리! 모집권', val: 5350, icon: 'images/교주의 빛무리! 선택권.png', count: "" },
 		    { id: 'seven_select', name: '영원살이! 일곱자매 선택권', val: 10700, icon: 'images/영원살이! 일곱자매 선택권.png', count: "" },
 		    { id: 'mileage', name: '마일리지', val: 10, icon: 'images/마일리지.webp', count: "" },
@@ -104,6 +105,8 @@ const defaultConfig = {
 		{ id: 'high_spell_box', name: '고급 스펠카드 선택 상자', val: 0, icon: 'images/고급스펠상자.webp', count: "" },
 		{ id: 'rare_arti_box', name: '희귀 아티팩트 선택 상자', val: 0, icon: 'images/희귀아티팩트상자.webp', count: "" },
 		{ id: 'rare_spell_box', name: '희귀 스펠카드 선택 상자', val: 0, icon: 'images/희귀스펠상자.webp', count: "" },
+		{ id: 'collect_box', name: '수집품 만들기 재료 상자', val: 0, icon: 'images/수집품 만들기 재료 상자.webp', count: "" },
+		{ id: 'research_box', name: '연구 특화 재료 상자', val: 0, icon: 'images/연구 특화 재료 상자.webp', count: "" },
 		{ id: 'cheer_stick', name: '떡상 응원봉', val: 0, icon: 'images/떡상응원봉.webp', count: "" },
 	    	{ id: 'el_cheer_stick', name: '엘다인 떡상 응원봉', val: 0, icon: 'images/엘다인응원봉.webp', count: "" },	
 		{ id: 'capsule_fest_coupon', name: '축제 쿠폰', val: 300, icon: 'images/축제쿠폰.webp', count: "" },
@@ -114,6 +117,7 @@ const defaultConfig = {
 		{ id: 'food_ricotta_awesome', name: '개쩌는 리코타의 요리 교환권', val: 0, icon: 'images/기타_개쩌는 리코타의 요리 교환권.webp', count: "" },
 		{ id: 'event_Joanne', name: '깔깔호호 사제님 유머집', fixed: true, val: 1000, icon: 'images/깔깔호호 사제님 유머집.webp', count: "" },
 		{ id: 'event_Ner', name: '두근두근♡ 너는 교단의 꽃잎', fixed: true, val: 500, icon: 'images/두근두근♡ 너는 교단의 꽃잎.webp', count: "" },
+
         ]    
     };
 let config = JSON.parse(JSON.stringify(defaultConfig));
