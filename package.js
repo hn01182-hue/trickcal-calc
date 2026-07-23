@@ -341,5 +341,15 @@ const dbPackages = [
 { name: "니콜의 정중한 요청 패키지", price: 3300, releasedApostle: "니콜", contents: { p_elif: 100, scandy: 100, t_card: 3, collect_box: 20, food_yamyam: 3 } },
 { name: "니콜의 계획 패키지", price: 3300, releasedApostle: "니콜", contents: { p_elif: 100, kcandy: 200, light_box: 300, research_box: 20, food_yamyam: 3 } },
 { name: "니콜의 소재 노트", price: 5500, releasedApostle: "니콜", contents: { "p_elif": 170, "t_apostle": 8, "t_card": 7, "kcandy": 200, "scandy": 300 } },
+{ name: "다 함께 찰칵! 힐링 바캉스 로비 패키지", price: 29500, releasedApostle: "니콜", contents: { p_elif: 900, f_elif: 1800, thumbs: 60 }, note: "로비 포함" },
+{ name: "리온과 함께 바캉스 패키지", price: 29500, releasedApostle: "니콜", contents: { p_elif: 900, f_elif: 900, cert: 300, attr_우울: 1, marsh_high_select: 30 }, note: "리온 증명서 20 -> 증명서 300" },
+{ name: "슈로와 함께 태양 피하기 패키지", price: 29500, releasedApostle: "니콜", contents: { p_elif: 900, f_elif: 900, cert: 300, attr_활발: 1, marsh_high_select: 30 }, note: "슈로 증명서 20 -> 증명서 300" },
+{ name: "헤일리(멀쩡)와 함께 돌격! 파도 패키지", price: 29500, releasedApostle: "니콜", contents: { p_elif: 900, f_elif: 900, cert: 300, attr_광기: 1, marsh_high_select: 30 }, note: "헤일리(멀쩡) 증명서 20 -> 증명서 300" },
+{ name: "그윈과 함께 바다탐험 패키지", price: 29500, releasedApostle: "니콜", contents: { p_elif: 900, f_elif: 900, cert: 300, attr_냉정: 1, marsh_high_select: 30 }, note: "그윈 증명서 20 -> 증명서 300" },
+{ name: "델리아와 함께 물놀이 패키지", price: 29500, releasedApostle: "니콜", contents: { p_elif: 900, f_elif: 900, cert: 300, attr_순수: 1, marsh_high_select: 30 }, note: "델리아 증명서 20 -> 증명서 300" },
+{ name: "니콜의 식감 표현 패키지", price: 6600, releasedApostle: "니콜", contents: { p_elif: 200, kcandy: 200, food_blue: 10, food_purple: 10, food_secom: 10, food_yamyam: 10, food_ricotta_ticket: 10, food_ricotta_rare: 10, food_ricotta_legend: 10, food_ricotta_awesome: 10 } },
+{ name: "니콜의 번뜩임 패키지", price: 49500, releasedApostle: "니콜", contents: { p_elif: 1500, f_elif: 1500, t_apostle: 30 } },
+{ name: "니콜의 조우 패키지", price: 49500, releasedApostle: "니콜", contents: { p_elif: 1500, f_elif: 1500, cert: 500 } },
+{ name: "니콜의 픽션 패키지", price: 19800, releasedApostle: "니콜", contents: { p_elif: 600, t_apostle: 20, nuru: 20 } },
 ];
 
