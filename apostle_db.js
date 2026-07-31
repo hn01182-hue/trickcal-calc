@@ -67,6 +67,7 @@ const apostleDB = [
     { id: "에르핀", name: "에르핀", role: "딜러", type: "순수", isEldain: false },    
     { id: "에르핀(왕도)", name: "에르핀(왕도)", role: "딜러", type: "순수", isEldain: true },
     { id: "에슈르", name: "에슈르", role: "딜러", type: "우울", isEldain: false },
+    { id: "에슈르(마도)", name: "에슈르(마도)", role: "딜러", type: "활발", isEldain: false },
     { id: "엘레나", name: "엘레나", role: "딜러", type: "냉정", isEldain: false },
     { id: "에피카", name: "에피카", role: "딜러", type: "활발", isEldain: true },
     { id: "오르", name: "오르", role: "서포터", type: "우울", isEldain: false },
