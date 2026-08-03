@@ -359,11 +359,13 @@ const dbPackages = [
 { name: "에슈르의 마법학교 패키지", price: 3300, releasedApostle: "에슈르(마도)", contents: { p_elif: 100, kcandy: 200, manual: 800, r_high: 3, food_secom: 5 } },
 { name: "시원한 휴일 특별 피규어 패키지", price: 29500, releasedApostle: "에슈르(마도)", contents: { p_elif: 900, t_apostle: 20, thumbs: 60 }, note: "피규어 포함" },
 { name: "에슈르의 특제! 스윗! 포스터 패키지", price: 9900, releasedApostle: "에슈르(마도)", contents: { p_elif: 300 }, note: "포스터, 키링, 등급별 요리(10개씩) 포함" },
-
+{ name: "에슈르(마도)의 마법 빵", price: 5500, contents: { p_elif: 170, thumbs: 50, kcandy: 800, scandy: 420 }, releasedApostle: '에슈르(마도)' },
+    
 { name: "아이시움 사탕 가득 패키지", price: 9900, releasedApostle: "아이시움(~26.08.13.)", contents: { p_elif: 300, kcandy: 300, scandy: 300, thumbs: 20, whistle: 500, mileage: 10 } },
 { name: "아이시움 가득 뽑기 패키지", price: 9900, releasedApostle: "아이시움(~26.08.13.)", contents: { p_elif: 300, t_apostle: 10, t_card: 10, mileage: 10 } },
 { name: "아이시움 전설 크레용 패키지", price: 19800, releasedApostle: "아이시움(~26.08.13.)", contents: { p_elif: 600, f_elif: 600, wildcard: 2, crayon_highest: 2, mileage: 20 } },
 { name: "아이시움 달콤 가득 증명서 패키지", price: 49500, releasedApostle: "아이시움(~26.08.13.)", contents: { p_elif: 1500, f_elif: 1500, cert: 400, kcandy: 500, scandy: 500, mileage: 50 } },
 { name: "아이시움 티켓 한가득 패키지", price: 99000, releasedApostle: "아이시움(~26.08.13.)", contents: { t_apostle: 100, thumbs: 200, mileage: 100 } },
+    
 ];
 
