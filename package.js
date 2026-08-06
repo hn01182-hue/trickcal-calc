@@ -360,6 +360,13 @@ const dbPackages = [
 { name: "시원한 휴일 특별 피규어 패키지", price: 29500, releasedApostle: "에슈르(마도)", contents: { p_elif: 900, t_apostle: 20, thumbs: 60 }, note: "피규어 포함" },
 { name: "에슈르의 특제! 스윗! 포스터 패키지", price: 9900, releasedApostle: "에슈르(마도)", contents: { p_elif: 300 }, note: "포스터, 키링, 등급별 요리(10개씩) 포함" },
 { name: "에슈르(마도)의 마법 빵", price: 5500, contents: { p_elif: 170, thumbs: 50, kcandy: 800, scandy: 420 }, releasedApostle: '에슈르(마도)' },
+{ name: "구미의 존재 벨라 패키지", price: 99000, releasedApostle: "에슈르(마도)", contents: { p_elif: 3000, elch_ticket: 1, attr_활발: 3 }, note: "벨라 증명서 20 = 엘다인 선택권 1장 가치로 산정" },
+{ name: "에슈르의 결의 패키지", price: 49500, releasedApostle: "에슈르(마도)", contents: { p_elif: 1500, gold: 350, crayon_highest: 6 } },
+{ name: "에슈르의 새로움 패키지", price: 49500, releasedApostle: "에슈르(마도)", contents: { p_elif: 1500, f_elif: 3000, select_ticket: 1 } },
+{ name: "에슈르의 현자와 함께 패키지", price: 19800, releasedApostle: "에슈르(마도)", contents: { p_elif: 200, t_apostle: 20, thumbs: 40 } },
+{ name: "에슈르의 노력 패키지", price: 6600, releasedApostle: "에슈르(마도)", contents: { p_elif: 200, f_elif: 200, t_apostle: 5, manual: 1000 } },
+{ name: "에슈르의 의심 패키지", price: 3300, releasedApostle: "에슈르(마도)", contents: { p_elif: 100, f_elif: 100, kcandy: 100, scandy: 100, food_blue: 10 } },
+{ name: "사복 패스(벨라)", price: 29500, releasedApostle: "에슈르(마도)", contents: { "p_elif": 900, "f_elif": 2400, "t_apostle": 20, "t_card": 20, "crayon_highest": 8 } , note: "사복 포함" },
     
 { name: "아이시움 사탕 가득 패키지", price: 9900, releasedApostle: "아이시움(~26.08.13.)", contents: { p_elif: 300, kcandy: 300, scandy: 300, thumbs: 20, whistle: 500, mileage: 10 } },
 { name: "아이시움 가득 뽑기 패키지", price: 9900, releasedApostle: "아이시움(~26.08.13.)", contents: { p_elif: 300, t_apostle: 10, t_card: 10, mileage: 10 } },

@@ -706,7 +706,7 @@ function loadAll() {
 
 function applyRandomBackground() {
 //배경 추가할때마다 숫자 수정할 것
-   const TOTAL_BACKGROUNDS = 3;
+   const TOTAL_BACKGROUNDS = 4;
    const randomNum = Math.floor(Math.random() * TOTAL_BACKGROUNDS) + 1;
    document.body.style.backgroundImage = `url('images/배경${randomNum}.webp')`;
 
