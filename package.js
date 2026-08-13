@@ -374,5 +374,20 @@ const dbPackages = [
 { name: "아이시움 달콤 가득 증명서 패키지", price: 49500, releasedApostle: "아이시움(~26.08.13.)", contents: { p_elif: 1500, f_elif: 1500, cert: 400, kcandy: 500, scandy: 500, mileage: 50 } },
 { name: "아이시움 티켓 한가득 패키지", price: 99000, releasedApostle: "아이시움(~26.08.13.)", contents: { t_apostle: 100, thumbs: 200, mileage: 100 } },
     
+{ name: "스패럿의 정체성 패키지", price: 49500, releasedApostle: "스패럿", contents: { p_elif: 1500, f_elif: 1500, cert: 400, attr_순수: 1 } },
+{ name: "스패럿의 등장 패키지", price: 29500, releasedApostle: "스패럿", contents: { p_elif: 900, f_elif: 900, crayon_highest: 4 } },
+{ name: "스패럿의 함께해요 패키지", price: 19800, releasedApostle: "스패럿", contents: { p_elif: 600, kcandy: 600, scandy: 600, thumbs: 40, gold: 150 } },
+{ name: "스패럿의 철학 패키지", price: 9900, releasedApostle: "스패럿", contents: { p_elif: 300, t_card: 10, l_card_ticket: 1 } },
+{ name: "스패럿의 리더십 패키지", price: 9900, releasedApostle: "스패럿", contents: { p_elif: 300, t_apostle: 10, manual: 1500 } },
+{ name: "스패럿의 결투 패키지", price: 3300, releasedApostle: "스패럿", contents: { p_elif: 100, f_elif: 100, scandy: 100, collect_box: 20, food_yamyam: 5 } },
+{ name: "스패럿의 특제 양념 패키지", price: 3300, releasedApostle: "스패럿", contents: { p_elif: 100, f_elif: 100, kcandy: 200, research_box: 20, food_yamyam: 5 } },
+{ name: "스패럿의 출항 패키지", price: 99000, releasedApostle: "스패럿", contents: { t_apostle: 100, t_card: 50 } },  
+{ name: "스패럿의 보물 지도", price: 5500, releasedApostle: "스패럿", contents: { "p_elif": 170, "t_apostle": 8, "t_card": 7, "kcandy": 200, "scandy": 300 } },
+
+{ name: "아이시움 크레파스 모집 패키지", price: 9900, releasedApostle: "아이시움(~26.08.27.)", contents: { p_elif: 300, t_apostle: 5, t_card: 5, nuru: 5, crayon_highest: 1, mileage: 10 } },
+{ name: "아이시움 참! 잘했어요 패키지", price: 9900, releasedApostle: "아이시움(~26.08.27.)", contents: { p_elif: 300, kcandy: 300, scandy: 300, thumbs: 20, manual: 1500, mileage: 10 } },
+{ name: "아이시움 골드 가득 패키지", price: 19800, releasedApostle: "아이시움(~26.08.27.)", contents: { p_elif: 600, t_apostle: 20, gold: 150, mileage: 20 } },
+{ name: "아이시움 초특급 구성 패키지", price: 49500, releasedApostle: "아이시움(~26.08.27.)", contents: { p_elif: 1500, cert: 400, gold: 350, thumbs: 100, food_yamyam: 25, mileage: 50 } },
+{ name: "아이시움 최고급 모집 패키지", price: 99000, releasedApostle: "아이시움(~26.08.27.)", contents: { p_elif: 3000, t_apostle: 50, t_card: 50, crayon_highest: 10, mileage: 100 } },
 ];
 
