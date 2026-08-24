@@ -394,6 +394,7 @@ const dbPackages = [
 { name: "스패럿의 기세 패키지", price: 6600, releasedApostle: "스패럿", contents: { p_elif: 200, f_elif: 200, t_apostle: 5, nuru: 5 } },
 { name: "스패럿의 평화 영역 패키지", price: 3300, releasedApostle: "스패럿", contents: { p_elif: 100, kcandy: 100, scandy: 100, manual: 500, food_blue: 20 } },
 { name: "퇴근 5분 전! 즉시 준비! 로비 패키지", price: 29500, releasedApostle: "스패럿", contents: { p_elif: 900, f_elif: 1800, thumbs: 60 }, note: "로비 포함" },
+{ name: "스패럿의 충격 패키지", price: 9900, releasedApostle: "스패럿", contents: { p_elif: 300, f_elif: 300, circuit_piece: 100, rare_church_box: 20 } },
 
 { name: "아이시움 크레파스 모집 패키지", price: 9900, releasedApostle: "아이시움(~26.08.27.)", contents: { p_elif: 300, t_apostle: 5, t_card: 5, nuru: 5, crayon_highest: 1, mileage: 10 } },
 { name: "아이시움 참! 잘했어요 패키지", price: 9900, releasedApostle: "아이시움(~26.08.27.)", contents: { p_elif: 300, kcandy: 300, scandy: 300, thumbs: 20, manual: 1500, mileage: 10 } },

@@ -99,6 +99,7 @@ const defaultConfig = {
 		    { id: 'wildcard', name: '전설 와일드 카드', val: 0, icon : 'images/전설 와일드 카드.webp', count:""},
 		    { id: 'l_card_select', name: '보유 전설 카드 선택 상자', val: 0, icon : 'images/보유 전설 카드 선택 상자.webp', count:""},
 		    { id: 'chip', name: 'MUSIM칩', val: 0, icon: 'images/무심칩.webp', count: "" },
+		{ id: 'circuit_piece', name: '조각조각 기판', val: 0, icon: 'images/조각조각 기판.webp', count: "" },
 		{ id: 'whistle', name: '호루라기', val: 0, icon: 'images/호루라기.webp', count: "" },
 		{ id: 'rare_church_box', name: '희귀 교단 재료 선택 상자', val: 0, icon: 'images/희귀교단재료상자.webp', count: "" },
 		{ id: 'rare_church_box2', name: '희귀 교단 재료 선택 상자 vol.2', val: 0, icon: 'images/희귀교단재료상자2.png', count: "" },
