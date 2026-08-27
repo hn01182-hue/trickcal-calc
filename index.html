@@ -19,9 +19,25 @@
       overflow-x: hidden;
       width: 100%;
       font-family: 'Pretendard', sans-serif;
+      background-color: #fdf6e3;
+
+
+
+    }
+
+    /* 독립된 배경 레이어 (GPU 가속 분리) */
+    #bg-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
       background-size: cover;
-      background-attachment: fixed;
       background-position: center;
+      pointer-events: none;
+      transform: translateZ(0);
+      will-change: transform;
       transition: background-image 0.5s ease-in-out;
     }
 
@@ -34,6 +50,7 @@
       border-radius: 12px;
       overflow: hidden;
       transition: transform 0.1s ease;
+      transform: translateZ(0); /* 사도 렌더링 최적화 */
     }
 
     .apostle-container:active {
@@ -48,64 +65,62 @@
     }
 
     .check-overlay, .unowned-overlay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 40px;
-    font-weight: bold;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    pointer-events: none; /* 클릭 방해 금지 */
-}
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
 
-/* 좌클릭: 체크 (초록색 계열 추천) */
-.check-overlay {
-    color: #4caf50;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 2;
-}
+    /* 좌클릭: 체크 */
+    .check-overlay {
+      color: #4caf50;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 2;
+    }
 
-/* 우클릭: 미보유 X (빨간색 계열) */
-.unowned-overlay {
-    color: #ff4d4d;
-    background: rgba(0, 0, 0, 0.4); /* 이미 어두워졌다면 투명하게 조절 가능 */
-    z-index: 3;
-}
+    /* 우클릭: 미보유 X */
+    .unowned-overlay {
+      color: #ff4d4d;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 3;
+    }
 
-/* 클래스가 붙었을 때만 보이게 설정 */
-.apostle-container.checked .check-overlay {
-    opacity: 1;
-}
+    .apostle-container.checked .check-overlay {
+      opacity: 1;
+    }
 
-.apostle-container.unowned .unowned-overlay {
-    opacity: 1;
-}
+    .apostle-container.unowned .unowned-overlay {
+      opacity: 1;
+    }
 
-/* 둘 다 활성화되었을 때 이미지가 너무 가려지면 투명도 조절 */
-.apostle-container.checked.unowned .check-overlay {
-    background: rgba(0, 0, 0, 0.2);
-    justify-content: flex-start; /* 위치 분산: 왼쪽 */
-    padding-left: 10px;
-}
+    .apostle-container.checked.unowned .check-overlay {
+      background: rgba(0, 0, 0, 0.2);
+      justify-content: flex-start;
+      padding-left: 10px;
+    }
 
-.apostle-container.checked.unowned .unowned-overlay {
-    background: rgba(0, 0, 0, 0.2);
-    justify-content: flex-end; /* 위치 분산: 오른쪽 */
-    padding-right: 10px;
-}
+    .apostle-container.checked.unowned .unowned-overlay {
+      background: rgba(0, 0, 0, 0.2);
+      justify-content: flex-end;
+      padding-right: 10px;
+    }
 
     .apostle-container.checked .apostle-img {
-      filter: grayscale(40%) blur(1px);
+      filter: grayscale(40%);
     }
 
     .apostle-container.eldain {
       border: 3px solid #ffd700;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+      box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
     }
 
     #apostle-grid {
@@ -156,67 +171,61 @@
       font-weight: bold;
       font-size: 0.75em;
     }
-/* 탭을 감싸는 부모 요소에 그림자 효과 추가 */
+
     .tabs-container {
-        position: relative;
-        width: 100%;
-        overflow: hidden;
+      position: relative;
+      width: 100%;
+      overflow: hidden;
     }
     
     .tabs-container::after {
-    display: none;
+      display: none;
     }
     
     @media (max-width: 600px) {
-    .tabs {
+      .tabs {
         display: flex;
         gap: 2px;
-        overflow-x: auto !important; /* 가로 스크롤 강제 허용 */
+        overflow-x: auto !important;
         white-space: nowrap;
-        
-        /* 모바일에서 숨겼던 스크롤바 기능을 다시 켭니다 */
         -ms-overflow-style: auto !important; 
         scrollbar-width: thin !important;
         scrollbar-color: var(--primary) rgba(0,0,0,0.05);
-        
-        /* 스크롤바와 탭 사이의 간격을 위해 하단 패딩 살짝 추가 */
         padding-bottom: 5px; 
-    }
+      }
 
-    /* 크롬, 사파리, 삼성인터넷용 스크롤바 디자인 */
-    .tabs::-webkit-scrollbar {
-        display: block !important; /* 숨김 해제 */
+      .tabs::-webkit-scrollbar {
+        display: block !important;
         height: 4px;
-    }
+      }
 
-    .tabs::-webkit-scrollbar-thumb {
-        background-color: var(--primary); /* 포인트 컬러(초록색)로 강조 */
+      .tabs::-webkit-scrollbar-thumb {
+        background-color: var(--primary);
         border-radius: 10px;
-    }
+      }
 
-    .tabs::-webkit-scrollbar-track {
-        background-color: rgba(0, 0, 0, 0.05); /* 트랙은 아주 연하게 */
+      .tabs::-webkit-scrollbar-track {
+        background-color: rgba(0, 0, 0, 0.05);
         border-radius: 10px;
-    }
+      }
 
-    .tab {
-        flex: 0 0 auto; /* 글자 길이에 맞춰 박스 크기 유지 */
+      .tab {
+        flex: 0 0 auto;
         min-width: fit-content; 
-        padding: 10px 15px; /* 터치하기 편하게 좌우 여백 확보 */
+        padding: 10px 15px;
         font-size: 0.8em;
+      }
     }
-}
+
     .tab.active {
       background: var(--card);
       color: var(--primary);
       border-bottom: 3px solid var(--primary);
     }
 
-    /* 카드 공통 */
+    /* 카드 공통 (블러 연산 제거 및 가벼운 반투명 색상 적용) */
     .card {
-      background: rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
+      background: rgba(255, 255, 255, 0.88);
       padding: 20px;
       border-radius: 0 0 15px 15px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -242,48 +251,49 @@
     }
 
     .search-input {
-    width: 100%;       /* 부모 요소의 너비를 100% 채움 */
-    padding: 10px;     /* 입력하기 편하게 패딩 약간 추가 */
-    border: 1.5px solid var(--primary);
-    border-radius: 8px;
-    outline: none;
-    font-size: 14px;
-    /* margin: 0 auto; 와 max-width: 250px;를 삭제했습니다 */
-}
+      width: 100%;
+      padding: 10px;
+      border: 1.5px solid var(--primary);
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+    }
 
-.apostle-select {
-    flex: 1;
-    height: 40px; /* 높이 고정 */
-    padding: 0 10px;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    background: white;
-    cursor: pointer;
-    font-weight: 600;
-    transition: border 0.2s;
-}
-.apostle-select:hover {
-    border-color: var(--primary);
-}
+    .apostle-select {
+      flex: 1;
+      height: 40px;
+      padding: 0 10px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      background: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: border 0.2s;
+    }
 
-/* 사도 선택 버튼 전용 스타일 */
-.btn-apostle-selector {
-    flex: 1;
-    height: 40px; /* select와 높이 동일하게 고정 */
-    padding: 0 10px;
-    background-color: white;
-    border: 2px solid var(--primary);
-    border-radius: 10px;
-    color: var(--primary);
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.btn-apostle-selector:hover {
-    background-color: var(--primary);
-    color: #fff;
-}
+    .apostle-select:hover {
+      border-color: var(--primary);
+    }
+
+    .btn-apostle-selector {
+      flex: 1;
+      height: 40px;
+      padding: 0 10px;
+      background-color: white;
+      border: 2px solid var(--primary);
+      border-radius: 10px;
+      color: var(--primary);
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .btn-apostle-selector:hover {
+      background-color: var(--primary);
+      color: #fff;
+    }
+
     /* 패키지 카드 */
     .pkg-card {
       border: 1px solid #eee;
@@ -442,139 +452,142 @@
     }
 
     .pkg-note {
-    font-size: 0.85rem;
-    color: #ff6b6b; /* 눈에 띄는 색상 */
-    background: #fff0f0;
-    padding: 4px 8px;
-    border-radius: 4px;
-    margin: 5px 0;
-    font-weight: bold;
-    display: inline-block;
+      font-size: 0.85rem;
+      color: #ff6b6b;
+      background: #fff0f0;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin: 5px 0;
+      font-weight: bold;
+      display: inline-block;
     }
 
-.pkg-card.is-hidden {
-    opacity: 0.5; /* 투명도 조절 */
-    filter: grayscale(0.5); /* 약간 회색빛으로 */
-    transition: all 0.2s ease;
-}
+    .pkg-card.is-hidden {
+      opacity: 0.5;
+      filter: grayscale(0.5);
+      transition: all 0.2s ease;
+    }
 
-/* 설정 도우미 관련 스타일 */
-.helper-btn {
-    font-size: 0.7em;
-    padding: 2px 6px;
-    margin-left: 6px;
-    background: #fff;
-    border: 1px solid var(--primary);
-    color: var(--primary);
-    border-radius: 4px;
-    cursor: pointer;
-}
+    /* 설정 도우미 관련 스타일 */
+    .helper-btn {
+      font-size: 0.7em;
+      padding: 2px 6px;
+      margin-left: 6px;
+      background: #fff;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-.helper-box {
-    display: none;
-    width: 100%;
-    background: #f1f8e9;
-    border: 1px dashed var(--primary);
-    border-radius: 8px;
-    padding: 10px;
-    margin: 10px 0;
-    font-size: 0.85em;
-}
+    .helper-box {
+      display: none;
+      width: 100%;
+      background: #f1f8e9;
+      border: 1px dashed var(--primary);
+      border-radius: 8px;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 0.85em;
+    }
 
-.helper-box.active {
-    display: block;
-}
+    .helper-box.active {
+      display: block;
+    }
 
-.helper-select {
-    width: 100%;
-    padding: 6px;
-    margin-top: 5px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-}
-.helper-box label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    padding: 2px 0;
-}
+    .helper-select {
+      width: 100%;
+      padding: 6px;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
 
-.helper-box label:hover {
-    color: var(--primary);
-}
+    .helper-box label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 2px 0;
+    }
 
-.helper-box input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-}
+    .helper-box label:hover {
+      color: var(--primary);
+    }
 
-.helper-box input[type="radio"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    margin: 0;
-}
+    .helper-box input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
 
-.content-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    margin-right: 8px;
-    white-space: nowrap;
-}
+    .helper-box input[type="radio"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      margin: 0;
+    }
 
-.content-icon {
-    width: 18px;
-    height: 18px;
-    object-fit: contain;
-    vertical-align: middle;
-}
-/* 저장 완료 토스트 애니메이션 */
-#toast {
-    pointer-events: none; /* 클릭 방해 금지 */
-}
-/* 기타 탭 링크 버튼 공통 디자인 */
-.etc-link-btn {
-  display: block;
-  padding: 14px 16px;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 0.95em;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-}
+    .content-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-right: 8px;
+      white-space: nowrap;
+    }
 
-/* 마우스를 올렸을 때 살짝 어두워지면서 강조되는 효과 */
-.etc-link-btn:hover {
-  filter: brightness(0.95);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
+    .content-icon {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      vertical-align: middle;
+    }
+
+    #toast {
+      pointer-events: none;
+    }
+
+    .etc-link-btn {
+      display: block;
+      padding: 14px 16px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.95em;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .etc-link-btn:hover {
+      filter: brightness(0.95);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
   </style>
 </head>
 
 <body>
+  <!-- 별도 분리된 고정 배경 레이어 -->
+  <div id="bg-layer"></div>
 
   <div class="container">
-    <div class="tabs-container"><div class="tabs">
-      <div class="tab active" onclick="openTab('preset')">주간 패키지</div>
-      <div class="tab" onclick="openTab('constant')">데일리/패스/은총</div>
-      <div class="tab" onclick="openTab('calc')">분석</div>
-      <div class="tab" onclick="openTab('apostle-list')"> 뽑기권 계산용</div>
-      <div class="tab" onclick="openTab('settings')"> 설정</div>
-      <div class="tab" onclick="openTab('etc')">유용한 링크</div> 
-    </div>
+    <div class="tabs-container">
+      <div class="tabs">
+        <div class="tab active" onclick="openTab('preset')">주간 패키지</div>
+        <div class="tab" onclick="openTab('constant')">데일리/패스/은총</div>
+        <div class="tab" onclick="openTab('calc')">분석</div>
+        <div class="tab" onclick="openTab('apostle-list')"> 뽑기권 계산용</div>
+        <div class="tab" onclick="openTab('settings')"> 설정</div>
+        <div class="tab" onclick="openTab('etc')">유용한 링크</div> 
+      </div>
     </div>
 
     <div id="preset" class="card active">
       <div class="filter-container">
         <div id="chart-container" style="display:none; background:rgba(255,255,255,0.9); border-radius:12px; padding:15px; margin-bottom:15px; border:1px solid var(--primary);">
           <p style="margin:0 0 5px 0; font-size:0.85em; font-weight:bold; color:#555;">📊 선택 사도 패키지 효율 비교 (회색선: 은총 패키지 기준)</p>
-<p style="margin:0 0 2px 0; font-size:0.75em; color:#d32f2f; font-weight: 500;">주의) 사도 증명서 20장 패키지는 교단 증명서로 일괄 계산</p> 
-<p style="margin:0 0 10px 0; font-size:0.75em; color:#000; font-weight: 500;">체크 해제 시 그래프에서 사라집니다/그래프 클릭 시 해당 패키지로 이동</p>
+          <p style="margin:0 0 2px 0; font-size:0.75em; color:#d32f2f; font-weight: 500;">주의) 사도 증명서 20장 패키지는 교단 증명서로 일괄 계산</p> 
+          <p style="margin:0 0 10px 0; font-size:0.75em; color:#000; font-weight: 500;">체크 해제 시 그래프에서 사라집니다/그래프 클릭 시 해당 패키지로 이동</p>
           <div id="chart-wrapper">
             <canvas id="releasedChart"></canvas>
           </div>
@@ -582,24 +595,22 @@
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <input type="text" id="pkg-search" class="search-input" placeholder="패키지 검색.." oninput="debounceSearch()" style="width: 100%;">
           
-         <div style="display: flex; gap: 8px; width: 100%;">
+          <div style="display: flex; gap: 8px; width: 100%;">
             <select id="pkg-type-select" class="apostle-select" onchange="onPkgTypeChange()" style="flex: 1; padding: 8px;">
-            <option value="apostle" selected>사도 패키지</option> <option value="isium">아이시움 라운지 패키지</option>
-          </select>
-           <button id="apostle-selector" class="apostle-select" onclick="openApostleModal()">
-    		전체 패키지
-		</button>
-		<input type="hidden" id="selected-apostle-val" value="all">
-    		
-
-	</button>
-	<input type="hidden" id="selected-apostle-val" value="all">
-        </div>
+              <option value="apostle" selected>사도 패키지</option>
+              <option value="isium">아이시움 라운지 패키지</option>
+            </select>
+            <button id="apostle-selector" class="apostle-select" onclick="openApostleModal()">
+              전체 패키지
+            </button>
+            <input type="hidden" id="selected-apostle-val" value="all">
+          </div>
           
           <div style="display: flex; gap: 8px; width: 100%; align-items: center;">
             <select id="sort-type" class="apostle-select" onchange="filterReleased()" style="flex: 1; padding: 8px;">
               <option value="price">가격 기준</option>
-              <option value="score" selected>효율 점수 기준</option> </select>
+              <option value="score" selected>효율 점수 기준</option>
+            </select>
             <select id="sort-order" class="apostle-select" onchange="filterReleased()" style="flex: 1; padding: 8px;">
               <option value="asc">오름차순 (낮은순)</option>
               <option value="desc" selected>내림차순 (높은순)</option>
@@ -610,38 +621,38 @@
       <div id="released-list"></div>
     </div>
 
-  <div id="constant" class="card">
-    <div class="filter-container">
-      <div style="display: flex; gap: 8px;">
-        <input type="text" id="constant-search" class="search-input" placeholder="상시 패키지 검색..." oninput="renderConstantPackages()">
-        <select id="constant-category" class="apostle-select" onchange="renderConstantPackages()" style="flex: 0.4;">
-          <option value="all">전체</option>
-          <option value="판매중">판매중</option>
-        </select>
+    <div id="constant" class="card">
+      <div class="filter-container">
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="constant-search" class="search-input" placeholder="상시 패키지 검색..." oninput="renderConstantPackages()">
+          <select id="constant-category" class="apostle-select" onchange="renderConstantPackages()" style="flex: 0.4;">
+            <option value="all">전체</option>
+            <option value="판매중">판매중</option>
+          </select>
+        </div>
+        
+        <div style="display: flex; gap: 8px; margin-top: 8px;">
+          <select id="constant-sort-type" class="apostle-select" onchange="renderConstantPackages()" style="flex: 1;">
+            <option value="price">가격 기준</option>
+            <option value="score" selected>효율 점수 기준</option>
+          </select>
+          <select id="constant-sort-order" class="apostle-select" onchange="renderConstantPackages()" style="flex: 1;">
+            <option value="desc" selected>내림차순 (높은순)</option>
+            <option value="asc">오름차순 (낮은순)</option>
+          </select>
+        </div>
       </div>
-      
-      <div style="display: flex; gap: 8px; margin-top: 8px;">
-        <select id="constant-sort-type" class="apostle-select" onchange="renderConstantPackages()" style="flex: 1;">
-          <option value="price">가격 기준</option>
-          <option value="score" selected>효율 점수 기준</option>
-        </select>
-        <select id="constant-sort-order" class="apostle-select" onchange="renderConstantPackages()" style="flex: 1;">
-          <option value="desc" selected>내림차순 (높은순)</option>
-          <option value="asc">오름차순 (낮은순)</option>
-        </select>
-      </div>
-    </div>
 
-    <div id="constant-chart-container" style="display:none; margin: 15px 0; padding: 15px; background: #fff; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+      <div id="constant-chart-container" style="display:none; margin: 15px 0; padding: 15px; background: #fff; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
         <div style="margin-bottom: 10px; font-weight: bold; color: #333; font-size: 0.9em;">📈 상시 패키지 효율 비교</div>
         <p style="margin:0 0 10px 0; font-size:0.75em; color:#000; font-weight: 500;">그래프 클릭 시 해당 패키지로 이동</p>
         <div id="constant-chart-wrapper" style="position: relative; width: 100%;">
-            <canvas id="constantChart"></canvas>
+          <canvas id="constantChart"></canvas>
         </div>
-    </div>
+      </div>
 
-    <div id="constant-list"></div>
-</div>
+      <div id="constant-list"></div>
+    </div>
 
     <div id="calc" class="card">
       <div class="row">
@@ -722,22 +733,24 @@
 
       <div id="apostle-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px;">
       </div>
-    </div> <div id="etc" class="card">
+    </div> 
+
+    <div id="etc" class="card">
       <div style="background:#f5f5f5; padding:12px; border-radius:8px; margin-bottom:15px; font-size:0.9em; color:#333; font-weight:bold;">
         🔗 유용한 외부 링크 목록
       </div>
       <div style="display: flex; flex-direction: column; gap: 10px;">
-        
         <a href="https://shop.trickcal.com/" target="_blank" class="etc-link-btn" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; display: flex; align-items: center; gap: 8px;">
-  	      <img src="images/아이시아.webp" style="width: 22px; height: 22px; object-fit: contain; position: relative; top: 1px;" alt="Isium Icon">
-  		<span>아이시움 라운지 바로가기 →</span>
-	</a>
-	 <a href="https://note.trickcal.com/" target="_blank" class="etc-link-btn" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; display: flex; align-items: center; gap: 8px;">
-  	      <img src="images/아멜리아(R41).webp" style="width: 22px; height: 22px; object-fit: contain; position: relative; top: 1px;" alt="Isium Icon">
-  		<span>트릭컬 노트 바로가기 →</span>
-	</a>
+          <img src="images/아이시아.webp" style="width: 22px; height: 22px; object-fit: contain; position: relative; top: 1px;" alt="Isium Icon">
+          <span>아이시움 라운지 바로가기 →</span>
+        </a>
+        <a href="https://note.trickcal.com/" target="_blank" class="etc-link-btn" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; display: flex; align-items: center; gap: 8px;">
+          <img src="images/아멜리아(R41).webp" style="width: 22px; height: 22px; object-fit: contain; position: relative; top: 1px;" alt="Isium Icon">
+          <span>트릭컬 노트 바로가기 →</span>
+        </a>
       </div>
     </div>
+  </div>
 
   <script src="config.js?v=1.14"></script>
   <script src="package.js?v=1.14"></script>
@@ -746,13 +759,10 @@
   <script src="app.js?v=1.14"></script>
 
   <script>
-    // 4. 모든 파일이 로드된 후 최종 실행
     window.onload = function() {
-      // 1. 공유 링크 데이터 처리 (app.js에 있던 로직을 여기로 통합)
       const urlParams = new URLSearchParams(window.location.search);
       const sharedData = urlParams.get('s');
       if (sharedData && typeof config !== 'undefined') {
-
         try {
           const vals = JSON.parse(decodeURIComponent(atob(sharedData)));
           config.items.forEach(item => {
@@ -761,32 +771,32 @@
         } catch (e) { console.error("Data Load Error:", e); }
       }
 
-      // 2. 초기 렌더링 실행
       if (typeof loadAll === 'function') {
         loadAll();
         applyRandomBackground();
-        setupLocalPackages(); // 여기서 주간 패키지가 그려집니다.
-        renderConstantPackages(); // 여기서 상시 패키지가 그려집니다.
+        setupLocalPackages();
+        renderConstantPackages();
       }
     };
   </script>
-<div id="toast" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
-     background: rgba(0, 0, 0, 0.8); color: white; padding: 12px 20px; border-radius: 8px; 
-     display: none; opacity: 0; transition: opacity 0.3s; z-index: 1000; font-weight: bold;">
-     설정 저장 완료!
-</div>
-<div id="apostle-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; padding:20px;">
-    <div style="background:white; width:100%; max-width:400px; margin:auto; border-radius:12px; padding:20px; height:80vh; display:flex; flex-direction:column;">
-        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-            <strong>사도 선택</strong>
-            <button onclick="closeApostleModal()">닫기</button>
-        </div>
-        <input type="text" id="modal-search" class="search-input" placeholder="사도 이름 검색..." oninput="renderModalList()" style="padding:10px; margin-bottom:10px;">
-        <div id="modal-list" style="flex:1; overflow-y:auto; border-top:1px solid #ddd; padding-top:10px;">
-            </div>
-    </div>
 
-</div>
+  <div id="toast" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
+       background: rgba(0, 0, 0, 0.8); color: white; padding: 12px 20px; border-radius: 8px; 
+       display: none; opacity: 0; transition: opacity 0.3s; z-index: 1000; font-weight: bold;">
+    설정 저장 완료!
+  </div>
+
+  <div id="apostle-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; padding:20px;">
+    <div style="background:white; width:100%; max-width:400px; margin:auto; border-radius:12px; padding:20px; height:80vh; display:flex; flex-direction:column;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+        <strong>사도 선택</strong>
+        <button onclick="closeApostleModal()">닫기</button>
+      </div>
+      <input type="text" id="modal-search" class="search-input" placeholder="사도 이름 검색..." oninput="renderModalList()" style="padding:10px; margin-bottom:10px;">
+      <div id="modal-list" style="flex:1; overflow-y:auto; border-top:1px solid #ddd; padding-top:10px;">
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>

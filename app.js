@@ -705,11 +705,14 @@ function loadAll() {
 }
 
 function applyRandomBackground() {
-//배경 추가할때마다 숫자 수정할 것
-   const TOTAL_BACKGROUNDS = 5;
-   const randomNum = Math.floor(Math.random() * TOTAL_BACKGROUNDS) + 1;
-   document.body.style.backgroundImage = `url('images/배경${randomNum}.webp')`;
-
+  // 배경 추가할때마다 숫자 수정할 것
+  const TOTAL_BACKGROUNDS = 5;
+  const randomNum = Math.floor(Math.random() * TOTAL_BACKGROUNDS) + 1;
+  
+  const bgLayer = document.getElementById('bg-layer');
+  if (bgLayer) {
+    bgLayer.style.backgroundImage = `url('images/배경${randomNum}.webp')`;
+  }
 }
 
 function resetConfig() { if(confirm("기본 설정으로 초기화 하시겠습니까?")) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }

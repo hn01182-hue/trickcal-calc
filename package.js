@@ -401,5 +401,21 @@ const dbPackages = [
 { name: "아이시움 골드 가득 패키지", price: 19800, releasedApostle: "아이시움(~26.08.27.)", contents: { p_elif: 600, t_apostle: 20, gold: 150, mileage: 20 } },
 { name: "아이시움 초특급 구성 패키지", price: 49500, releasedApostle: "아이시움(~26.08.27.)", contents: { p_elif: 1500, cert: 400, gold: 350, thumbs: 100, food_yamyam: 25, mileage: 50 } },
 { name: "아이시움 최고급 모집 패키지", price: 99000, releasedApostle: "아이시움(~26.08.27.)", contents: { p_elif: 3000, t_apostle: 50, t_card: 50, crayon_highest: 10, mileage: 100 } },
+
+{ name: "오로라의 충고 패키지", price: 3300, releasedApostle: "오로라", contents: { p_elif: 100, kcandy: 200, manual: 800, research_box: 20, food_yamyam: 5 } },
+{ name: "오로라의 특식 패키지", price: 6600, releasedApostle: "오로라", contents: { p_elif: 200, f_elif: 200, food_blue: 10, food_purple: 10, food_yamyam: 10, food_secom: 10, food_ricotta_ticket: 10, food_ricotta_rare: 10, food_ricotta_legend: 10, food_ricotta_awesome: 10 } },
+{ name: "오로라의 느낌 패키지", price: 3300, releasedApostle: "오로라", contents: { p_elif: 100, scandy: 100, light_box: 300, collect_box: 20, food_yamyam: 5 } },
+{ name: "오로라의 점괘 패키지", price: 19800, releasedApostle: "오로라", contents: { p_elif: 600, f_elif: 600, wildcard: 2, crayon_highest: 2 } },
+{ name: "오로라의 우아함 패키지", price: 9900, releasedApostle: "오로라", contents: { p_elif: 300, kcandy: 300, scandy: 300, thumbs: 20, food_yamyam: 10 } },
+{ name: "오로라의 결심 패키지", price: 9900, releasedApostle: "오로라", contents: { p_elif: 300, t_apostle: 10, t_card: 10 } },
+{ name: "오로라의 빠른 시작 패키지", price: 49500, releasedApostle: "오로라", contents: { p_elif: 1500, f_elif: 1500, select_ticket: 1, thumbs: 100 } },
+{ name: "오로라의 축복 패키지", price: 99000, releasedApostle: "오로라", contents: { t_apostle: 100, attr_우울: 3 } },
+{ name: "오로라의 화려한 오로라", price: 5500, contents: { p_elif: 170, thumbs: 50, kcandy: 800, scandy: 420 }, releasedApostle: '오로라' },
+
+{ name: "아이시움 특별 재료 패키지", price: 9900, releasedApostle: "아이시움(~26.09.10.)", contents: { p_elif: 300, kcandy: 300, scandy: 300, rare_church_box: 10, rare_church_box2: 10, mileage: 10 } },
+{ name: "아이시움 모집의 정석 패키지", price: 9900, releasedApostle: "아이시움(~26.09.10.)", contents: { p_elif: 300, t_apostle: 10, manual: 1500, mileage: 10 } },
+{ name: "아이시움 우울 성격 모집 패키지", price: 19800, releasedApostle: "아이시움(~26.09.10.)", contents: { p_elif: 600, attr_우울: 1, t_apostle: 10, nuru: 10, mileage: 20 } },
+{ name: "아이시움 초특급 크레파스 패키지", price: 49500, releasedApostle: "아이시움(~26.09.10.)", contents: { p_elif: 1500, kcandy: 500, scandy: 500, crayon_highest: 6, adv_ticket: 1, mileage: 50 } },
+{ name: "아이시움 대량 수렵 패키지", price: 99000, releasedApostle: "아이시움(~26.09.10.)", contents: { t_apostle: 100, nuru: 50, mileage: 100 } },
 ];
 
