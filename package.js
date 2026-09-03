@@ -411,6 +411,13 @@ const dbPackages = [
 { name: "오로라의 빠른 시작 패키지", price: 49500, releasedApostle: "오로라", contents: { p_elif: 1500, f_elif: 1500, select_ticket: 1, thumbs: 100 } },
 { name: "오로라의 축복 패키지", price: 99000, releasedApostle: "오로라", contents: { t_apostle: 100, attr_우울: 3 } },
 { name: "오로라의 화려한 오로라", price: 5500, contents: { p_elif: 170, thumbs: 50, kcandy: 800, scandy: 420 }, releasedApostle: '오로라' },
+{ name: "왕년의 최강자 디아나(왕년) 패키지", price: 99000, releasedApostle: "오로라", contents: { p_elif: 3000, elch_ticket: 1, attr_냉정: 3 }, note: "디아나(왕년) 증명서 20 = 엘다인 선택권 1장 가치로 산정" },
+{ name: "오로라의 기쁨 패키지", price: 49500, releasedApostle: "오로라", contents: { p_elif: 1500, f_elif: 1500, t_apostle: 30 } },
+{ name: "오로라의 나눔 패키지", price: 49500, releasedApostle: "오로라", contents: { p_elif: 1500, cert: 400, nuru: 30, food_yellow: 20 } },
+{ name: "오로라의 차분함 패키지", price: 19800, releasedApostle: "오로라", contents: { p_elif: 600, t_apostle: 20, thumbs: 40 } },
+{ name: "오로라의 사회생활 패키지", price: 6600, releasedApostle: "오로라", contents: { p_elif: 200, f_elif: 200, rare_church_box: 10, rare_church_box2: 10, food_yamyam: 5 } },
+{ name: "오로라의 도움 패키지", price: 3300, releasedApostle: "오로라", contents: { p_elif: 100, f_elif: 100, kcandy: 100, scandy: 100, food_yamyam: 3 } },
+{ name: "사복 패스(디아나(왕년))", price: 29500, releasedApostle: "오로라", contents: { "p_elif": 900, "f_elif": 2400, "t_apostle": 20, "t_card": 20, "crayon_highest": 8 } , note: "사복 포함" },
 
 { name: "아이시움 특별 재료 패키지", price: 9900, releasedApostle: "아이시움(~26.09.10.)", contents: { p_elif: 300, kcandy: 300, scandy: 300, rare_church_box: 10, rare_church_box2: 10, mileage: 10 } },
 { name: "아이시움 모집의 정석 패키지", price: 9900, releasedApostle: "아이시움(~26.09.10.)", contents: { p_elif: 300, t_apostle: 10, manual: 1500, mileage: 10 } },
