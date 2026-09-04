@@ -157,7 +157,17 @@ function applyPackageData(sourceId, pkgIdentifier) {
         return;
     }
 
-    document.body.style.backgroundImage = "url('images/쌀이드.gif')";
+   const bgVideo = document.getElementById('bg-video');
+const bgLayer = document.getElementById('bg-layer');
+
+if (bgVideo) {
+    bgVideo.pause();
+    bgVideo.style.display = 'none';
+}
+if (bgLayer) {
+    bgLayer.style.display = 'block';
+    bgLayer.style.backgroundImage = "url('images/쌀이드.gif')";
+}
     
     // 🌐 1. 아이시움 패키지(웹상점) 여부 검사
     const isIcium = pkg.name.includes("아이시움");
@@ -198,6 +208,7 @@ function applyPackageData(sourceId, pkgIdentifier) {
     openTab('calc'); 
     calculate();
 }
+
 function openTab(id) {
     document.querySelectorAll('.tab, .card').forEach(el => el.classList.remove('active'));
     
@@ -207,6 +218,7 @@ function openTab(id) {
     const targetCard = document.getElementById(id);
     if (targetCard) targetCard.classList.add('active');
 
+    if (id === 'preset') filterReleased(); // 탭 열 때 설정 반영
     if (id === 'calc') renderCalc();
     if (id === 'settings') renderSettings();
     if (id === 'constant') renderConstantPackages();
@@ -579,12 +591,14 @@ function saveSettings() {
     });
     localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
     
-    // 💡 아래 줄을 추가했습니다!
-    showToast("✅ 설정이 저장되었습니다!"); 
-    
-    filterReleased(); 
-    renderConstantPackages();
-    calculate(); 
+    // 탭에서 체크할 때 숨겨진 탭들을 굳이 렌더링하지 않음
+    const presetCard = document.getElementById('preset');
+    const constantCard = document.getElementById('constant');
+    const calcCard = document.getElementById('calc');
+
+    if (presetCard && presetCard.classList.contains('active')) filterReleased(); 
+    if (constantCard && constantCard.classList.contains('active')) renderConstantPackages();
+    if (calcCard && calcCard.classList.contains('active')) calculate(); 
 }
 
 function renderConstantPackages() {
@@ -705,31 +719,39 @@ function loadAll() {
 }
 
 function applyRandomBackground() {
-  // 배경 추가할때마다 숫자 수정할 것
-  const TOTAL_BACKGROUNDS = 5;
-  const randomNum = Math.floor(Math.random() * TOTAL_BACKGROUNDS) + 1;
-  
+  // 💡 보유 중인 배경 파일들을 확장자에 맞춰 자유롭게 등록
+  const backgrounds = [
+    '배경1.webp',  
+    '배경2.webp', 
+    '배경3.mp4',   
+    '배경4.mp4',  
+    '배경5.mp4',   
+  ];
+
+  const randomIndex = Math.floor(Math.random() * backgrounds.length);
+  const selectedBg = backgrounds[randomIndex];
+
   const bgLayer = document.getElementById('bg-layer');
-  if (bgLayer) {
-    bgLayer.style.backgroundImage = `url('images/배경${randomNum}.webp')`;
+  const bgVideo = document.getElementById('bg-video');
+
+  if (!bgLayer || !bgVideo) return;
+
+  if (selectedBg.endsWith('.mp4')) {
+    // 🎬 MP4 비디오 배경일 때
+    bgLayer.style.display = 'none';
+    bgVideo.style.display = 'block';
+    
+    bgVideo.src = `images/${selectedBg}`;
+    bgVideo.play().catch(() => {});
+  } else {
+    // 🖼️ 정적 이미지 배경일 때
+    bgVideo.pause();
+    bgVideo.style.display = 'none';
+    
+    bgLayer.style.display = 'block';
+    bgLayer.style.backgroundImage = `url('images/${selectedBg}')`;
   }
 }
-
-function resetConfig() { if(confirm("기본 설정으로 초기화 하시겠습니까?")) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
-function copyShareLink() {
-      const essentialData = {};
-        config.items.forEach(item => {
-        essentialData[item.id] = item.val;
-      });
-
-      const encodedData = btoa(encodeURIComponent(JSON.stringify(essentialData)));
-      const url = `${window.location.origin}${window.location.pathname}?s=${encodedData}`;
-
-      navigator.clipboard.writeText(url).then(() => {
-         alert("설정 링크 복사 완료!");
-      });
-}
-
 function drawReleasedChart(filteredData) {
     const canvas = document.getElementById('releasedChart');
     const container = document.getElementById('chart-container');
@@ -1062,6 +1084,28 @@ function updateManualValue() {
         if (input) {
             input.value = minValue.toFixed(3); 
             saveSettings(); 
+        }
+    } else {
+        saveSettings();
+    }
+}
+
+// 💡 누락되었던 유료 엘리프 계산 함수
+function updatePaidElifValue() {
+    const checkboxes = document.querySelectorAll('.elif-helper-chk');
+    const checkedValues = Array.from(checkboxes)
+        .filter(chk => chk.checked)
+        .map(chk => chk.value);
+
+    config.paidElifCriteria = checkedValues;
+
+    if (checkedValues.length > 0) {
+        // 선택한 항목 중 가장 낮은 효율 적용
+        const minValue = Math.min(...checkedValues.map(v => parseFloat(v)));
+        const input = document.getElementById('val-p_elif');
+        if (input) {
+            input.value = minValue;
+            saveSettings();
         }
     } else {
         saveSettings();

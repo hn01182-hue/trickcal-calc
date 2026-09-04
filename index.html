@@ -25,21 +25,31 @@
 
     }
 
-    /* 독립된 배경 레이어 (GPU 가속 분리) */
-    #bg-layer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
-      background-size: cover;
-      background-position: center;
-      pointer-events: none;
-      transform: translateZ(0);
-      will-change: transform;
-      transition: background-image 0.5s ease-in-out;
-    }
+    /* 정적 이미지 레이어 */
+#bg-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  pointer-events: none;
+}
+
+/* MP4 비디오 레이어 */
+#bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover; /* 찌그러짐 없이 꽉 채우기 */
+  z-index: -1;
+  pointer-events: none;
+  transform: translate3d(0, 0, 0); /* GPU 하드웨어 가속 */
+}
 
     /* 사도 아이콘 컨테이너 */
     .apostle-container {
@@ -569,6 +579,8 @@
 <body>
   <!-- 별도 분리된 고정 배경 레이어 -->
   <div id="bg-layer"></div>
+
+<video id="bg-video" autoplay loop muted playsinline style="display: none;"></video>
 
   <div class="container">
     <div class="tabs-container">
