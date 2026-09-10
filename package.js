@@ -424,5 +424,21 @@ const dbPackages = [
 { name: "아이시움 우울 성격 모집 패키지", price: 19800, releasedApostle: "아이시움(~26.09.10.)", contents: { p_elif: 600, attr_우울: 1, t_apostle: 10, nuru: 10, mileage: 20 } },
 { name: "아이시움 초특급 크레파스 패키지", price: 49500, releasedApostle: "아이시움(~26.09.10.)", contents: { p_elif: 1500, kcandy: 500, scandy: 500, crayon_highest: 6, adv_ticket: 1, mileage: 50 } },
 { name: "아이시움 대량 수렵 패키지", price: 99000, releasedApostle: "아이시움(~26.09.10.)", contents: { t_apostle: 100, nuru: 50, mileage: 100 } },
+
+{ name: "로니의 삐죽 패키지", price: 99000, releasedApostle: "로니", contents: { t_apostle: 100, t_card: 50 } },
+{ name: "로니의 분노 패키지", price: 49500, releasedApostle: "로니", contents: { p_elif: 1500, f_elif: 1500, cert: 400, thumbs: 100 } },
+{ name: "로니의 세척 패키지", price: 29500, releasedApostle: "로니", contents: { p_elif: 900, gold: 200, crayon_highest: 4 } },
+{ name: "로니의 진심 패키지", price: 9900, releasedApostle: "로니", contents: { p_elif: 300, t_card: 10, l_card_ticket: 1 } },
+{ name: "로니의 심판 패키지", price: 9900, releasedApostle: "로니", contents: { p_elif: 300, t_apostle: 10, nuru: 10 } },
+{ name: "로니의 가치 패키지", price: 9900, releasedApostle: "로니", contents: { p_elif: 300, kcandy: 300, scandy: 300, thumbs: 20, food_purple: 20 } },
+{ name: "로니의 선택 패키지", price: 3300, releasedApostle: "로니", contents: { p_elif: 100, f_elif: 100, scandy: 100, light_box: 300, food_blue: 10 } },
+{ name: "로니의 황야 패키지", price: 3300, releasedApostle: "로니", contents: { p_elif: 100, f_elif: 100, kcandy: 200, manual: 800, food_blue: 10 } },
+{ name: "로니의 수사 기록", price: 5500, releasedApostle: "로니", contents: { "p_elif": 170, "t_apostle": 8, "t_card": 7, "kcandy": 200, "scandy": 300 } },
+
+{ name: "아이시움 달콤 얌얌 패키지", price: 6600, releasedApostle: "아이시움(~26.09.24.)", contents: { p_elif: 200, f_elif: 200, kcandy: 200, scandy: 200, food_blue: 20, mileage: 7 } },
+{ name: "아이시움 티켓 좋아 패키지", price: 9900, releasedApostle: "아이시움(~26.09.24.)", contents: { p_elif: 300, crayon_highest: 1, t_apostle: 5, t_card: 5, nuru: 5, mileage: 10 } },
+{ name: "아이시움 광기 사도 모집 패키지", price: 19800, releasedApostle: "아이시움(~26.09.24.)", contents: { p_elif: 600, attr_광기: 1, t_apostle: 10, nuru: 10, food_yellow: 3, mileage: 20 } },
+{ name: "아이시움 교단 특별 패키지", price: 49500, releasedApostle: "아이시움(~26.09.24.)", contents: { p_elif: 1500, cert: 400, gold: 350, thumbs: 100, food_yamyam: 25, mileage: 50 } },
+{ name: "아이시움 사도 가득 모집 패키지", price: 99000, releasedApostle: "아이시움(~26.09.24.)", contents: { t_apostle: 100, thumbs: 200, mileage: 100 } },
 ];
 
